@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =5
+let g:netrw_dirhist_5='/home/tianli1/node_modules/winston/lib/winston'
+let g:netrw_dirhist_4='/home/tianli1/node_modules/color-string'
+let g:netrw_dirhist_3='/home/tianli1/.config/fontconfig'
+let g:netrw_dirhist_2='/home/tianli1/.config/yay'
+let g:netrw_dirhist_1='/home/tianli1/test'
