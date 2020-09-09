@@ -179,7 +179,7 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'bling/vim-bufferline'
 " Plug 'bpietravalle/vim-bolt'
 Plug 'ajmwagar/vim-deus'
-Plug 'theniceboy/eleline.vim'
+Plug 'liuchengxu/eleline.vim'
 " Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'RRethy/vim-illuminate'
 Plug 'junegunn/fzf.vim'
