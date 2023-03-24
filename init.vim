@@ -484,14 +484,20 @@ require('gitsigns').setup({
   },
 })
 EOF
+nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 nnoremap <LEADER>H :Gitsigns preview_hunk_inline<CR>
 nnoremap <LEADER>gr :Gitsigns reset_hunk<CR>
 nnoremap <LEADER>gb :Gitsigns blame_line<CR>
 nnoremap <LEADER>g- :Gitsigns prev_hunk<CR>
 nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 
+nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
+
+" this
+
 " ==================== coc.nvim ====================
 "
+nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 let g:coc_global_extensions = [
 	\ 'coc-css',
 	\ 'coc-diagnostic',
