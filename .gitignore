@@ -1,0 +1,7 @@
+autoload/
+Ultisnips/
+plugged/
+spell/
+tmp/
+nvim-master/
+node_modules/
