@@ -28,7 +28,7 @@ set viewoptions=cursor,folds,slash,unix
 set invwrap
 set tw=0
 set indentexpr=
-set foldmethod=indent
+" set foldmethod=indent
 set foldlevel=99
 set foldenable
 set formatoptions-=tc
@@ -77,6 +77,7 @@ nnoremap <LEADER>ro :e $HOME/Library/Mobile Documents/iCloud~md~obsidian/Documen
 nnoremap <LEADER>rr :e $HOME/.config/ranger/rc.conf<CR>
 nnoremap <LEADER>rf :e .nvimrc<CR>
 nnoremap <LEADER>rl :source $MYVIMRC<CR>
+nnoremap <LEADER>re :redir @* \| silent messages \| redir END \| pbcopy<CR>
 augroup NVIMRC
     autocmd!
     autocmd BufWritePost *.nvimrc exec ":so %"
@@ -264,6 +265,7 @@ endfunc
 
 " ==================== Install Plugins with Vim-Plug ====================
 call plug#begin('$HOME/.config/nvim/plugged')
+Plug 'voldikss/vim-floaterm'
 
 Plug 'tpope/vim-repeat'
 Plug 'itchyny/vim-cursorword'
@@ -318,7 +320,7 @@ Plug 'cohama/agit.vim'
 Plug 'kdheepak/lazygit.nvim'
 
 " Tex
-" Plug 'lervag/vimtex'
+Plug 'lervag/vimtex'
 
 " CSharp
 Plug 'OmniSharp/omnisharp-vim'
@@ -446,14 +448,57 @@ call plug#end()
 
 set re=0
 
+" ==================== latex ====================
+let g:tex_flavor = 'latex'
+let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+let g:vimtex_view_general_options = '-r @line @pdf @tex'
+
+" This adds a callback hook that updates Skim after compilation
+" let g:vimtex_compiler_callback_hooks = ['UpdateSkim']
+
+" function! UpdateSkim(status)
+" if !a:status | return | endif
+"
+" let l:out = b:vimtex.out()
+" let l:tex = expand('%:p')
+" let l:cmd = [g:vimtex_view_general_viewer, '-r']
+"
+" if !empty(system('pgrep Skim'))
+" call extend(l:cmd, ['-g'])
+" endif
+"
+" if has('nvim')
+" call jobstart(l:cmd + [line('.'), l:out, l:tex])
+" elseif has('job')
+" call job_start(l:cmd + [line('.'), l:out, l:tex])
+" else
+" call system(join(l:cmd + [line('.'), shellescape(l:out), shellescape(l:tex)], ' '))
+" endif
+" endfunction
+
 " ==================== obsidian nvim ====================
 
 lua <<EOF
 require("obsidian").setup({
-  dir = "~/my-vault",
-  completion = {
-    nvim_cmp = true, -- if using nvim-cmp, otherwise set to false
-  }
+  dir = "$TIANLIB",
+  -- adds all new notes to fleeting notes.
+  notes_subdir = "fleetingNotes", 
+  -- to use advanced uri plugin in obsidan
+  use_advanced_uri = true,
+  note_id_func = function(title)
+    -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+    local suffix = ""
+    if title ~= nil then
+      -- If title is given, transform it into valid file name.
+      suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+    else
+      -- If title is nil, just add 4 random uppercase letters to the suffix.
+      for _ = 1, 4 do
+        suffix = suffix .. string.char(math.random(65, 90))
+      end
+    end
+    return tostring(os.time()) .. "-" .. suffix
+  end
 })
 EOF
 
@@ -484,20 +529,16 @@ require('gitsigns').setup({
   },
 })
 EOF
-nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 nnoremap <LEADER>H :Gitsigns preview_hunk_inline<CR>
 nnoremap <LEADER>gr :Gitsigns reset_hunk<CR>
 nnoremap <LEADER>gb :Gitsigns blame_line<CR>
 nnoremap <LEADER>g- :Gitsigns prev_hunk<CR>
 nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 
-nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 
-" this
 
 " ==================== coc.nvim ====================
 "
-nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 let g:coc_global_extensions = [
 	\ 'coc-css',
 	\ 'coc-diagnostic',
@@ -542,6 +583,7 @@ function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <c-o> coc#refresh()
 function! Show_documentation()
@@ -562,6 +604,7 @@ nnoremap <silent><nowait> <LEADER>cd :CocList diagnostics<cr>
 nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
 nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
 nnoremap <c-c> :CocCommand<CR>
+
 " Text Objects
 "
 xmap if <Plug>(coc-funcobj-i)
