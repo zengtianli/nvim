@@ -96,7 +96,7 @@
 	"typescript.format.enabled": true,
 	"jest.watch": false,
 	"explorer.width": 38,
-	"explorer.quitOnOpen": true,
+	"explorer.quitOnOpen": false,
 	"explorer.sources": [
 		{
 			"name": "buffer",
@@ -252,5 +252,6 @@
 				}
 			}
 		}
-	}
+  },
+  "snippets.ultisnips.pythonPrompt": false
 }

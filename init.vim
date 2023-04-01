@@ -128,6 +128,8 @@ source $HOME/.config/nvim/cursorm.vim
 
 inoremap jj <Esc>xa
 inoremap jk <Esc>ciw
+" inoremap . 。
+
 
 " ==================== Insert Mode Cursor Movement ====================
 inoremap <C-a> <ESC>A
@@ -266,7 +268,7 @@ endfunc
 " ==================== Install Plugins with Vim-Plug ====================
 call plug#begin('$HOME/.config/nvim/plugged')
 Plug 'voldikss/vim-floaterm'
-
+Plug 'liuchengxu/vista.vim'
 Plug 'tpope/vim-repeat'
 Plug 'itchyny/vim-cursorword'
 
@@ -274,13 +276,13 @@ Plug 'itchyny/vim-cursorword'
 Plug 'github/copilot.vim'
 
 " Treesitter
-Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'nvim-treesitter/playground'
+" Plug 'nvim-treesitter/nvim-treesitter'
+" Plug 'nvim-treesitter/playground'
 
 " Pretty Dress
 Plug 'theniceboy/nvim-deus'
 "Plug 'arzg/vim-colors-xcode'
-
+" Plug 'sainnhe/sonokai'
 " Status line
 Plug 'theniceboy/eleline.vim', { 'branch': 'no-scrollbar' }
 
@@ -440,9 +442,13 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
 " Plug 'makerj/vim-pdf'
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'epwalsh/obsidian.nvim'
+" Plug 'epwalsh/obsidian.nvim'
 Plug 'hrsh7th/nvim-cmp'
 
+" Plug 'ZSaberLv0/ZFVimIM'
+" Plug 'ZSaberLv0/ZFVimJob' " optional, for better db load performance
+" Plug 'ZSaberLv0/ZFVimGitUtil' " optional, cleanup your db commit history when necessary
+" Plug 'ZSaberLv0/ZFVimIM_openapi' " optional, 3rd IME using Baidu
 
 call plug#end()
 
@@ -450,63 +456,88 @@ set re=0
 
 " ==================== latex ====================
 let g:tex_flavor = 'latex'
-let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-let g:vimtex_view_general_options = '-r @line @pdf @tex'
+" let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+" let g:vimtex_view_general_options = '-r @line @pdf @tex'
+augroup vimtex_common
+  autocmd!
+  autocmd FileType tex nmap <buffer> <F9> <plug>(vimtex-compile)
+augroup END
 
-" This adds a callback hook that updates Skim after compilation
-" let g:vimtex_compiler_callback_hooks = ['UpdateSkim']
+let g:vimtex_view_method = 'skim'
 
-" function! UpdateSkim(status)
-" if !a:status | return | endif
-"
-" let l:out = b:vimtex.out()
-" let l:tex = expand('%:p')
-" let l:cmd = [g:vimtex_view_general_viewer, '-r']
-"
-" if !empty(system('pgrep Skim'))
-" call extend(l:cmd, ['-g'])
-" endif
-"
-" if has('nvim')
-" call jobstart(l:cmd + [line('.'), l:out, l:tex])
-" elseif has('job')
-" call job_start(l:cmd + [line('.'), l:out, l:tex])
-" else
-" call system(join(l:cmd + [line('.'), shellescape(l:out), shellescape(l:tex)], ' '))
-" endif
-" endfunction
+let g:vimtex_compiler_latexmk = {
+      \ 'build_dir' : 'build',
+      \ 'options' : [
+      \ '-shell-escape',
+      \ '-verbose',
+      \ '-file-line-error',
+      \ '-synctex=1',
+      \ '-interaction=nonstopmode',
+      \ ]}
+
+let g:vimtex_toc_config = {
+      \ 'name' : 'TOC',
+      \ 'layers' : ['content', 'todo', 'include'],
+      \ 'resize' : 1,
+      \ 'split_width' : 30,
+      \ 'todo_sorted' : 0,
+      \ 'show_help' : 1,
+      \ 'show_numbers' : 1,
+      \ 'mode' : 2,
+      \ }
+
+" ===
+" === Vista.vim
+" ===
+noremap <silent> <leader>tv :Vista!!<CR>
+let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+let g:vista_default_executive = 'ctags'
+let g:vista_fzf_preview = ['right:50%']
+let g:vista#renderer#enable_icon = 1
+let g:vista#renderer#icons = {
+\   "function": "\uf794",
+\   "variable": "\uf71b",
+\  }
+function! NearestMethodOrFunction() abort
+	return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+set statusline+=%{NearestMethodOrFunction()}
+autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+
 
 " ==================== obsidian nvim ====================
 
-lua <<EOF
-require("obsidian").setup({
-  dir = "$TIANLIB",
-  -- adds all new notes to fleeting notes.
-  notes_subdir = "fleetingNotes", 
-  -- to use advanced uri plugin in obsidan
-  use_advanced_uri = true,
-  note_id_func = function(title)
-    -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
-    local suffix = ""
-    if title ~= nil then
-      -- If title is given, transform it into valid file name.
-      suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-    else
-      -- If title is nil, just add 4 random uppercase letters to the suffix.
-      for _ = 1, 4 do
-        suffix = suffix .. string.char(math.random(65, 90))
-      end
-    end
-    return tostring(os.time()) .. "-" .. suffix
-  end
-})
-EOF
+"lua <<EOF
+"require("obsidian").setup({
+  "dir = "$TIANLIB",
+  "-- adds all new notes to fleeting notes.
+  "notes_subdir = "fleetingNotes", 
+  "-- to use advanced uri plugin in obsidan
+  "use_advanced_uri = true,
+  "note_id_func = function(title)
+    "-- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+    "local suffix = ""
+    "if title ~= nil then
+      "-- If title is given, transform it into valid file name.
+      "suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+    "else
+      "-- If title is nil, just add 4 random uppercase letters to the suffix.
+      "for _ = 1, 4 do
+        "suffix = suffix .. string.char(math.random(65, 90))
+      "end
+    "end
+    "return tostring(os.time()) .. "-" .. suffix
+  "end
+"})
+"EOF
+
 
 " ==================== Dress up my vim ====================
 
 set termguicolors " enable true colors support
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 silent! color deus
+" silent! color sonokai
 
 hi NonText ctermfg=gray guifg=grey10
 
@@ -939,19 +970,18 @@ let g:agit_no_default_mappings = 1
 
 
 " ==================== nvim-treesitter ====================
-"  if g:nvim_plugins_installation_completed == 1
-"   <<EOF
-"  require'nvim-treesitter.configs'.setup {
-"  	-- one of "all", "language", or a list of languages
-"  	ensure_installed = {"typescript", "dart", "java", "c", "prisma", "bash", "go"},
-"  	highlight = {
-"  		enable = true,              -- false will disable the whole extension
-"  		disable = { "rust" },  -- list of language that will be disabled
-"  	},
-"  }
-"  EOF
-"  endif
-
+"if g:nvim_plugins_installation_completed == 1
+"lua <<EOF
+"require'nvim-treesitter.configs'.setup {
+"	-- one of "all", "language", or a list of languages
+"	ensure_installed = {"typescript", "dart", "java", "c", "prisma", "bash", "go","vim","latex"},
+"	highlight = {
+"		enable = true,              -- false will disable the whole extension
+"		disable = { "md","rust","vim","latex" },  -- list of language that will be disabled
+"	},
+"}
+"EOF
+"endif
 
 " ==================== nvim-scrollbar ====================
 if g:nvim_plugins_installation_completed == 1
