@@ -28,7 +28,7 @@ set viewoptions=cursor,folds,slash,unix
 set invwrap
 set tw=0
 set indentexpr=
-" set foldmethod=indent
+set foldmethod=indent
 set foldlevel=99
 set foldenable
 set formatoptions-=tc
@@ -83,9 +83,9 @@ augroup NVIMRC
     autocmd BufWritePost *.nvimrc exec ":so %"
 augroup END
 
-autocmd BufWritePost $HOME/.config/yabai/yabairc !export https_proxy=127.0.0.1:7890 && brew services restart yabai
-autocmd BufWritePost $HOME/.config/skhd/skhdrc !export https_proxy=127.0.0.1:7890 && brew services restart skhd
-autocmd BufWritePost $HOME/.config/spacebar/spacebarrc !export https_proxy=127.0.0.1:7890 && brew services restart spacebar
+autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service
+" autocmd BufWritePost $HOME/.config/skhd/skhdrc !export https_proxy=127.0.0.1:7890 && brew services restart skhd
+" autocmd BufWritePost $HOME/.config/spacebar/spacebarrc !export https_proxy=127.0.0.1:7890 && brew services restart spacebar
 nnoremap U <c-r>
 " Copy to system clipboard
 vnoremap Y "+y
@@ -1145,7 +1145,7 @@ endif
 noremap <c-g> :LazyGit<CR>
 let g:lazygit_floating_window_winblend = 0 " transparency of floating window
 let g:lazygit_floating_window_scaling_factor = 1.0 " scaling factor for floating window
-let g:lazygit_floating_window_corner_chars = ['╭', '╮', '╰', '╯'] " customize lazygit popup window corner characters
+let g:lazygit_floating_window_board_chars = ['╭', '╮', '╰', '╯'] " customize lazygit popup window corner characters
 let g:lazygit_use_neovim_remote = 1 " for neovim-remote support
 
 
