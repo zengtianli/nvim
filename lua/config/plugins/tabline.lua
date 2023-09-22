@@ -12,7 +12,6 @@ return {
 			end,
 			indicator = {
 				icon = '▎', -- this should be omitted if indicator style is not 'icon'
-				-- style = 'icon' | 'underline' | 'none',
 				style = "icon",
 			},
 			show_buffer_close_icons = false,

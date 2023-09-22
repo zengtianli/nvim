@@ -1,7 +1,5 @@
 local M = {}
-
 local F = {}
-
 M.config = {
 	{
 		'weilbith/nvim-code-action-menu',
@@ -17,8 +15,8 @@ M.config = {
 					use_diagnostic_signs = true,
 					action_keys = {
 						close = "<esc>",
-						previous = "u",
-						next = "e"
+						previous = "k",
+						next = "j"
 					},
 				},
 			},
@@ -42,14 +40,13 @@ M.config = {
 				"lvimuser/lsp-inlayhints.nvim",
 				branch = "anticonceal",
 			},
-			-- "mjlbach/lsp_signature.nvim",
 		},
-
 		config = function()
 			local lsp = require('lsp-zero').preset({})
 			M.lsp = lsp
 
 			lsp.ensure_installed({
+				'pyright',
 				'tsserver',
 				'eslint',
 				'gopls',
@@ -62,21 +59,6 @@ M.config = {
 				lsp.default_keymaps({ buffer = bufnr })
 				client.server_capabilities.semanticTokensProvider = nil
 				require("config.plugins.autocomplete").configfunc()
-				-- require("lsp_signature").on_attach(F.signature_config, bufnr)
-				-- require("lsp-inlayhints").on_attach(client, bufnr)
-				-- vim.api.nvim_create_augroup("lsp_augroup", { clear = true })
-				-- vim.api.nvim_create_autocmd("InsertEnter", {
-				-- 	buffer = bufnr,
-				-- 	callback = function() vim.lsp.inlay_hint(bufnr, false) end,
-				-- 	group = "lsp_augroup",
-				-- })
-				-- vim.lsp.inlay_hint(bufnr, true)
-				-- vim.api.nvim_create_autocmd("InsertLeave", {
-				-- 	buffer = bufnr,
-				-- 	callback = function() vim.lsp.inlay_hint(bufnr, true) end,
-				-- 	group = "lsp_augroup",
-				-- })
-				-- vim.cmd('highlight! link LspInlayHint Comment')
 				vim.diagnostic.config({
 					severity_sort = true,
 					underline = true,
@@ -135,6 +117,7 @@ M.config = {
 				json = true,
 				go = true,
 				lua = true,
+				python = true,
 			}
 
 			vim.api.nvim_create_autocmd("BufWritePre", {
@@ -208,22 +191,6 @@ F.configureDocAndSignature = function()
 		end,
 		group = group,
 	})
-	-- vim.api.nvim_create_autocmd({ "CursorHoldI" }, {
-	-- 	pattern = "*",
-	-- 	command = "silent! lua vim.lsp.buf.signature_help()",
-	-- 	group = group,
-	-- })
-
-	-- F.signature_config = {
-	-- 	bind = false,
-	-- 	floating_window = true,
-	-- 	hint_inline = function() return false end,
-	-- 	handler_opts = {
-	-- 		border = "rounded"
-	-- 	}
-	-- }
-	-- local lspsignature = require('lsp_signature')
-	-- lspsignature.setup(F.signature_config)
 end
 
 
@@ -241,11 +208,8 @@ F.configureKeybinds = function()
 			vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
 			vim.keymap.set('i', '<c-f>', vim.lsp.buf.signature_help, opts)
 			vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-			-- vim.keymap.set({ 'n', 'x' }, '<leader>f', function() vim.lsp.buf.format({ async = true }) end, opts)
 			vim.keymap.set('n', '<leader>aw', vim.lsp.buf.code_action, opts)
 			vim.keymap.set('n', "<leader>,", vim.lsp.buf.code_action, opts)
-			-- vim.keymap.set('x', '<leader>aw', vim.lsp.buf.range_code_action, opts)
-			-- vim.keymap.set('x', "<leader>,", vim.lsp.buf.range_code_action, opts)
 			vim.keymap.set('n', '<leader>t', ':Trouble<cr>', opts)
 			vim.keymap.set('n', '<leader>-', vim.diagnostic.goto_prev, opts)
 			vim.keymap.set('n', '<leader>=', vim.diagnostic.goto_next, opts)

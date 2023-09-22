@@ -5,11 +5,9 @@ return {
 	config = function()
 		local fzf = require('fzf-lua')
 		vim.keymap.set('n', '<c-f>', function()
-			-- fzf.live_grep_resume({ multiprocess = true, debug = true })
 			fzf.grep({ search = "", fzf_opts = { ['--layout'] = 'default' } })
 		end, m)
 		vim.keymap.set('x', '<c-f>', function()
-			-- fzf.live_grep_resume({ multiprocess = true, debug = true })
 			fzf.grep_visual({ fzf_opts = { ['--layout'] = 'default' } })
 		end, m)
 		fzf.setup({
@@ -39,8 +37,6 @@ return {
 				fzf = {
 					["esc"]        = "abort",
 					["ctrl-h"]     = "unix-line-discard",
-					["ctrl-k"]     = "half-page-down",
-					["ctrl-b"]     = "half-page-up",
 					["ctrl-n"]     = "beginning-of-line",
 					["ctrl-a"]     = "end-of-line",
 					["alt-a"]      = "toggle-all",
@@ -48,8 +44,8 @@ return {
 					["f4"]         = "toggle-preview",
 					["shift-down"] = "preview-page-down",
 					["shift-up"]   = "preview-page-up",
-					["ctrl-e"]     = "down",
-					["ctrl-u"]     = "up",
+					["ctrl-j"]     = "down",
+					["ctrl-k"]     = "up",
 				},
 			},
 			previewers = {

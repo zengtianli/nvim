@@ -19,8 +19,7 @@ M.config = {
 		"hrsh7th/cmp-nvim-lsp",
 		"hrsh7th/cmp-nvim-lua",
 		"hrsh7th/cmp-calc",
-		-- "andersevenrud/cmp-tmux",
-		{
+  		{
 			"onsails/lspkind.nvim",
 			lazy = false,
 			config = function()
@@ -30,11 +29,9 @@ M.config = {
 		{
 			"quangnguyen30192/cmp-nvim-ultisnips",
 			config = function()
-				-- optional call to setup (see customization section)
 				require("cmp_nvim_ultisnips").setup {}
 			end,
 		}
-		-- "L3MON4D3/LuaSnip",
 	},
 }
 
@@ -132,19 +129,19 @@ M.configfunc = function()
 		}),
 		mapping = cmp.mapping.preset.insert({
 			['<C-o>'] = cmp.mapping.complete(),
-			["<c-e>"] = cmp.mapping(
+			["<c-j>"] = cmp.mapping(
 				function()
 					cmp_ultisnips_mappings.compose { "expand", "jump_forwards" } (function() end)
 				end,
 				{ "i", "s", --[[ "c" (to enable the mapping in command mode) ]] }
 			),
-			["<c-n>"] = cmp.mapping(
+			["<c-k>"] = cmp.mapping(
 				function(fallback)
 					cmp_ultisnips_mappings.jump_backwards(fallback)
 				end,
 				{ "i", "s", --[[ "c" (to enable the mapping in command mode) ]] }
 			),
-			['<c-f>'] = cmp.mapping({
+			['<c-h>'] = cmp.mapping({
 				i = function(fallback)
 					cmp.close()
 					fallback()

@@ -12,6 +12,7 @@ return {
 					"javascript",
 					"typescript",
 					"query",
+					"python",
 					"dart",
 					"java",
 					"c",

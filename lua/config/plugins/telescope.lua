@@ -4,7 +4,6 @@ local M = {}
 M.config = {
 	{
 		"nvim-telescope/telescope.nvim",
-		-- tag = '0.1.1',
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			{
@@ -17,25 +16,18 @@ M.config = {
 				end
 			},
 			{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-			-- "nvim-telescope/telescope-ui-select.nvim",
 			'stevearc/dressing.nvim',
 			'dimaportenko/telescope-simulators.nvim',
 		},
 		config = function()
 			local builtin = require('telescope.builtin')
 			vim.keymap.set('n', '<c-p>', builtin.find_files, m)
-			-- vim.keymap.set('n', '<c-f>', function()
-			-- 	builtin.grep_string({ search = "" })
-			-- end, m)
 			vim.keymap.set('n', '<leader>rs', builtin.resume, m)
 			vim.keymap.set('n', '<c-w>', builtin.buffers, m)
 			vim.keymap.set('n', '<c-h>', builtin.oldfiles, m)
 			vim.keymap.set('n', '<c-_>', builtin.current_buffer_fuzzy_find, m)
 			vim.keymap.set('n', 'z=', builtin.spell_suggest, m)
-
 			vim.keymap.set('n', '<leader>d', builtin.diagnostics, m)
-			-- vim.keymap.set('n', 'gd', builtin.lsp_definitions, m)
-			-- vim.keymap.set('n', '<c-t>', builtin.lsp_document_symbols, {})
 			vim.keymap.set('n', 'gi', builtin.git_status, m)
 			vim.keymap.set("n", ":", builtin.commands, m)
 
@@ -64,9 +56,9 @@ M.config = {
 					mappings = {
 						i = {
 							["<C-h>"] = "which_key",
-							["<C-u>"] = "move_selection_previous",
-							["<C-e>"] = "move_selection_next",
-							["<C-l>"] = "preview_scrolling_up",
+							["<C-k>"] = "move_selection_previous",
+							["<C-j>"] = "move_selection_next",
+							["<C-i>"] = "preview_scrolling_up",
 							["<C-y>"] = "preview_scrolling_down",
 							["<esc>"] = "close",
 						}
@@ -136,7 +128,7 @@ M.config = {
 		"FeiyouG/command_center.nvim",
 		dependencies = "nvim-telescope/telescope.nvim",
 		config = function()
-			local command_center = require("command_center")
+			local command_center = require("commander")
 			vim.keymap.set('n', '<c-q>', ":Telescope command_center<CR>", m)
 			command_center.add({
 				{
@@ -151,6 +143,4 @@ M.config = {
 		end
 	}
 }
-
-
 return M

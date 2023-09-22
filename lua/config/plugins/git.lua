@@ -29,11 +29,4 @@ return {
 			vim.keymap.set("n", "<c-g>", ":LazyGit<CR>", { noremap = true, silent = true })
 		end
 	},
-	-- {
-	-- 	"APZelos/blamer.nvim",
-	-- 	config = function()
-	-- 		vim.g.blamer_enabled = true
-	-- 		vim.g.blamer_relative_time = true
-	-- 	end
-	-- }
 }
