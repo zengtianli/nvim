@@ -78,7 +78,7 @@
 		"json",
 		"jsonc",
 		"java",
-		"python",
+		// "python",
 		"vue",
 		"svelte",
 		"c",
@@ -252,6 +252,6 @@
 				}
 			}
 		}
-  },
-  "snippets.ultisnips.pythonPrompt": false
+	},
+	"snippets.ultisnips.pythonPrompt": false
 }

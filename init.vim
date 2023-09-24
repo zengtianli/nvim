@@ -34,7 +34,7 @@ set foldenable
 set formatoptions-=tc
 set splitright
 set splitbelow
-set scrolloff=4
+set scrolloff=40
 set noshowmode
 set ignorecase
 set smartcase
@@ -59,6 +59,7 @@ set virtualedit=block
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:neoterm_autoscroll = 1
 autocmd TermOpen term://* startinsert
+" terminal in nvim control
 tnoremap <C-N> <C-\><C-N>
 tnoremap <C-O> <C-\><C-N><C-O>
 
@@ -84,6 +85,8 @@ augroup NVIMRC
 augroup END
 
 autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service
+autocmd BufWritePost *.swift !swift build
+
 " autocmd BufWritePost $HOME/.config/skhd/skhdrc !export https_proxy=127.0.0.1:7890 && brew services restart skhd
 " autocmd BufWritePost $HOME/.config/spacebar/spacebarrc !export https_proxy=127.0.0.1:7890 && brew services restart spacebar
 nnoremap U <c-r>
@@ -184,7 +187,7 @@ autocmd BufRead,BufNewFile *.md setlocal spell
 noremap <LEADER>/ :set splitbelow<CR>:split<CR>:res +10<CR>:term<CR>
 noremap <LEADER><LEADER>j <Esc>/<++><CR>:nohlsearch<CR>"_c4l
 
-vmap <leader>n :!awk '{print NR" "$0}'<CR>
+vmap <leader>n :!awk '{print (NR-1)" "$0}'<CR>
 
 noremap <LEADER>sc :set spell!<CR>
 noremap ` ~
@@ -192,6 +195,7 @@ autocmd BufEnter * silent! lcd %:p:h
 noremap <leader>tx :r !figlet 
 noremap \s :%s//g<left><left>
 noremap <LEADER>db :g/^\s*$/d<CR>
+" noremap <LEADER>db :g/^[^a-zA-Z0-9\u4e00-\u9fa5]*$/d<CR>
 noremap <LEADER>dl :%s/\s*$//g
 noremap <LEADER>rp :set invwrap<CR>
 " press f10 to show hlgroup
