@@ -12,12 +12,12 @@ local nmappings = {
 	{ from = "`",             to = "~",                                                                   mode = mode_nv },
 
 	-- Movement
-	{ from = "K",             to = "15k",                                                                  mode = mode_nv },
-	{ from = "J",             to = "15j",                                                                  mode = mode_nv },
+	{ from = "K",             to = "15k",                                                                 mode = mode_nv },
+	{ from = "J",             to = "15j",                                                                 mode = mode_nv },
 	{ from = "H",             to = "0",                                                                   mode = mode_nv },
 	{ from = "L",             to = "$",                                                                   mode = mode_nv },
-	{ from = "<C-K>",         to = "5<C-y>",                                                              mode = mode_nv },
-	{ from = "<C-J>",         to = "5<C-e>",                                                              mode = mode_nv },
+	{ from = "<C-i>",         to = "<c-o>",                                                               mode = mode_nv },
+	{ from = "<C-o>",         to = "<c-i>",                                                               mode = mode_nv },
 
 
 
@@ -29,10 +29,10 @@ local nmappings = {
 
 	-- Window & splits
 	{ from = "<leader>w",     to = "<C-w>w", },
-	{ from = "<leader>sk",     to = "<C-w>k", },
-	{ from = "<leader>sj",     to = "<C-w>j", },
-	{ from = "<leader>sh",     to = "<C-w>h", },
-	{ from = "<leader>sl",     to = "<C-w>l", },
+	{ from = "<leader>sk",    to = "<C-w>k", },
+	{ from = "<leader>sj",    to = "<C-w>j", },
+	{ from = "<leader>sh",    to = "<C-w>h", },
+	{ from = "<leader>sl",    to = "<C-w>l", },
 	{ from = "qf",            to = "<C-w>o", },
 	{ from = "s",             to = "<nop>", },
 	{ from = "sk",            to = ":set nosplitbelow<CR>:split<CR>:set splitbelow<CR>", },
@@ -55,7 +55,8 @@ local nmappings = {
 	{ from = "tml",           to = ":+tabmove<CR>", },
 
 	-- Other
-	{ from = "<leader>sw",    to = ":set wrap<CR>" },
+	-- { from = "<leader>sw",    to = ":set wrap<CR>" },
+	{ from = "<leader>sw",    to = ":if &wrap | set nowrap | else | set wrap | endif<CR>" },
 	{ from = "<leader><CR>",  to = ":nohlsearch<CR>" },
 	{ from = "<f10>",         to = ":TSHighlightCapturesUnderCursor<CR>" },
 	{ from = "<leader>o",     to = "za" },
@@ -86,3 +87,66 @@ vim.keymap.set("n", "<leader>q", function()
 		run_vim_shortcut([[<C-w>j:q<CR>]])
 	end
 end, { noremap = true, silent = true })
+-- Define the mapping in normal mode
+vim.keymap.set('n', '<leader>ra', function()
+	-- Save the current buffer
+	local filetype = vim.bo.filetype
+	vim.cmd('w')
+	if filetype == 'c' then
+		vim.opt.splitbelow = true
+		vim.cmd('sp')
+		vim.cmd('res -5')
+		vim.cmd('term gcc % -o %< && time ./%<')
+	elseif filetype == 'cpp' then
+		vim.opt.splitbelow = true
+		vim.cmd('!g++ -std=c++11 % -Wall -o %<')
+		vim.cmd('sp')
+		vim.cmd('res -15')
+		vim.cmd('term ./%<')
+	elseif filetype == 'cs' then
+		vim.opt.splitbelow = true
+		vim.cmd('silent! !mcs %')
+		vim.cmd('sp')
+		vim.cmd('res -5')
+		vim.cmd('term mono %<.exe')
+	elseif filetype == 'java' then
+		vim.opt.splitbelow = true
+		vim.cmd('sp')
+		vim.cmd('res -5')
+		vim.cmd('term javac % && time java %<')
+	elseif filetype == 'sh' then
+		vim.cmd('!time bash %')
+	elseif filetype == 'python' then
+		vim.opt.splitbelow = true
+		vim.cmd('sp')
+		vim.cmd('term python3 %')
+	elseif filetype == 'html' then
+		vim.cmd('silent! !' .. vim.g.mkdp_browser .. ' % &')
+	elseif filetype == 'markdown' then
+		vim.cmd('InstantMarkdownPreview')
+	elseif filetype == 'tex' then
+		vim.cmd('silent! VimtexStop')
+		vim.cmd('silent! VimtexCompile')
+	elseif filetype == 'dart' then
+		vim.cmd('CocCommand flutter.run -d ' .. vim.g.flutter_default_device .. ' ' .. vim.g.flutter_run_args)
+		vim.cmd('silent! CocCommand flutter.dev.openDevLog')
+	elseif filetype == 'javascript' then
+		vim.opt.splitbelow = true
+		vim.cmd('sp')
+		vim.cmd('term export DEBUG="INFO,ERROR,WARNING"; node --trace-warnings .')
+	elseif filetype == 'racket' then
+		vim.opt.splitbelow = true
+		vim.cmd('sp')
+		vim.cmd('res -5')
+		vim.cmd('term racket %')
+	elseif filetype == 'go' then
+		vim.opt.splitbelow = true
+		vim.cmd('sp')
+		vim.cmd('term go run .')
+	end
+end, { noremap = true, silent = true })
+-- change 'autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service'
+vim.cmd [[
+	autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service
+	autocmd BufWritePost *.swift !swift build
+]]

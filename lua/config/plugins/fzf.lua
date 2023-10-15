@@ -30,8 +30,8 @@ return {
 					["<c-f>"]    = "toggle-fullscreen",
 					["<c-r>"]    = "toggle-preview-wrap",
 					["<c-p>"]    = "toggle-preview",
-					["<c-y>"]    = "preview-page-down",
-					["<c-l>"]    = "preview-page-up",
+					["<c-l>"]    = "preview-page-down",
+					["<c-y>"]    = "preview-page-up",
 					["<S-left>"] = "preview-page-reset",
 				},
 				fzf = {

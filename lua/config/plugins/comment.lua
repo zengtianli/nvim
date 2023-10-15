@@ -9,7 +9,7 @@ return {
 			vim.api.nvim_feedkeys(esc, 'nx', false)
 			api.locked('comment.linewise')(vim.fn.visualmode())
 		end)
-		vim.keymap.set('x', '<leader>ck', function()
+		vim.keymap.set('x', '<leader>cu', function()
 			vim.api.nvim_feedkeys(esc, 'nx', false)
 			api.locked('uncomment.linewise')(vim.fn.visualmode())
 		end)
