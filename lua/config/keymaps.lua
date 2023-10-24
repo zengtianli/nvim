@@ -148,5 +148,12 @@ end, { noremap = true, silent = true })
 -- change 'autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service'
 vim.cmd [[
 	autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service
-	autocmd BufWritePost *.swift !swift build
+	" autocmd BufWritePost *.swift !swift build
 ]]
+-- Remove all blank lines in the file
+vim.api.nvim_set_keymap('n', '<LEADER>rb', ':g/^\\s*$/d<CR>', { noremap = true, silent = true })
+
+-- Remove trailing whitespaces in the file
+vim.api.nvim_set_keymap('n', '<LEADER>rl', ':%s/\\s*$//g<CR>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<LEADER>ro', ':g/^--\\s*.*$/d<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<LEADER>ro', ':g/^\\s*--\\s*.*$/d<CR>', { noremap = true, silent = true })
