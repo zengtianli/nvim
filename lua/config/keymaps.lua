@@ -1,5 +1,4 @@
 vim.g.mapleader = " "
-
 local mode_nv = { "n", "v" }
 local mode_v = { "v" }
 local mode_i = { "i" }
@@ -10,7 +9,6 @@ local nmappings = {
 	{ from = ";",             to = ":",                                                                   mode = mode_nv },
 	{ from = "Y",             to = "\"+y",                                                                mode = mode_v },
 	{ from = "`",             to = "~",                                                                   mode = mode_nv },
-
 	-- Movement
 	{ from = "K",             to = "15k",                                                                 mode = mode_nv },
 	{ from = "J",             to = "15j",                                                                 mode = mode_nv },
@@ -18,15 +16,11 @@ local nmappings = {
 	{ from = "L",             to = "$",                                                                   mode = mode_nv },
 	{ from = "<C-i>",         to = "<c-o>",                                                               mode = mode_nv },
 	{ from = "<C-o>",         to = "<c-i>",                                                               mode = mode_nv },
-
-
-
 	-- Useful actions
 	{ from = ",.",            to = "%",                                                                   mode = mode_nv },
 	{ from = "<c-y>",         to = "<ESC>A {}<ESC>i<CR><ESC>ko",                                          mode = mode_i },
 	{ from = "\\v",           to = "v$h", },
 	{ from = "<c-a>",         to = "<ESC>A",                                                              mode = mode_i },
-
 	-- Window & splits
 	{ from = "<leader>w",     to = "<C-w>w", },
 	{ from = "<leader>sk",    to = "<C-w>k", },
@@ -45,7 +39,6 @@ local nmappings = {
 	{ from = "<right>",       to = ":vertical resize+5<CR>", },
 	{ from = "srh",           to = "<C-w>b<C-w>K", },
 	{ from = "srv",           to = "<C-w>b<C-w>H", },
-
 	-- Tab management
 	{ from = "tj",            to = ":tabe<CR>", },
 	{ from = "tJ",            to = ":tab split<CR>", },
@@ -53,7 +46,6 @@ local nmappings = {
 	{ from = "tl",            to = ":+tabnext<CR>", },
 	{ from = "tmh",           to = ":-tabmove<CR>", },
 	{ from = "tml",           to = ":+tabmove<CR>", },
-
 	-- Other
 	-- { from = "<leader>sw",    to = ":set wrap<CR>" },
 	{ from = "<leader>sw",    to = ":if &wrap | set nowrap | else | set wrap | endif<CR>" },
@@ -65,20 +57,16 @@ local nmappings = {
 	{ from = "<leader>rv",    to = ":e .vim.lua<CR>" },
 	{ from = ",v",            to = "v%" },
 	{ from = "<leader><esc>", to = "<nop>" },
-
 	-- Joshuto
 	{ from = "R",             to = ":Joshuto<CR>" },
 }
-
 for _, mapping in ipairs(nmappings) do
 	vim.keymap.set(mapping.mode or "n", mapping.from, mapping.to, { noremap = true })
 end
-
 local function run_vim_shortcut(shortcut)
 	local escaped_shortcut = vim.api.nvim_replace_termcodes(shortcut, true, false, true)
 	vim.api.nvim_feedkeys(escaped_shortcut, 'n', true)
 end
-
 -- close win below
 vim.keymap.set("n", "<leader>q", function()
 	vim.cmd("TroubleClose")
@@ -151,9 +139,12 @@ vim.cmd [[
 	" autocmd BufWritePost *.swift !swift build
 ]]
 -- Remove all blank lines in the file
-vim.api.nvim_set_keymap('n', '<LEADER>rb', ':g/^\\s*$/d<CR>', { noremap = true, silent = true })
-
+-- vim.api.nvim_set_keymap('n', '<LEADER>rb', ':g/^\\s*$/d<CR>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<LEADER>rb', ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5]*$/d<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<LEADER>rb', ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5\\[\\]\\(\\)\\{\\}]*$/d<CR>",
+	{ noremap = true, silent = true })
 -- Remove trailing whitespaces in the file
 vim.api.nvim_set_keymap('n', '<LEADER>rl', ':%s/\\s*$//g<CR>', { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('n', '<LEADER>ro', ':g/^--\\s*.*$/d<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<LEADER>ro', ':g/^\\s*--\\s*.*$/d<CR>', { noremap = true, silent = true })
+-- noremap <LEADER>db :g/^[^a-zA-Z0-9\u4e00-\u9fa5]*$/d<CR>
+-- vim.api.nvim_set_keymap('n', '<LEADER>ro', ':g/^\\s*--\\s*.*$/d<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<LEADER>ro', ':g/^\\s*"\\s*.*$/d<CR>', { noremap = true, silent = true })
