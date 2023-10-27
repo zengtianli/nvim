@@ -6,22 +6,22 @@ local nmappings = {
 	{ from = "U",             to = "<c-r>" },
 	{ from = "S",             to = ":w<CR>" },
 	{ from = "Q",             to = ":q<CR>" },
+	{ from = "<M-j>",         to = "J",                                                                   mode = { "n", "v" } },
 	{ from = ";",             to = ":",                                                                   mode = mode_nv },
 	{ from = "Y",             to = "\"+y",                                                                mode = mode_v },
 	{ from = "`",             to = "~",                                                                   mode = mode_nv },
-	-- Movement
 	{ from = "K",             to = "15k",                                                                 mode = mode_nv },
 	{ from = "J",             to = "15j",                                                                 mode = mode_nv },
+	{ from = "W",             to = "5w",                                                                  mode = mode_nv },
+	{ from = "B",             to = "5b",                                                                  mode = mode_nv },
 	{ from = "H",             to = "0",                                                                   mode = mode_nv },
 	{ from = "L",             to = "$",                                                                   mode = mode_nv },
 	{ from = "<C-i>",         to = "<c-o>",                                                               mode = mode_nv },
 	{ from = "<C-o>",         to = "<c-i>",                                                               mode = mode_nv },
-	-- Useful actions
 	{ from = ",.",            to = "%",                                                                   mode = mode_nv },
 	{ from = "<c-y>",         to = "<ESC>A {}<ESC>i<CR><ESC>ko",                                          mode = mode_i },
 	{ from = "\\v",           to = "v$h", },
 	{ from = "<c-a>",         to = "<ESC>A",                                                              mode = mode_i },
-	-- Window & splits
 	{ from = "<leader>w",     to = "<C-w>w", },
 	{ from = "<leader>sk",    to = "<C-w>k", },
 	{ from = "<leader>sj",    to = "<C-w>j", },
@@ -39,25 +39,25 @@ local nmappings = {
 	{ from = "<right>",       to = ":vertical resize+5<CR>", },
 	{ from = "srh",           to = "<C-w>b<C-w>K", },
 	{ from = "srv",           to = "<C-w>b<C-w>H", },
-	-- Tab management
 	{ from = "tj",            to = ":tabe<CR>", },
 	{ from = "tJ",            to = ":tab split<CR>", },
 	{ from = "th",            to = ":-tabnext<CR>", },
 	{ from = "tl",            to = ":+tabnext<CR>", },
 	{ from = "tmh",           to = ":-tabmove<CR>", },
 	{ from = "tml",           to = ":+tabmove<CR>", },
-	-- Other
-	-- { from = "<leader>sw",    to = ":set wrap<CR>" },
 	{ from = "<leader>sw",    to = ":if &wrap | set nowrap | else | set wrap | endif<CR>" },
 	{ from = "<leader><CR>",  to = ":nohlsearch<CR>" },
 	{ from = "<f10>",         to = ":TSHighlightCapturesUnderCursor<CR>" },
 	{ from = "<leader>o",     to = "za" },
 	{ from = "<leader>pr",    to = ":profile start profile.log<CR>:profile func *<CR>:profile file *<CR>" },
-	{ from = "<leader>rc",    to = ":e ~/.config/nvim/init.lua<CR>" },
+	-- { from = "<leader>rc",    to = ":luafile ~/.config/nvim/init.lua<CR>" },
 	{ from = "<leader>rv",    to = ":e .vim.lua<CR>" },
+	{ from = "<leader>rb",    to = ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5\\[\\]\\(\\)\\{\\}]*$/d<CR>" },
+	{ from = "<leader>rl",    to = ":%s/\\s*$//g<CR>" },
+	{ from = "<leader>ro",    to = ":g/^\\s*\\#\\s*.*$/d<CR>" },
+	-- { from = "<leader>ro",    to = ":g/^\\s*\\-\\s*.*$/d<CR>" },
 	{ from = ",v",            to = "v%" },
 	{ from = "<leader><esc>", to = "<nop>" },
-	-- Joshuto
 	{ from = "R",             to = ":Joshuto<CR>" },
 }
 for _, mapping in ipairs(nmappings) do
@@ -67,7 +67,6 @@ local function run_vim_shortcut(shortcut)
 	local escaped_shortcut = vim.api.nvim_replace_termcodes(shortcut, true, false, true)
 	vim.api.nvim_feedkeys(escaped_shortcut, 'n', true)
 end
--- close win below
 vim.keymap.set("n", "<leader>q", function()
 	vim.cmd("TroubleClose")
 	local wins = vim.api.nvim_tabpage_list_wins(0)
@@ -75,9 +74,7 @@ vim.keymap.set("n", "<leader>q", function()
 		run_vim_shortcut([[<C-w>j:q<CR>]])
 	end
 end, { noremap = true, silent = true })
--- Define the mapping in normal mode
 vim.keymap.set('n', '<leader>ra', function()
-	-- Save the current buffer
 	local filetype = vim.bo.filetype
 	vim.cmd('w')
 	if filetype == 'c' then
@@ -133,18 +130,6 @@ vim.keymap.set('n', '<leader>ra', function()
 		vim.cmd('term go run .')
 	end
 end, { noremap = true, silent = true })
--- change 'autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service'
 vim.cmd [[
 	autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service
-	" autocmd BufWritePost *.swift !swift build
 ]]
--- Remove all blank lines in the file
--- vim.api.nvim_set_keymap('n', '<LEADER>rb', ':g/^\\s*$/d<CR>', { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('n', '<LEADER>rb', ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5]*$/d<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<LEADER>rb', ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5\\[\\]\\(\\)\\{\\}]*$/d<CR>",
-	{ noremap = true, silent = true })
--- Remove trailing whitespaces in the file
-vim.api.nvim_set_keymap('n', '<LEADER>rl', ':%s/\\s*$//g<CR>', { noremap = true, silent = true })
--- noremap <LEADER>db :g/^[^a-zA-Z0-9\u4e00-\u9fa5]*$/d<CR>
--- vim.api.nvim_set_keymap('n', '<LEADER>ro', ':g/^\\s*--\\s*.*$/d<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<LEADER>ro', ':g/^\\s*"\\s*.*$/d<CR>', { noremap = true, silent = true })
