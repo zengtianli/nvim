@@ -52,7 +52,7 @@ local nmappings = {
 	{ from = "<leader>pr",    to = ":profile start profile.log<CR>:profile func *<CR>:profile file *<CR>" },
 	-- { from = "<leader>rc",    to = ":luafile ~/.config/nvim/init.lua<CR>" },
 	{ from = "<leader>rv",    to = ":e .vim.lua<CR>" },
-	{ from = "<leader>rb",    to = ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5\\[\\]\\(\\)\\{\\}]*$/d<CR>" },
+	{ from = "<leader>rb",    to = ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5\\[\\]\\(\\)\\{\\},.;:]*$/d<CR>" },
 	{ from = "<leader>rl",    to = ":%s/\\s*$//g<CR>" },
 	{ from = "<leader>ro",    to = ":g/^\\s*\\#\\s*.*$/d<CR>" },
 	-- { from = "<leader>ro",    to = ":g/^\\s*\\-\\s*.*$/d<CR>" },
@@ -74,6 +74,13 @@ vim.keymap.set("n", "<leader>q", function()
 		run_vim_shortcut([[<C-w>j:q<CR>]])
 	end
 end, { noremap = true, silent = true })
+-- vim.keymap.set("n", "<leader>nl", function()
+-- 	local cursor_pos = vim.api.nvim_win_get_cursor(0)   -- Save current cursor position
+-- 	local startline = vim.fn.line('.')
+-- 	vim.cmd(string.format(".,$s/^/\\=printf('%%02d', line('.') - %d)/", startline))
+-- 	vim.api.nvim_win_set_cursor(0, cursor_pos)   -- Restore cursor position
+-- 	vim.cmd('noh')                               -- Clear search highlight
+-- end, { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>ra', function()
 	local filetype = vim.bo.filetype
 	vim.cmd('w')
@@ -133,3 +140,18 @@ end, { noremap = true, silent = true })
 vim.cmd [[
 	autocmd BufWritePost $HOME/.config/yabai/yabairc !yabai --restart-service
 ]]
+vim.api.nvim_set_keymap('x', '<leader>nl', [[:<C-u>lua NumberLinesFromZero()<CR>]], { noremap = true, silent = true })
+function NumberLinesFromZero()
+	-- Save the current cursor position
+	local cursor_pos = vim.api.nvim_win_get_cursor(0)
+	-- Get the start and end line numbers of the visual selection
+	local start_line = vim.fn.getpos("'<")[2]
+	local end_line = vim.fn.getpos("'>")[2]
+	-- Calculate the offset
+	local offset = start_line - 1
+	-- Execute the numbering but from 00 without '. '
+	vim.cmd('silent! ' .. start_line .. ',' .. end_line .. 's/^/\\=printf("%02d", line(".") - ' .. offset .. ')/')
+	-- Restore the cursor position
+	vim.api.nvim_win_set_cursor(0, cursor_pos)
+	vim.cmd('noh')
+end
