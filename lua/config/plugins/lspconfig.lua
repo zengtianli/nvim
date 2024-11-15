@@ -77,6 +77,7 @@ M.config = {
 					'yamlls',
 					'tailwindcss',
 					'taplo',
+					"prismals",
 				}
 			})
 
@@ -139,6 +140,8 @@ M.config = {
 
 			require 'lspconfig'.taplo.setup {}
 
+			require 'lspconfig'.ansiblels.setup {}
+
 			require 'lspconfig'.terraformls.setup {}
 			vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 				pattern = { "*.tf", "*.tfvars", "*.lua" },
@@ -146,6 +149,8 @@ M.config = {
 					vim.lsp.buf.format()
 				end,
 			})
+
+			require 'lspconfig'.prismals.setup {}
 
 			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 				pattern = { "*.hcl" },
@@ -244,6 +249,7 @@ M.config = {
 				terraform = false,
 				tex = true,
 				toml = true,
+				prisma = true,
 			}
 
 			vim.api.nvim_create_autocmd("BufWritePre", {
