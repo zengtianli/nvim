@@ -7,6 +7,7 @@ M.config = {
 		-- dir = "/Users/david/.config/nvim/_local_plugins/telescope.nvim",
 		-- tag = '0.1.1',
 		dependencies = {
+			"nvim-tree/nvim-web-devicons",
 			"nvim-lua/plenary.nvim",
 			{
 				"LukasPietzschmann/telescope-tabs",
@@ -39,6 +40,32 @@ M.config = {
 					sort_by = "severity"
 				})
 			end, m)
+
+			vim.lsp.protocol.DiagnosticSeverity = {
+				"Error",
+				"Warning",
+				"Information",
+				"Hint",
+				Error = 1,
+				Hint = 4,
+				Information = 3,
+				Warning = 2
+			}
+
+			vim.diagnostic.severity = {
+				"ERROR",
+				"WARN",
+				"INFO",
+				"HINT",
+				E = 1,
+				ERROR = 1,
+				HINT = 4,
+				I = 3,
+				INFO = 3,
+				N = 4,
+				W = 2,
+				WARN = 2
+			}
 			-- vim.keymap.set('n', 'gd', builtin.lsp_definitions, m)
 			-- vim.keymap.set('n', '<c-t>', builtin.lsp_document_symbols, {})
 			vim.keymap.set('n', 'gi', builtin.git_status, m)
