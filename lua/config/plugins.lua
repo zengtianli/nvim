@@ -52,7 +52,7 @@ require("lazy").setup({
 	require("config.plugins.copilot"),
 	require("config.plugins.markdown"),
 	require("config.plugins.git"),
-	require("config.plugins.indent"),
+	-- require("config.plugins.indent"),
 	require("config.plugins.search"),
 	require("config.plugins.yank"),
 	require("config.plugins.snippets"),
