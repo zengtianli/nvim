@@ -32,19 +32,19 @@ return {
 		end
 	},
 	{
-		"nvim-pack/nvim-spectre",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
+		"MagicDuck/grug-far.nvim",
 		keys = {
 			{
 				"<leader>F",
 				mode = "n",
 				function()
-					require("spectre").open()
+					vim.cmd(":GrugFar")
 				end,
 				desc = "Project find and replace"
 			}
-		}
-	}
+		},
+		config = function()
+			require('grug-far').setup({});
+		end
+	},
 }
