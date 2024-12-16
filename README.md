@@ -2,6 +2,13 @@
 <center><a href="https://instaboard.page/gh-sponsor"><img src="https://user-images.githubusercontent.com/8187501/232345609-366fd597-8a32-4667-9e80-2487ebe6f7f6.png" alt="Sponsored by Instaboard"></img></a></center>
 <br/>
 
+
+```
+npm i -g vscode-langservers-extracted
+npm install -g @ansible/ansible-language-server
+```
+
+
 <center><img src="https://raw.githubusercontent.com/theniceboy/nvim/master/demo.png"></center>
 
 [中文版](./README_cn.md)
