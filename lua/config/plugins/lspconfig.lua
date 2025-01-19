@@ -82,7 +82,7 @@ M.config = {
 			})
 
 			lsp.on_attach(function(client, bufnr)
-				if client.name == "ts_ls" then
+				if client.name == "ts_ls" and vim.bo[bufnr].filetype ~= "javascript" then
 					client.server_capabilities.documentFormattingProvider = false
 					client.server_capabilities.documentRangeFormattingProvider = false
 				end
