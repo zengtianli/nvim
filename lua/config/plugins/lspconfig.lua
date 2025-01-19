@@ -152,6 +152,31 @@ M.config = {
 
 			require 'lspconfig'.prismals.setup {}
 
+			require 'lspconfig'.texlab.setup {
+				texlab = {
+					bibtexFormatter = "texlab",
+					build = {
+						args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "%f" },
+						executable = "latexmk",
+						forwardSearchAfter = false,
+						onSave = true
+					},
+					chktex = {
+						onEdit = false,
+						onOpenAndSave = false
+					},
+					diagnosticsDelay = 300,
+					formatterLineLength = 80,
+					forwardSearch = {
+						args = {}
+					},
+					latexFormatter = "latexindent",
+					latexindent = {
+						modifyLineBreaks = false
+					}
+				}
+			}
+
 			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 				pattern = { "*.hcl" },
 				callback = function()
