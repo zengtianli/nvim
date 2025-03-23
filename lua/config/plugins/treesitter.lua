@@ -33,7 +33,7 @@ return {
 				},
 				highlight = {
 					enable = true,
-					disable = {}, -- list of language that will be disabled
+					disable = { "csv" }, -- list of language that will be disabled
 				},
 				indent = {
 					enable = true,

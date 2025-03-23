@@ -52,7 +52,6 @@ require("lazy").setup({
 	require("config.plugins.copilot"),
 	require("config.plugins.markdown"),
 	require("config.plugins.git"),
-	-- require("config.plugins.indent"),
 	require("config.plugins.search"),
 	require("config.plugins.yank"),
 	require("config.plugins.snippets"),
@@ -64,6 +63,7 @@ require("lazy").setup({
 	require("config.plugins.leap"),
 	require("config.plugins.tex"),
 	require("config.plugins.yazi"),
+	require("config.plugins.csv"),
 	{ "dstein64/vim-startuptime" },
 }, {
 })
