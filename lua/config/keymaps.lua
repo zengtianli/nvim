@@ -56,6 +56,8 @@ local nmappings = {
 	{ from = "<leader>rv",    to = ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5\\[\\]\\(\\)\\{\\}*`,.;:]*$/d<CR>" },
 	{ from = "<leader>rb",    to = ":g/^\\s*$/d<CR>" },
 	{ from = "<leader>rl",    to = ":%s/\\s*$//g<CR>" },
+	-- { from = "mb",            to = ":g/^\\s*$/d<CR>" },
+	-- { from = "ml",            to = ":%s/\\s*$//g<CR>" },
 	{ from = "<leader>rk",    to = ":%s/\\s\\+//g<CR>" },
 	{ from = "<leader>ro",    to = ":g/^\\s*\\#\\s*.*$/d<CR>" },
 	{ from = "<leader>v",     to = ":Vista!!<CR>" },
