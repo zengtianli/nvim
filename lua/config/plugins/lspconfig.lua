@@ -1,9 +1,6 @@
 local M = {}
-
 local F = {}
-
 local documentation_window_open = false
-
 M.config = {
 	{
 		'weilbith/nvim-code-action-menu',
@@ -19,8 +16,6 @@ M.config = {
 					use_diagnostic_signs = true,
 					action_keys = {
 						close = "<esc>",
-						previous = "u",
-						next = "e"
 					},
 				},
 			},
@@ -53,11 +48,9 @@ M.config = {
 				}
 			},
 		},
-
 		config = function()
 			local lsp = require('lsp-zero').preset({})
 			M.lsp = lsp
-
 			require('mason').setup({})
 			require('mason-lspconfig').setup({
 				ensure_installed = {
@@ -80,7 +73,6 @@ M.config = {
 					"prismals",
 				}
 			})
-
 			lsp.on_attach(function(client, bufnr)
 				if client.name == "ts_ls" and vim.bo[bufnr].filetype ~= "javascript" then
 					client.server_capabilities.documentFormattingProvider = false
@@ -100,7 +92,6 @@ M.config = {
 					update_in_insert = false,
 					float = true,
 				})
-
 				lsp.set_sign_icons({
 					error = '✘',
 					warn = '▲',
@@ -108,40 +99,30 @@ M.config = {
 					info = '»'
 				})
 			end)
-
 			lsp.set_server_config({
 				on_init = function(client)
 					client.server_capabilities.semanticTokensProvider = nil
 				end,
 			})
-
 			lsp.format_on_save({
 				format_opts = {
 					-- async = false,
 					-- timeout_ms = 10000,
 				},
 			})
-
-
 			local lspconfig = require('lspconfig')
-
 			require("config.lsp.lua").setup(lspconfig, lsp)
 			require("config.lsp.json").setup(lspconfig, lsp)
 			require("config.lsp.flutter").setup(lsp)
 			require("config.lsp.html").setup(lspconfig, lsp)
-
 			require 'lspconfig'.html.setup {}
 			require 'lspconfig'.pyright.setup {}
 			require 'lspconfig'.tailwindcss.setup {}
-
 			require 'lspconfig'.ts_ls.setup {}
 			require 'lspconfig'.biome.setup {}
 			require 'lspconfig'.cssls.setup {}
-
 			require 'lspconfig'.taplo.setup {}
-
 			require 'lspconfig'.ansiblels.setup {}
-
 			require 'lspconfig'.terraformls.setup {}
 			vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 				pattern = { "*.tf", "*.tfvars", "*.lua" },
@@ -149,9 +130,7 @@ M.config = {
 					vim.lsp.buf.format()
 				end,
 			})
-
 			require 'lspconfig'.prismals.setup {}
-
 			require 'lspconfig'.texlab.setup {
 				texlab = {
 					bibtexFormatter = "texlab",
@@ -176,7 +155,6 @@ M.config = {
 					}
 				}
 			}
-
 			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 				pattern = { "*.hcl" },
 				callback = function()
@@ -222,12 +200,8 @@ M.config = {
 					},
 				}
 			})
-
 			require 'lspconfig'.gopls.setup {}
-
 			lsp.setup()
-
-
 			-- Neovim hasn't added foldingRange to default capabilities, users must add it manually
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
 			capabilities.textDocument.foldingRange = {
@@ -241,21 +215,16 @@ M.config = {
 					-- you can add other fields for setting up lsp server in this table
 				})
 			end
-
 			require("fidget").setup({})
-
 			local lsp_defaults = lspconfig.util.default_config
 			lsp_defaults.capabilities = vim.tbl_deep_extend(
 				'force',
 				lsp_defaults.capabilities,
 				require('cmp_nvim_lsp').default_capabilities()
 			)
-
 			require('nvim-dap-projects').search_project_config()
-
 			F.configureDocAndSignature()
 			F.configureKeybinds()
-
 			local format_on_save_filetypes = {
 				dart = true,
 				json = true,
@@ -276,7 +245,6 @@ M.config = {
 				toml = true,
 				prisma = true,
 			}
-
 			vim.api.nvim_create_autocmd("BufWritePre", {
 				pattern = "*",
 				callback = function()
@@ -290,7 +258,6 @@ M.config = {
 		end
 	},
 }
-
 F.configureDocAndSignature = function()
 	vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
 		vim.lsp.handlers.signature_help, {
@@ -323,24 +290,7 @@ F.configureDocAndSignature = function()
 		end,
 		group = group,
 	})
-	-- vim.api.nvim_create_autocmd({ "CursorHoldI" }, {
-	-- 	pattern = "*",
-	-- 	command = "silent! lua vim.lsp.buf.signature_help()",
-	-- 	group = group,
-	-- })
-
-	-- F.signature_config = {
-	-- 	bind = false,
-	-- 	floating_window = true,
-	-- 	hint_inline = function() return false end,
-	-- 	handler_opts = {
-	-- 		border = "rounded"
-	-- 	}
-	-- }
-	-- local lspsignature = require('lsp_signature')
-	-- lspsignature.setup(F.signature_config)
 end
-
 local documentation_window_open_index = 0
 local function show_documentation()
 	documentation_window_open_index = documentation_window_open_index + 1
@@ -353,13 +303,11 @@ local function show_documentation()
 	end, 500)
 	vim.lsp.buf.hover()
 end
-
 F.configureKeybinds = function()
 	vim.api.nvim_create_autocmd('LspAttach', {
 		desc = 'LSP actions',
 		callback = function(event)
 			local opts = { buffer = event.buf, noremap = true, nowait = true }
-
 			vim.keymap.set('n', '<leader>h', show_documentation, opts)
 			vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
 			vim.keymap.set('n', 'gD', ':tab sp<CR><cmd>lua vim.lsp.buf.definition()<cr>', opts)
@@ -379,5 +327,4 @@ F.configureKeybinds = function()
 		end
 	})
 end
-
 return M

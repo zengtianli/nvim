@@ -8,11 +8,10 @@ fun! s:MakePair()
 		normal! lx$p
 	endif
 endfun
-inoremap <c-u> <ESC>:call <SID>MakePair()<CR>
+inoremap <c-k> <ESC>:call <SID>MakePair()<CR>
 ]])
 local ctrlu = require("plugin.ctrlu").ctrlu
-vim.keymap.set("i", "<C-u>", ctrlu, { silent = true })
-
+vim.keymap.set("i", "<C-k>", ctrlu, { silent = true })
 return {
 	{
 		"RRethy/vim-illuminate",
@@ -88,12 +87,11 @@ return {
 			})
 			local opts = { noremap = true, silent = true }
 			-- Normal-mode commands
-			vim.keymap.set('n', '<c-y>', ':MoveLine(1)<CR>', opts)
-			vim.keymap.set('n', '<c-l>', ':MoveLine(-1)<CR>', opts)
-
+			vim.keymap.set('n', '<c-j>', ':MoveLine(1)<CR>', opts)
+			vim.keymap.set('n', '<c-k>', ':MoveLine(-1)<CR>', opts)
 			-- Visual-mode commands
-			vim.keymap.set('v', '<c-e>', ':MoveBlock(1)<CR>', opts)
-			vim.keymap.set('v', '<c-u>', ':MoveBlock(-1)<CR>', opts)
+			vim.keymap.set('v', '<c-j>', ':MoveBlock(1)<CR>', opts)
+			vim.keymap.set('v', '<c-k>', ':MoveBlock(-1)<CR>', opts)
 		end
 	},
 	{

@@ -1,6 +1,5 @@
 local m = { noremap = true, nowait = true }
 local M = {}
-
 M.config = {
 	{
 		"nvim-telescope/telescope.nvim",
@@ -13,7 +12,7 @@ M.config = {
 					local tstabs = require('telescope-tabs')
 					tstabs.setup({
 					})
-					vim.keymap.set('n', '<c-t>', tstabs.list_tabs, {})
+					-- vim.keymap.set('n', '<c-t>', tstabs.list_tabs, {})
 				end
 			},
 			{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
@@ -30,15 +29,13 @@ M.config = {
 			vim.keymap.set('n', '<leader>rs', builtin.resume, m)
 			vim.keymap.set('n', '<c-w>', builtin.buffers, m)
 			vim.keymap.set('n', '<c-h>', builtin.oldfiles, m)
-			vim.keymap.set('n', '<c-_>', builtin.current_buffer_fuzzy_find, m)
+			vim.keymap.set('n', '<leader>rb', builtin.current_buffer_fuzzy_find, m)
 			vim.keymap.set('n', 'z=', builtin.spell_suggest, m)
-
 			vim.keymap.set('n', '<leader>d', function()
 				builtin.diagnostics({
 					sort_by = "severity"
 				})
 			end, m)
-
 			vim.lsp.protocol.DiagnosticSeverity = {
 				"Error",
 				"Warning",
@@ -49,7 +46,6 @@ M.config = {
 				Information = 3,
 				Warning = 2
 			}
-
 			vim.diagnostic.severity = {
 				"ERROR",
 				"WARN",
@@ -66,11 +62,9 @@ M.config = {
 			}
 			-- vim.keymap.set('n', 'gd', builtin.lsp_definitions, m)
 			-- vim.keymap.set('n', '<c-t>', builtin.lsp_document_symbols, {})
-			vim.keymap.set('n', 'gi', builtin.git_status, m)
+			vim.keymap.set('n', '<leader>gi', builtin.git_status, m)
 			vim.keymap.set("n", ":", builtin.commands, m)
-
 			local trouble = require("trouble.providers.telescope")
-
 			local ts = require('telescope')
 			local actions = require('telescope.actions')
 			M.ts = ts
@@ -100,13 +94,9 @@ M.config = {
 					mappings = {
 						i = {
 							["<C-h>"] = "which_key",
-							["<C-u>"] = "move_selection_previous",
-							["<C-e>"] = "move_selection_next",
-							["<C-l>"] = "preview_scrolling_up",
-							["<C-y>"] = "preview_scrolling_down",
 							["<esc>"] = "close",
-							["<C-n>"] = require('telescope.actions').cycle_history_next,
-							["<C-p>"] = require('telescope.actions').cycle_history_prev,
+							["<C-j>"] = require('telescope.actions').cycle_history_next,
+							["<C-k>"] = require('telescope.actions').cycle_history_prev,
 						}
 					},
 					color_devicons = true,
@@ -149,13 +139,11 @@ M.config = {
 					end
 				}
 			})
-
 			ts.load_extension('neoclip')
 			ts.load_extension('dap')
 			ts.load_extension('telescope-tabs')
 			ts.load_extension('fzf')
 			ts.load_extension('simulators')
-
 			require("simulators").setup({
 				android_emulator = false,
 				apple_simulator = true,
@@ -192,6 +180,4 @@ M.config = {
 		end
 	}
 }
-
-
 return M
