@@ -31,19 +31,18 @@ return {
 					vim.cmd(":GrugFar")
 				end,
 				desc = "Project find and replace"
+			},
+			{
+				"<leader>f", -- 使用小写f作为当前文件操作
+				mode = "n",
+				function()
+					vim.cmd(":GrugFar -g %")
+				end,
+				desc = "Current file find and replace"
 			}
 		},
 		config = function()
-			require('grug-far').setup({
-				-- 自定义键位映射
-				keybindings = {
-					replace = "<leader>zp", -- 执行替换操作
-					-- preview = "<leader>rp", -- 预览替换结果
-					-- 保留其他默认键位
-					goto_file = "<enter>", -- 跳转到匹配位置
-					help = "?",       -- 显示帮助
-				}
-			});
+			require('grug-far').setup({});
 		end
 	}
 }

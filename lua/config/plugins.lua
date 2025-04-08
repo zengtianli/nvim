@@ -61,7 +61,7 @@ require("lazy").setup({
 	require("config.plugins.treesitter"),
 	require("config.plugins.undo"),
 	require("config.plugins.wilder"),
-	require("config.plugins.window-management"),
+	-- require("config.plugins.window-management"),
 	require("config.plugins.winbar"),
 	require("config.plugins.yank"),
 	require("config.plugins.yazi"),
