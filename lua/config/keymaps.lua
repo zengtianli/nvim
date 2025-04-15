@@ -153,7 +153,7 @@ function NumberLinesFromZero()
 	-- Calculate the offset
 	local offset = start_line - 1
 	-- Execute the numbering but from 00 without '. '
-	vim.cmd('silent! ' .. start_line .. ',' .. end_line .. 's/^/\\=printf("%02d", line(".") - ' .. offset .. ')/')
+	vim.cmd('silent! ' .. start_line .. ',' .. end_line .. 's/^/\\=printf("%02d_", line(".") - ' .. offset .. ')/')
 	-- Restore the cursor position
 	vim.api.nvim_win_set_cursor(0, cursor_pos)
 	vim.cmd('noh')
@@ -319,7 +319,7 @@ local keymaps = {
 	{ keymap = '<leader>nh',  command = 'NumberHeadings' },
 	{ keymap = '<leader>uh',  command = 'UnnumberHeadings' },
 	{ keymap = '<leader>abs', command = 'AddBrToSentences' },
-	{ keymap = '<leader>rbs', command = 'RemoveBrFromSentences' },
+	-- { keymap = '<leader>rbs', command = 'RemoveBrFromSentences' },
 	{ keymap = '<leader>ugh', command = 'UpgradeHeadings' },
 	{ keymap = '<leader>dgh', command = 'DegradeHeadings' },
 }
@@ -406,9 +406,6 @@ local function remove_consecutive_duplicates()
 end
 -- 创建命令
 vim.api.nvim_create_user_command("RemoveConsecutiveDuplicates", remove_consecutive_duplicates, {})
--- 可选：添加快捷键映射
--- vim.keymap.set('n', '<leader>rd', ':RemoveConsecutiveDuplicates<CR>', { noremap = true, silent = true })
--- 定义中英文标点符号对应关系
 local punctuation_map = {
 	['，'] = ',',
 	['。'] = '.',
@@ -439,7 +436,7 @@ local punctuation_map = {
 	['｛'] = '{',
 	['｝'] = '}'
 }
-local function convert_chinese_punctuation()
+local function Cn_punc2En_pun()
 	-- 获取当前缓冲区的所有行
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 	local modified_lines = {}
@@ -461,7 +458,7 @@ local function convert_chinese_punctuation()
 	print("Converted " .. changes .. " Chinese punctuation marks to English")
 end
 -- 创建命令
-vim.api.nvim_create_user_command("ConvertChinesePunctuation", convert_chinese_punctuation, {})
+vim.api.nvim_create_user_command("Cnpunc2Enpun", Cn_punc2En_pun, {})
 local function pad_numbers()
 	-- 获取当前缓冲区的所有行
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)

@@ -36,13 +36,18 @@ return {
 				"<leader>f", -- 使用小写f作为当前文件操作
 				mode = "n",
 				function()
-					vim.cmd(":GrugFar -g %")
+					vim.cmd(":GrugFar -g %") -- % 表示当前文件
 				end,
 				desc = "Current file find and replace"
+			},
+			{
+				"<leader>fw", -- 可视模式下在选中文本内搜索
+				mode = "v",
+				function()
+					vim.cmd(":GrugFarWithin")
+				end,
+				desc = "Find and replace within selection"
 			}
 		},
-		config = function()
-			require('grug-far').setup({});
-		end
 	}
 }

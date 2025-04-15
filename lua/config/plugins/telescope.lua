@@ -29,7 +29,7 @@ M.config = {
 			vim.keymap.set('n', '<leader>rs', builtin.resume, m)
 			vim.keymap.set('n', '<c-w>', builtin.buffers, m)
 			vim.keymap.set('n', '<c-h>', builtin.oldfiles, m)
-			vim.keymap.set('n', '<leader>rb', builtin.current_buffer_fuzzy_find, m)
+			-- vim.keymap.set('n', '<leader>rb', builtin.current_buffer_fuzzy_find, m)
 			vim.keymap.set('n', 'z=', builtin.spell_suggest, m)
 			vim.keymap.set('n', '<leader>d', function()
 				builtin.diagnostics({
