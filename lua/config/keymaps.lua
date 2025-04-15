@@ -459,6 +459,90 @@ local function Cn_punc2En_pun()
 end
 -- 创建命令
 vim.api.nvim_create_user_command("Cnpunc2Enpun", Cn_punc2En_pun, {})
+local punctuation_map = {
+	['，'] = ',',
+	['。'] = '.',
+	['？'] = '?',
+	['！'] = '!',
+	['：'] = ':',
+	['；'] = ';',
+	['"'] = '"',
+	['"'] = '"',
+	['「'] = '"',
+	['」'] = '"',
+	['（'] = '(',
+	['）'] = ')',
+	['【'] = '[',
+	['】'] = ']',
+	['《'] = '<',
+	['》'] = '>',
+	['…'] = '...',
+	['、'] = ',',
+	['～'] = '~',
+	['·'] = '.',
+	['『'] = '"',
+	['』'] = '"',
+	['〈'] = '<',
+	['〉'] = '>',
+	['［'] = '[',
+	['］'] = ']',
+	['｛'] = '{',
+	['｝'] = '}'
+}
+
+-- 创建反向映射表(英文到中文)
+local reverse_punctuation_map = {}
+for cn, en in pairs(punctuation_map) do
+	reverse_punctuation_map[en] = cn
+end
+
+local function toggle_CNEN_punc()
+	-- 获取当前缓冲区的所有行
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+	-- 统计中英文标点数量以决定转换方向
+	local cn_count, en_count = 0, 0
+	for _, line in ipairs(lines) do
+		for cn_punct, _ in pairs(punctuation_map) do
+			cn_count = cn_count + select(2, line:gsub(cn_punct, ""))
+		end
+
+		for en_punct, _ in pairs(reverse_punctuation_map) do
+			-- 转义特殊字符
+			local pattern = en_punct:gsub("([%%%[%]%(%)%.%*%+%-%?%^%$])", "%%%1")
+			en_count = en_count + select(2, line:gsub(pattern, ""))
+		end
+	end
+
+	-- 根据标点数量确定转换方向
+	local is_cn_to_en = cn_count >= en_count
+	local map_to_use = is_cn_to_en and punctuation_map or reverse_punctuation_map
+	local modified_lines = {}
+	local changes = 0
+
+	-- 执行转换
+	for _, line in ipairs(lines) do
+		local modified_line = line
+		for from_punct, to_punct in pairs(map_to_use) do
+			local count
+			-- 转义特殊字符
+			local pattern = from_punct:gsub("([%%%[%]%(%)%.%*%+%-%?%^%$])", "%%%1")
+			modified_line, count = modified_line:gsub(pattern, to_punct)
+			changes = changes + count
+		end
+		table.insert(modified_lines, modified_line)
+	end
+
+	-- 更新缓冲区内容
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, modified_lines)
+
+	-- 显示转换结果
+	local direction = is_cn_to_en and "中文到英文" or "英文到中文"
+	print("已转换 " .. changes .. " 个标点符号（" .. direction .. "）")
+end
+-- 创建命令
+vim.api.nvim_create_user_command("ToggleCNEPunc", toggle_CNEN_punc, {})
+
 local function pad_numbers()
 	-- 获取当前缓冲区的所有行
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
