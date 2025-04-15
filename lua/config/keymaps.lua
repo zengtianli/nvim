@@ -627,3 +627,33 @@ end, {
 		return { "divide", "multiply", "add", "subtract" }
 	end
 })
+function convert_to_markdown_headings()
+	-- Get all lines in the current buffer
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local result = {}
+
+	for _, line in ipairs(lines) do
+		-- Match patterns like "1.", "1.1.", "1.1.1.", etc.
+		local prefix, content = line:match("^([%d%.]+)(.*)$")
+
+		if prefix then
+			-- Count the depth by counting dots
+			local depth = select(2, prefix:gsub("%.", "")) + 1
+
+			-- Create the markdown heading with appropriate number of #
+			local heading_prefix = string.rep("#", depth) .. " "
+			table.insert(result, heading_prefix .. content:gsub("^%s*", ""))
+		else
+			-- If no numbered prefix found, keep the line unchanged
+			table.insert(result, line)
+		end
+	end
+
+	-- Replace the buffer content with the result
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, result)
+end
+
+-- Command to execute the function
+vim.api.nvim_create_user_command('NumberedToMarkdown', function()
+	convert_to_markdown_headings()
+end, {})
