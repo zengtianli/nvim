@@ -4,73 +4,71 @@ local mode_nv = { "n", "v" }
 local mode_v = { "v" }
 local mode_i = { "i" }
 local nmappings = {
-	{ from = "U",             to = "<c-r>" },
-	{ from = "S",             to = ":w<CR>" },
-	{ from = "Q",             to = ":q<CR>" },
-	{ from = "<M-j>",         to = "J",                                                                   mode = { "n", "v" } },
-	{ from = ";",             to = ":",                                                                   mode = mode_nv },
-	{ from = "Y",             to = "\"+y",                                                                mode = mode_v },
-	{ from = "`",             to = "~",                                                                   mode = mode_nv },
-	{ from = "K",             to = "15k",                                                                 mode = mode_nv },
-	{ from = "J",             to = "15j",                                                                 mode = mode_nv },
-	{ from = "W",             to = "5w",                                                                  mode = mode_nv },
-	{ from = "B",             to = "5b",                                                                  mode = mode_nv },
-	{ from = "H",             to = "0",                                                                   mode = mode_nv },
-	{ from = "L",             to = "$",                                                                   mode = mode_nv },
-	{ from = "<C-i>",         to = "<c-o>",                                                               mode = mode_nv },
-	{ from = "<C-o>",         to = "<c-i>",                                                               mode = mode_nv },
-	{ from = ",.",            to = "%",                                                                   mode = mode_nv },
-	{ from = "<c-y>",         to = "<ESC>A {}<ESC>i<CR><ESC>ko",                                          mode = mode_i },
-	{ from = "\\v",           to = "v$h", },
-	{ from = "<c-a>",         to = "<ESC>A",                                                              mode = mode_i },
-	{ from = "<leader>w",     to = "<C-w>w", },
-	{ from = "<leader>sk",    to = "<C-w>k", },
-	{ from = "<leader>sj",    to = "<C-w>j", },
-	{ from = "<leader>sh",    to = "<C-w>h", },
-	{ from = "<leader>sl",    to = "<C-w>l", },
-	{ from = "qf",            to = "<C-w>o", },
-	{ from = "s",             to = "<nop>", },
-	{ from = "sk",            to = ":set nosplitbelow<CR>:split<CR>:set splitbelow<CR>", },
-	{ from = "sj",            to = ":set splitbelow<CR>:split<CR>", },
-	{ from = "sh",            to = ":set nosplitright<CR>:vsplit<CR>:set splitright<CR>", },
-	{ from = "sl",            to = ":set splitright<CR>:vsplit<CR>", },
-	{ from = "<up>",          to = ":res +5<CR>", },
-	{ from = "<down>",        to = ":res -5<CR>", },
-	{ from = "<left>",        to = ":vertical resize-5<CR>", },
-	{ from = "<right>",       to = ":vertical resize+5<CR>", },
-	{ from = "srh",           to = "<C-w>b<C-w>K", },
-	{ from = "srv",           to = "<C-w>b<C-w>H", },
-	{ from = "tj",            to = ":tabe<CR>", },
-	{ from = "tJ",            to = ":tab split<CR>", },
-	{ from = "th",            to = ":-tabnext<CR>", },
-	{ from = "tl",            to = ":+tabnext<CR>", },
-	{ from = "tmh",           to = ":-tabmove<CR>", },
-	{ from = "tml",           to = ":+tabmove<CR>", },
-	{ from = "<leader>sw",    to = ":if &wrap | set nowrap | else | set wrap | endif<CR>" },
-	{ from = "<leader><CR>",  to = ":nohlsearch<CR>" },
-	{ from = "<f10>",         to = ":TSHighlightCapturesUnderCursor<CR>" },
-	{ from = "<leader>o",     to = "za" },
-	{ from = "<leader>pr",    to = ":profile start profile.log<CR>:profile func *<CR>:profile file *<CR>" },
-	-- { from = "<leader>rc",    to = ":luafile ~/.config/nvim/init.lua<CR>" },
-	-- { from = "<leader>rv",    to = ":e .vim.lua<CR>" },
-	{ from = "<leader>rv",    to = ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5\\[\\]\\(\\)\\{\\}*`,.;:]*$/d<CR>" },
-	{ from = "<leader>rb",    to = ":g/^\\s*$/d<CR>" },
-	{ from = "<leader>rl",    to = ":%s/\\s*$//g<CR>" },
-	-- { from = "mb",            to = ":g/^\\s*$/d<CR>" },
-	-- { from = "ml",            to = ":%s/\\s*$//g<CR>" },
-	{ from = "<leader>rk",    to = ":%s/\\s\\+//g<CR>" },
-	{ from = "<leader>ro",    to = ":g/^\\s*\\#\\s*.*$/d<CR>" },
-	{ from = "<leader>v",     to = ":Vista!!<CR>" },
-	{ from = "<leader>mt",    to = ":TableModeToggle<CR>" },
-	-- { from = "<leader>ro",    to = ":g/^\\s*\\-\\s*.*$/d<CR>" },
-	-- { from = "<leader>rv",    to = ":%s/[.,;\\'\"?!(){}<>\\[\\]:-]//g<CR>" },
-	{ from = ",v",            to = "v%" },
+	{ from = "U", to = "<c-r>" },
+	{ from = "S", to = ":w<CR>" },
+	{ from = "Q", to = ":q<CR>" },
+	{ from = "<M-j>", to = "J", mode = { "n", "v" } },
+	{ from = ";", to = ":", mode = mode_nv },
+	{ from = "Y", to = "\"+y", mode = mode_v },
+	{ from = "`", to = "~", mode = mode_nv },
+	{ from = "K", to = "15k", mode = mode_nv },
+	{ from = "J", to = "15j", mode = mode_nv },
+	{ from = "W", to = "5w", mode = mode_nv },
+	{ from = "B", to = "5b", mode = mode_nv },
+	{ from = "H", to = "0", mode = mode_nv },
+	{ from = "L", to = "$", mode = mode_nv },
+	{ from = "<C-i>", to = "<c-o>", mode = mode_nv },
+	{ from = "<C-o>", to = "<c-i>", mode = mode_nv },
+	{ from = ",.", to = "%", mode = mode_nv },
+	{ from = "<c-y>", to = "<ESC>A {}<ESC>i<CR><ESC>ko", mode = mode_i },
+	{ from = "\\v", to = "v$h", },
+	{ from = "<c-a>", to = "<ESC>A", mode = mode_i },
+	{ from = "<leader>w", to = "<C-w>w", },
+	{ from = "<leader>sk", to = "<C-w>k", },
+	{ from = "<leader>sj", to = "<C-w>j", },
+	{ from = "<leader>sh", to = "<C-w>h", },
+	{ from = "<leader>sl", to = "<C-w>l", },
+	{ from = "qf", to = "<C-w>o", },
+	{ from = "s", to = "<nop>", },
+	{ from = "sk", to = ":set nosplitbelow<CR>:split<CR>:set splitbelow<CR>", },
+	{ from = "sj", to = ":set splitbelow<CR>:split<CR>", },
+	{ from = "sh", to = ":set nosplitright<CR>:vsplit<CR>:set splitright<CR>", },
+	{ from = "sl", to = ":set splitright<CR>:vsplit<CR>", },
+	{ from = "<up>", to = ":res +5<CR>", },
+	{ from = "<down>", to = ":res -5<CR>", },
+	{ from = "<left>", to = ":vertical resize-5<CR>", },
+	{ from = "<right>", to = ":vertical resize+5<CR>", },
+	{ from = "srh", to = "<C-w>b<C-w>K", },
+	{ from = "srv", to = "<C-w>b<C-w>H", },
+	{ from = "tj", to = ":tabe<CR>", },
+	{ from = "tJ", to = ":tab split<CR>", },
+	{ from = "th", to = ":-tabnext<CR>", },
+	{ from = "tl", to = ":+tabnext<CR>", },
+	{ from = "tmh", to = ":-tabmove<CR>", },
+	{ from = "tml", to = ":+tabmove<CR>", },
+	{ from = "<leader>sw", to = ":if &wrap | set nowrap | else | set wrap | endif<CR>" },
+	{ from = "<leader><CR>", to = ":nohlsearch<CR>" },
+	{ from = "<f10>", to = ":TSHighlightCapturesUnderCursor<CR>" },
+	{ from = "<leader>o", to = "za" },
+	{ from = "<leader>pr", to = ":profile start profile.log<CR>:profile func *<CR>:profile file *<CR>" },
+	{ from = "<leader>rv", to = ":g/^[^a-zA-Z0-9\\u4e00-\\u9fa5\\[\\]\\(\\)\\{\\}*`,.;:]*$/d<CR>" },
+	{ from = "<leader>rb", to = ":g/^\\s*$/d<CR>" },
+	{ from = "<leader>rl", to = ":%s/\\s*$//g<CR>" },
+	-- { from = "<leader>rk", to = ":%s/\\s\\+//g<CR>" },
+	-- 新增：为普通模式 (n) 和可视模式 (v) 分别定义快捷键
+	{ from = "<leader>rk", to = ":%s/\\s\\+//g<CR>", mode = "n", desc = "删除文件中所有多余空格" },
+	{ from = "<leader>rk", to = ":s/\\s\\+//g<CR>", mode = "v", desc = "删除选中行所有多余空格" },
+	{ from = "<leader>ro", to = ":g/^\\s*\\#\\s*.*$/d<CR>" },
+	{ from = "<leader>v", to = ":Vista!!<CR>" },
+	{ from = "<leader>mt", to = ":TableModeToggle<CR>" },
+	{ from = ",v", to = "v%" },
 	{ from = "<leader><esc>", to = "<nop>" },
-	{ from = "R",             to = ":Joshuto<CR>" },
+	{ from = "R", to = ":Joshuto<CR>" },
 }
 for _, mapping in ipairs(nmappings) do
 	vim.keymap.set(mapping.mode or "n", mapping.from, mapping.to, { noremap = true })
 end
+
 local function run_vim_shortcut(shortcut)
 	local escaped_shortcut = vim.api.nvim_replace_termcodes(shortcut, true, false, true)
 	vim.api.nvim_feedkeys(escaped_shortcut, 'n', true)
@@ -565,6 +563,47 @@ local function pad_numbers()
 end
 -- 创建命令
 vim.api.nvim_create_user_command("PadNumbers", pad_numbers, {})
+
+local function unpad_numbers()
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local modified_lines = {}
+	local total_changes = 0
+
+	-- 遍历每一行
+	for _, line in ipairs(lines) do
+		-- line:gsub 的第二个返回值是它执行的替换次数
+		local modified_line, changes_in_line = line:gsub("G(%d+)", function(num_str)
+			-- tonumber("007") 会得到数字 7
+			-- tostring(7) 会得到字符串 "7"
+			-- 这样就自然地去掉了前导零
+			local unpadded_num = tostring(tonumber(num_str))
+
+			-- 如果原始字符串和处理后的字符串不同，才算一次有效的修改
+			-- (这一步其实可以省略，因为即使 G5 -> G5，用户通常也期望看到 "0 changes" 的结果)
+			-- 我们主要依赖 gsub 返回的替换次数
+			return "G" .. unpadded_num
+		end)
+
+		-- 累加这一行发生的替换次数
+		total_changes = total_changes + changes_in_line
+		table.insert(modified_lines, modified_line)
+	end
+
+	-- 仅当确实有变化时才修改缓冲区并显示消息
+	if total_changes > 0 then
+		-- 用转换后的内容替换原有内容
+		vim.api.nvim_buf_set_lines(0, 0, -1, false, modified_lines)
+		-- 使用 vim.notify 显示消息，比 print 更好
+		vim.notify("Unpadded " .. total_changes .. " numbers.", vim.log.levels.INFO)
+	else
+		vim.notify("No padded numbers found to unpad.", vim.log.levels.INFO)
+	end
+end
+
+-- 创建用户命令 :UnpadNumbers
+vim.api.nvim_create_user_command("UnpadNumbers", unpad_numbers, {})
+
+
 local function perform_math_operation(operation, operand)
 	-- 获取当前缓冲区的所有行
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
@@ -637,8 +676,7 @@ function convert_to_markdown_headings()
 		local prefix, content = line:match("^([%d%.]+)(.*)$")
 
 		if prefix then
-			-- Count the depth by counting dots
-			local depth = select(2, prefix:gsub("%.", "")) + 1
+			local depth = select(2, prefix:gsub("%.", ""))
 
 			-- Create the markdown heading with appropriate number of #
 			local heading_prefix = string.rep("#", depth) .. " "
