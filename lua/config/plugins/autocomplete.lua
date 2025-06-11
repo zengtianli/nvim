@@ -58,11 +58,8 @@ M.config = {
 			end
 		},
 		{
-			"quangnguyen30192/cmp-nvim-ultisnips",
-			config = function()
-				-- optional call to setup (see customization section)
-				require("cmp_nvim_ultisnips").setup {}
-			end,
+			"SirVer/ultisnips",
+			dependencies = { "honza/vim-snippets" },
 		}
 		-- "L3MON4D3/LuaSnip",
 	},
@@ -116,7 +113,7 @@ M.configfunc = function()
 	local lspkind = require("lspkind")
 	vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
 	local cmp = require("cmp")
-	local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
+	-- local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 	-- local luasnip = require("luasnip")
 	setCompHL()
 	cmp.setup({
