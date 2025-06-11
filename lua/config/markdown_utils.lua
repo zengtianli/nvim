@@ -173,17 +173,48 @@ end
 local function add_hash()
 	for i = 1, vim.fn.line('$'), 1 do
 		local line = vim.fn.getline(i)
-		-- 匹配以数字开头的行，如 "1 ", "1.1 ", "1.1.1 " 等
-		if line:match("^%d+[%.%d]*%s+") then
-			local number_part = line:match("^(%d+[%.%d]*)%s+")
+		-- 匹配以数字开头的行，兼容两种格式：
+		-- 1. "1 content" 或 "1.1 content" (数字后有空格)
+		-- 2. "1content" 或 "1.1content" (数字后直接是内容)
+		local number_part = line:match("^(%d+[%.%d]*)")
+		if number_part and (line:match("^%d+[%.%d]*%s+") or line:match("^%d+[%.%d]*[^%d%.]")) then
 			-- 计算点号的数量来确定层级
 			local dot_count = select(2, number_part:gsub("%.", ""))
 			local level = dot_count + 1 -- 层级 = 点号数量 + 1
 			local hash_prefix = string.rep("#", level) .. " "
-			local new_line = hash_prefix .. line
-			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+
+			-- 检查数字后面是否直接跟着内容（没有空格）
+			local content_after_number = line:match("^%d+[%.%d]*(.*)$")
+			if content_after_number and not content_after_number:match("^%s") and content_after_number ~= "" then
+				-- 如果数字后面直接跟着内容，添加空格
+				local new_line = hash_prefix .. number_part .. " " .. content_after_number
+				vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+			else
+				-- 如果数字后面已经有空格，保持原样
+				local new_line = hash_prefix .. line
+				vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+			end
 		end
 	end
+end
+
+-- 生成全文Markdown标题目录并在当前位置插入
+local function generate_toc()
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local toc_lines = {}
+	local current_row = vim.api.nvim_win_get_cursor(0)[1]
+
+	-- 遍历所有行查找标题
+	for i, line in ipairs(lines) do
+		-- 匹配Markdown标题
+		if line:match("^#+%s+") then
+			table.insert(toc_lines, line)
+		end
+	end
+
+	-- 在当前位置插入目录
+	table.insert(toc_lines, "") -- 在目录后添加空行
+	vim.api.nvim_buf_set_lines(0, current_row - 1, current_row - 1, false, toc_lines)
 end
 
 -- 将数字编号转换为Markdown标题
@@ -213,26 +244,28 @@ end
 -- 设置命令和键映射
 function M.setup()
 	local commands = {
-		{ name = 'NumberHeadings',        func = number_headings,        desc = "给标题编号" },
-		{ name = 'UnnumberHeadings',      func = unnumber_headings,      desc = "取消标题编号" },
-		{ name = 'AddBrToSentences',      func = add_br_to_sentences,    desc = "添加换行标签" },
+		{ name = 'NumberHeadings', func = number_headings, desc = "给标题编号" },
+		{ name = 'UnnumberHeadings', func = unnumber_headings, desc = "取消标题编号" },
+		{ name = 'AddBrToSentences', func = add_br_to_sentences, desc = "添加换行标签" },
 		{ name = 'RemoveBrFromSentences', func = remove_br_from_sentences, desc = "移除换行标签" },
-		{ name = 'UpgradeHeadings',       func = upgrade_headings,       desc = "升级标题级别" },
-		{ name = 'DegradeHeadings',       func = degrade_headings,       desc = "降级标题级别" },
-		{ name = 'Numberh3headings',      func = number_h3_headings,     desc = "给三级标题编号" },
-		{ name = 'NumberedToMarkdown',    func = M.convert_to_markdown_headings, desc = "将数字编号转换为Markdown标题" },
-		{ name = 'RemoveHash',            func = remove_hash,             desc = "移除Markdown标题的#符号，保留数字编号" },
-		{ name = 'AddHash',               func = add_hash,                desc = "添加Markdown标题的#符号，根据数字编号层级确定#的数量" },
+		{ name = 'UpgradeHeadings', func = upgrade_headings, desc = "升级标题级别" },
+		{ name = 'DegradeHeadings', func = degrade_headings, desc = "降级标题级别" },
+		{ name = 'Numberh3headings', func = number_h3_headings, desc = "给三级标题编号" },
+		{ name = 'NumberedToMarkdown', func = M.convert_to_markdown_headings, desc = "将数字编号转换为Markdown标题" },
+		{ name = 'RemoveHash', func = remove_hash, desc = "移除Markdown标题的#符号，保留数字编号" },
+		{ name = 'AddHash', func = add_hash, desc = "添加Markdown标题的#符号，根据数字编号层级确定#的数量" },
+		{ name = 'GenerateToc', func = generate_toc, desc = "生成全文Markdown标题目录" },
 	}
 
 	local keymaps = {
-		{ keymap = '<leader>nh',  command = 'NumberHeadings',    desc = "给标题编号" },
-		{ keymap = '<leader>uh',  command = 'UnnumberHeadings',  desc = "取消标题编号" },
-		{ keymap = '<leader>abs', command = 'AddBrToSentences',  desc = "添加换行标签" },
-		{ keymap = '<leader>ugh', command = 'UpgradeHeadings',   desc = "升级标题级别" },
-		{ keymap = '<leader>dgh', command = 'DegradeHeadings',   desc = "降级标题级别" },
-		{ keymap = '<leader>rh',  command = 'RemoveHash',        desc = "移除Markdown标题的#符号" },
-		{ keymap = '<leader>ah',  command = 'AddHash',             desc = "添加Markdown标题的#符号" },
+		{ keymap = '<leader>nh', command = 'NumberHeadings', desc = "给标题编号" },
+		{ keymap = '<leader>uh', command = 'UnnumberHeadings', desc = "取消标题编号" },
+		{ keymap = '<leader>abs', command = 'AddBrToSentences', desc = "添加换行标签" },
+		{ keymap = '<leader>ugh', command = 'UpgradeHeadings', desc = "升级标题级别" },
+		{ keymap = '<leader>dgh', command = 'DegradeHeadings', desc = "降级标题级别" },
+		{ keymap = '<leader>rh', command = 'RemoveHash', desc = "移除Markdown标题的#符号" },
+		{ keymap = '<leader>ah', command = 'AddHash', desc = "添加Markdown标题的#符号" },
+		{ keymap = '<leader>gt', command = 'GenerateToc', desc = "生成全文Markdown标题目录" },
 	}
 
 	-- 创建命令
@@ -241,10 +274,7 @@ function M.setup()
 	end
 
 	-- 创建键映射
-	for _, km in ipairs(keymaps) do
-		vim.api.nvim_set_keymap('n', km.keymap, ':' .. km.command .. '<CR>', 
-			{ noremap = true, silent = true, desc = km.desc })
-	end
 end
 
-return M 
+return M
+

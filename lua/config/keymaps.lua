@@ -125,6 +125,7 @@ local text_processing_mappings = {
 
 	-- 性能分析
 	{ from = "<leader>pr", to = ":profile start profile.log<CR>:profile func *<CR>:profile file *<CR>", desc = "开始性能分析" },
+	{ from = "<leader>rd", to = ":%s/\\\\[[^\\\\]]*\\\\]//g<CR>", mode = "n", desc = "删除文件中所有中括号引用" },
 }
 
 -- ==========================================
