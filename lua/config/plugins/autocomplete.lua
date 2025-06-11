@@ -42,14 +42,12 @@ end
 local M = {}
 M.config = {
 	"hrsh7th/nvim-cmp",
-	after = "SirVer/ultisnips",
 	dependencies = {
 		"hrsh7th/cmp-buffer",
 		"hrsh7th/cmp-path",
 		"hrsh7th/cmp-nvim-lsp",
 		"hrsh7th/cmp-nvim-lua",
 		"hrsh7th/cmp-calc",
-		-- "andersevenrud/cmp-tmux",
 		{
 			"onsails/lspkind.nvim",
 			lazy = false,
@@ -57,11 +55,6 @@ M.config = {
 				require("lspkind").init()
 			end
 		},
-		{
-			"SirVer/ultisnips",
-			dependencies = { "honza/vim-snippets" },
-		}
-		-- "L3MON4D3/LuaSnip",
 	},
 }
 local setCompHL = function()
@@ -113,20 +106,11 @@ M.configfunc = function()
 	local lspkind = require("lspkind")
 	vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
 	local cmp = require("cmp")
-	-- local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
-	-- local luasnip = require("luasnip")
 	setCompHL()
 	cmp.setup({
 		preselect = cmp.PreselectMode.None,
-		snippet = {
-			expand = function(args)
-				-- luasnip.lsp_expand(args.body)
-				vim.fn["UltiSnips#Anon"](args.body)
-			end,
-		},
 		window = {
 			completion = {
-				-- winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
 				col_offset = -3,
 				side_padding = 0,
 			},
@@ -134,7 +118,6 @@ M.configfunc = function()
 		},
 		sorting = {
 			comparators = {
-				-- label_comparator,
 				dartColonFirst,
 				cmp.config.compare.offset,
 				cmp.config.compare.exact,
@@ -150,7 +133,7 @@ M.configfunc = function()
 			format = function(entry, vim_item)
 				local kind = lspkind.cmp_format({
 					mode = "symbol_text",
-					symbol_map = { Codeium = "", },
+					symbol_map = { Codeium = "", },
 				})(entry, vim_item)
 				local strings = vim.split(kind.kind, "%s", { trimempty = true })
 				kind.kind = " " .. (strings[1] or "") .. " "

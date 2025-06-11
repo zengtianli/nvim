@@ -184,14 +184,14 @@ end
 -- 设置命令和键映射
 function M.setup()
 	local commands = {
-		{ name = 'NumberHeadings',        func = number_headings },
-		{ name = 'UnnumberHeadings',      func = unnumber_headings },
-		{ name = 'AddBrToSentences',      func = add_br_to_sentences },
-		{ name = 'RemoveBrFromSentences', func = remove_br_from_sentences },
-		{ name = 'UpgradeHeadings',       func = upgrade_headings },
-		{ name = 'DegradeHeadings',       func = degrade_headings },
-		{ name = 'Numberh3headings',      func = number_h3_headings },
-		{ name = 'NumberedToMarkdown',    func = M.convert_to_markdown_headings },
+		{ name = 'NumberHeadings',        func = number_headings,        desc = "给标题编号" },
+		{ name = 'UnnumberHeadings',      func = unnumber_headings,      desc = "取消标题编号" },
+		{ name = 'AddBrToSentences',      func = add_br_to_sentences,    desc = "添加换行标签" },
+		{ name = 'RemoveBrFromSentences', func = remove_br_from_sentences, desc = "移除换行标签" },
+		{ name = 'UpgradeHeadings',       func = upgrade_headings,       desc = "升级标题级别" },
+		{ name = 'DegradeHeadings',       func = degrade_headings,       desc = "降级标题级别" },
+		{ name = 'Numberh3headings',      func = number_h3_headings,     desc = "给三级标题编号" },
+		{ name = 'NumberedToMarkdown',    func = M.convert_to_markdown_headings, desc = "将数字编号转换为Markdown标题" },
 	}
 
 	local keymaps = {

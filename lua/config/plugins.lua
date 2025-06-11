@@ -52,7 +52,6 @@ require("lazy").setup({
 	require("config.plugins.project"),
 	require("config.plugins.scrollbar"),
 	require("config.plugins.search"),
-	require("config.plugins.snippets"),
 	require("config.plugins.statusline"),
 	require("config.plugins.surround"),
 	require("config.plugins.tabline"),
