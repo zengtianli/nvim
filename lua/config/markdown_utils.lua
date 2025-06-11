@@ -157,6 +157,35 @@ local function remove_br_from_sentences()
 	end
 end
 
+-- 移除Markdown标题的#符号，保留数字编号
+local function remove_hash()
+	for i = 1, vim.fn.line('$'), 1 do
+		local line = vim.fn.getline(i)
+		-- 匹配以#开头的行，移除#和后面的空格
+		if line:match("^#+%s+") then
+			local new_line = line:gsub("^#+%s+", "")
+			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+		end
+	end
+end
+
+-- 添加Markdown标题的#符号，根据数字编号层级确定#的数量
+local function add_hash()
+	for i = 1, vim.fn.line('$'), 1 do
+		local line = vim.fn.getline(i)
+		-- 匹配以数字开头的行，如 "1 ", "1.1 ", "1.1.1 " 等
+		if line:match("^%d+[%.%d]*%s+") then
+			local number_part = line:match("^(%d+[%.%d]*)%s+")
+			-- 计算点号的数量来确定层级
+			local dot_count = select(2, number_part:gsub("%.", ""))
+			local level = dot_count + 1 -- 层级 = 点号数量 + 1
+			local hash_prefix = string.rep("#", level) .. " "
+			local new_line = hash_prefix .. line
+			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+		end
+	end
+end
+
 -- 将数字编号转换为Markdown标题
 function M.convert_to_markdown_headings()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
@@ -192,6 +221,8 @@ function M.setup()
 		{ name = 'DegradeHeadings',       func = degrade_headings,       desc = "降级标题级别" },
 		{ name = 'Numberh3headings',      func = number_h3_headings,     desc = "给三级标题编号" },
 		{ name = 'NumberedToMarkdown',    func = M.convert_to_markdown_headings, desc = "将数字编号转换为Markdown标题" },
+		{ name = 'RemoveHash',            func = remove_hash,             desc = "移除Markdown标题的#符号，保留数字编号" },
+		{ name = 'AddHash',               func = add_hash,                desc = "添加Markdown标题的#符号，根据数字编号层级确定#的数量" },
 	}
 
 	local keymaps = {
@@ -200,6 +231,8 @@ function M.setup()
 		{ keymap = '<leader>abs', command = 'AddBrToSentences',  desc = "添加换行标签" },
 		{ keymap = '<leader>ugh', command = 'UpgradeHeadings',   desc = "升级标题级别" },
 		{ keymap = '<leader>dgh', command = 'DegradeHeadings',   desc = "降级标题级别" },
+		{ keymap = '<leader>rh',  command = 'RemoveHash',        desc = "移除Markdown标题的#符号" },
+		{ keymap = '<leader>ah',  command = 'AddHash',             desc = "添加Markdown标题的#符号" },
 	}
 
 	-- 创建命令
