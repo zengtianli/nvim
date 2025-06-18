@@ -1,5 +1,4 @@
 local M = {}
-
 -- 给标题自动编号
 local function number_headings()
 	local num1, num2, num3, num4, num5, num6 = 0, 0, 0, 0, 0, 0
@@ -47,7 +46,6 @@ local function number_headings()
 		end
 	end
 end
-
 -- 给三级标题编号
 local function number_h3_headings()
 	local num = 0
@@ -60,7 +58,6 @@ local function number_h3_headings()
 		end
 	end
 end
-
 -- 取消标题编号
 local function unnumber_headings()
 	for i = 1, vim.fn.line('$'), 1 do
@@ -86,7 +83,6 @@ local function unnumber_headings()
 		end
 	end
 end
-
 -- 升级标题级别（减少#）
 local function upgrade_headings()
 	for i = 1, vim.fn.line('$'), 1 do
@@ -108,7 +104,6 @@ local function upgrade_headings()
 		end
 	end
 end
-
 -- 降级标题级别（增加#）
 local function degrade_headings()
 	for i = 1, vim.fn.line('$'), 1 do
@@ -130,7 +125,6 @@ local function degrade_headings()
 		end
 	end
 end
-
 -- 添加换行标签到句子末尾
 local function add_br_to_sentences()
 	for i = 1, vim.fn.line('$'), 1 do
@@ -143,7 +137,6 @@ local function add_br_to_sentences()
 		end
 	end
 end
-
 -- 移除换行标签
 local function remove_br_from_sentences()
 	for i = 1, vim.fn.line('$'), 1 do
@@ -156,7 +149,6 @@ local function remove_br_from_sentences()
 		end
 	end
 end
-
 -- 移除Markdown标题的#符号，保留数字编号
 local function remove_hash()
 	for i = 1, vim.fn.line('$'), 1 do
@@ -168,7 +160,6 @@ local function remove_hash()
 		end
 	end
 end
-
 -- 添加Markdown标题的#符号，根据数字编号层级确定#的数量
 local function add_hash()
 	for i = 1, vim.fn.line('$'), 1 do
@@ -182,7 +173,6 @@ local function add_hash()
 			local dot_count = select(2, number_part:gsub("%.", ""))
 			local level = dot_count + 1 -- 层级 = 点号数量 + 1
 			local hash_prefix = string.rep("#", level) .. " "
-
 			-- 检查数字后面是否直接跟着内容（没有空格）
 			local content_after_number = line:match("^%d+[%.%d]*(.*)$")
 			if content_after_number and not content_after_number:match("^%s") and content_after_number ~= "" then
@@ -197,13 +187,11 @@ local function add_hash()
 		end
 	end
 end
-
 -- 生成全文Markdown标题目录并在当前位置插入
 local function generate_toc()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 	local toc_lines = {}
 	local current_row = vim.api.nvim_win_get_cursor(0)[1]
-
 	-- 遍历所有行查找标题
 	for i, line in ipairs(lines) do
 		-- 匹配Markdown标题
@@ -211,21 +199,92 @@ local function generate_toc()
 			table.insert(toc_lines, line)
 		end
 	end
-
 	-- 在当前位置插入目录
 	table.insert(toc_lines, "") -- 在目录后添加空行
 	vim.api.nvim_buf_set_lines(0, current_row - 1, current_row - 1, false, toc_lines)
 end
-
+-- 删除所有中括号内容 [...]
+local function remove_brackets()
+	for i = 1, vim.fn.line('$'), 1 do
+		local line = vim.fn.getline(i)
+		local new_line = line:gsub("%[[^%]]*%]", "")
+		if new_line ~= line then
+			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+		end
+	end
+end
+-- 删除所有学术引用 [数字]
+local function remove_citations()
+	-- 第一步：删除文内引用
+	for i = 1, vim.fn.line('$'), 1 do
+		local line = vim.fn.getline(i)
+		local new_line = line:gsub("%[%d+%]", "")
+		if new_line ~= line then
+			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+		end
+	end
+	-- 第二步：删除引用列表行
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local filtered_lines = {}
+	for _, line in ipairs(lines) do
+		if not line:match("^%[%d+%]") then
+			table.insert(filtered_lines, line)
+		end
+	end
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, filtered_lines)
+end
+-- 删除反引号包裹的中括号 `[...]`
+local function remove_quoted_brackets()
+	for i = 1, vim.fn.line('$'), 1 do
+		local line = vim.fn.getline(i)
+		local new_line = line:gsub("`%[[^%]]*%]`", "")
+		if new_line ~= line then
+			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+		end
+	end
+end
+-- 删除行尾空格
+local function remove_trailing_spaces()
+	for i = 1, vim.fn.line('$'), 1 do
+		local line = vim.fn.getline(i)
+		local new_line = line:gsub("%s+$", "")
+		if new_line ~= line then
+			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+		end
+	end
+end
+-- 删除空行
+local function remove_blank_lines()
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local filtered_lines = {}
+	for _, line in ipairs(lines) do
+		if line:match("%S") then
+			table.insert(filtered_lines, line)
+		end
+	end
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, filtered_lines)
+end
+-- 删除多余空行（连续空行只保留一行）
+local function remove_extra_blank_lines()
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local filtered_lines = {}
+	local prev_blank = false
+	for _, line in ipairs(lines) do
+		local is_blank = not line:match("%S")
+		if not is_blank or not prev_blank then
+			table.insert(filtered_lines, line)
+		end
+		prev_blank = is_blank
+	end
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, filtered_lines)
+end
 -- 将数字编号转换为Markdown标题
 function M.convert_to_markdown_headings()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 	local result = {}
-
 	for _, line in ipairs(lines) do
 		-- 匹配像 "1.", "1.1.", "1.1.1." 这样的模式
 		local prefix, content = line:match("^([%d%.]+)(.*)$")
-
 		if prefix then
 			local depth = select(2, prefix:gsub("%.", ""))
 			-- 创建对应层级的Markdown标题
@@ -236,7 +295,6 @@ function M.convert_to_markdown_headings()
 			table.insert(result, line)
 		end
 	end
-
 	-- 用结果替换缓冲区内容
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, result)
 end
@@ -255,26 +313,17 @@ function M.setup()
 		{ name = 'RemoveHash', func = remove_hash, desc = "移除Markdown标题的#符号，保留数字编号" },
 		{ name = 'AddHash', func = add_hash, desc = "添加Markdown标题的#符号，根据数字编号层级确定#的数量" },
 		{ name = 'GenerateToc', func = generate_toc, desc = "生成全文Markdown标题目录" },
+		{ name = 'RemoveBrackets', func = remove_brackets, desc = "删除所有中括号内容" },
+		{ name = 'RemoveCitations', func = remove_citations, desc = "删除所有学术引用" },
+		{ name = 'RemoveQuotedBrackets', func = remove_quoted_brackets, desc = "删除反引号包裹的中括号" },
+		{ name = 'RemoveTrailingSpaces', func = remove_trailing_spaces, desc = "删除行尾空格" },
+		{ name = 'RemoveBlankLines', func = remove_blank_lines, desc = "删除空行" },
+		{ name = 'RemoveExtraBlankLines', func = remove_extra_blank_lines, desc = "删除多余空行" },
 	}
-
-	local keymaps = {
-		{ keymap = '<leader>nh', command = 'NumberHeadings', desc = "给标题编号" },
-		{ keymap = '<leader>uh', command = 'UnnumberHeadings', desc = "取消标题编号" },
-		{ keymap = '<leader>abs', command = 'AddBrToSentences', desc = "添加换行标签" },
-		{ keymap = '<leader>ugh', command = 'UpgradeHeadings', desc = "升级标题级别" },
-		{ keymap = '<leader>dgh', command = 'DegradeHeadings', desc = "降级标题级别" },
-		{ keymap = '<leader>rh', command = 'RemoveHash', desc = "移除Markdown标题的#符号" },
-		{ keymap = '<leader>ah', command = 'AddHash', desc = "添加Markdown标题的#符号" },
-		{ keymap = '<leader>gt', command = 'GenerateToc', desc = "生成全文Markdown标题目录" },
-	}
-
-	-- 创建命令
+	
 	for _, cmd in ipairs(commands) do
 		vim.api.nvim_create_user_command(cmd.name, cmd.func, {})
 	end
-
-	-- 创建键映射
 end
 
 return M
-
