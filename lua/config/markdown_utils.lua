@@ -60,25 +60,46 @@ local function number_h3_headings()
 end
 -- 取消标题编号
 local function unnumber_headings()
-	for i = 1, vim.fn.line('$'), 1 do
+	-- 获取选择范围
+	local start_line, end_line
+	local mode = vim.fn.mode()
+	
+	-- 检查是否在可视模式或刚从可视模式退出
+	if mode == 'v' or mode == 'V' or mode == '' or vim.fn.visualmode() ~= '' then
+		-- 获取可视选择的开始和结束行
+		start_line = vim.fn.line("'<")
+		end_line = vim.fn.line("'>")
+	else
+		-- 如果没有选择，则处理整个文件
+		start_line = 1
+		end_line = vim.fn.line('$')
+	end
+	
+	for i = start_line, end_line, 1 do
 		local line = vim.fn.getline(i)
-		if line:match("^# %d+ ") then
-			local new_line = line:gsub("^# %d+ ", "# ")
-			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
-		elseif line:match("^## %d+%.%d+ ") then
-			local new_line = line:gsub("^## %d+%.%d+ ", "## ")
-			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
-		elseif line:match("^### %d+%.%d+%.%d+ ") then
-			local new_line = line:gsub("^### %d+%.%d+%.%d+ ", "### ")
-			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
-		elseif line:match("^#### %d+%.%d+%.%d+%.%d+ ") then
-			local new_line = line:gsub("^#### %d+%.%d+%.%d+%.%d+ ", "#### ")
-			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
-		elseif line:match("^##### %d+%.%d+%.%d+%.%d+%.%d+ ") then
-			local new_line = line:gsub("^##### %d+%.%d+%.%d+%.%d+%.%d+ ", "##### ")
-			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
-		elseif line:match("^###### %d+%.%d+%.%d+%.%d+%.%d+%.%d+ ") then
-			local new_line = line:gsub("^###### %d+%.%d+%.%d+%.%d+%.%d+%.%d+ ", "###### ")
+		local new_line = nil
+		
+		-- 一级标题：# 数字 或 # 数字空格
+		if line:match("^# %d+%s") then
+			new_line = line:gsub("^# %d+%s*", "# ")
+		-- 二级标题：## 数字.数字 或 ## 数字.数字空格
+		elseif line:match("^## %d+%.%d+") then
+			new_line = line:gsub("^## %d+%.%d+%s*", "## ")
+		-- 三级标题：### 数字.数字.数字 或 ### 数字.数字.数字空格
+		elseif line:match("^### %d+%.%d+%.%d+") then
+			new_line = line:gsub("^### %d+%.%d+%.%d+%s*", "### ")
+		-- 四级标题：#### 数字.数字.数字.数字 或 #### 数字.数字.数字.数字空格
+		elseif line:match("^#### %d+%.%d+%.%d+%.%d+") then
+			new_line = line:gsub("^#### %d+%.%d+%.%d+%.%d+%s*", "#### ")
+		-- 五级标题：##### 数字.数字.数字.数字.数字 或 ##### 数字.数字.数字.数字.数字空格
+		elseif line:match("^##### %d+%.%d+%.%d+%.%d+%.%d+") then
+			new_line = line:gsub("^##### %d+%.%d+%.%d+%.%d+%.%d+%s*", "##### ")
+		-- 六级标题：###### 数字.数字.数字.数字.数字.数字 或 ###### 数字.数字.数字.数字.数字.数字空格
+		elseif line:match("^###### %d+%.%d+%.%d+%.%d+%.%d+%.%d+") then
+			new_line = line:gsub("^###### %d+%.%d+%.%d+%.%d+%.%d+%.%d+%s*", "###### ")
+		end
+		
+		if new_line then
 			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
 		end
 	end
@@ -278,6 +299,18 @@ local function remove_extra_blank_lines()
 	end
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, filtered_lines)
 end
+-- 删除引用URL行（[数字] URL格式的行）
+local function remove_reference_urls()
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local filtered_lines = {}
+	for _, line in ipairs(lines) do
+		-- 匹配 [数字] 后面跟着URL的行
+		if not line:match("^%[%d+%]%s+https?://") then
+			table.insert(filtered_lines, line)
+		end
+	end
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, filtered_lines)
+end
 -- 将数字编号转换为Markdown标题
 function M.convert_to_markdown_headings()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
@@ -319,10 +352,11 @@ function M.setup()
 		{ name = 'RemoveTrailingSpaces', func = remove_trailing_spaces, desc = "删除行尾空格" },
 		{ name = 'RemoveBlankLines', func = remove_blank_lines, desc = "删除空行" },
 		{ name = 'RemoveExtraBlankLines', func = remove_extra_blank_lines, desc = "删除多余空行" },
+		{ name = 'RemoveReferenceUrls', func = remove_reference_urls, desc = "删除引用URL行" },
 	}
 	
 	for _, cmd in ipairs(commands) do
-		vim.api.nvim_create_user_command(cmd.name, cmd.func, {})
+		vim.api.nvim_create_user_command(cmd.name, cmd.func, { range = true })
 	end
 end
 
