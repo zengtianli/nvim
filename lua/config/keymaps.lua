@@ -5,10 +5,7 @@
 vim.g.mapleader = " "
 vim.opt.wrap = false
 
--- 导入功能模块
-local code_runner = require('config.code_runner')
-local markdown_utils = require('config.markdown_utils')
-local text_utils = require('config.text_utils')
+-- 工具模块将在 keymaps 设置后初始化
 
 -- 定义模式快捷变量
 local mode_nv = { "n", "v" }
@@ -129,6 +126,14 @@ local text_processing_mappings = {
 }
 
 -- ==========================================
+-- Operator 模式键映射
+-- ==========================================
+local operator_mappings = {
+	{ from = "H", to = "0", mode = "o", desc = "操作到行首" },
+	{ from = "L", to = "$", mode = "o", desc = "操作到行尾" },
+}
+
+-- ==========================================
 -- 应用所有键映射
 -- ==========================================
 local function apply_mappings(mappings)
@@ -146,6 +151,7 @@ apply_mappings(nmappings)
 apply_mappings(window_mappings)
 apply_mappings(tab_mappings)
 apply_mappings(text_processing_mappings)
+apply_mappings(operator_mappings)
 
 -- ==========================================
 -- 自动命令
@@ -155,11 +161,11 @@ vim.cmd [[
 ]]
 
 -- ==========================================
--- 初始化功能模块
+-- 最后的设置
 -- ==========================================
-code_runner.setup()
-markdown_utils.setup()
-text_utils.setup()
 
 -- 禁用无用快捷键
 vim.keymap.set("n", "<leader><esc>", "<nop>", { noremap = true, silent = true })
+
+-- 初始化工具模块
+require("config.utils").setup()
