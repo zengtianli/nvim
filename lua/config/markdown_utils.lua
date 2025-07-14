@@ -208,6 +208,20 @@ local function add_hash()
 		end
 	end
 end
+
+-- 标准化Markdown标题格式，为没有空格的#标题添加空格
+local function normalize_heading_format()
+	for i = 1, vim.fn.line('$'), 1 do
+		local line = vim.fn.getline(i)
+		-- 匹配以#开头但后面没有空格的行
+		local hash_part, content = line:match("^(#+)([^%s#].*)")
+		if hash_part and content then
+			-- 为#后面添加空格
+			local new_line = hash_part .. " " .. content
+			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+		end
+	end
+end
 -- 生成全文Markdown标题目录并在当前位置插入
 local function generate_toc()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
@@ -345,6 +359,7 @@ function M.setup()
 		{ name = 'NumberedToMarkdown', func = M.convert_to_markdown_headings, desc = "将数字编号转换为Markdown标题" },
 		{ name = 'RemoveHash', func = remove_hash, desc = "移除Markdown标题的#符号，保留数字编号" },
 		{ name = 'AddHash', func = add_hash, desc = "添加Markdown标题的#符号，根据数字编号层级确定#的数量" },
+		{ name = 'NormalizeHeadings', func = normalize_heading_format, desc = "标准化Markdown标题格式，为没有空格的#标题添加空格" },
 		{ name = 'GenerateToc', func = generate_toc, desc = "生成全文Markdown标题目录" },
 		{ name = 'RemoveBrackets', func = remove_brackets, desc = "删除所有中括号内容" },
 		{ name = 'RemoveCitations', func = remove_citations, desc = "删除所有学术引用" },
