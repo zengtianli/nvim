@@ -1,10 +1,169 @@
 ## <center>[Colemak](https://colemak.com/) 用户使用的 [NeoVim](https://neovim.io) 配置文件</center>
 
+> 🎉 **重大更新**: 本配置已完成全面重构，采用现代化架构，将80多个文件精简至21个核心文件，同时保持所有功能完整！
+
+```bash
+# 安装语言服务器
+npm i -g vscode-langservers-extracted
+npm install -g @ansible/ansible-language-server
+```
+
 <center><img src="https://raw.githubusercontent.com/theniceboy/nvim/master/demo.png"></center>
 
 [English Version](./README.md)
 
 请不要只复制这份配置文件夹而不认真看它！请至少阅读一下这份自述文件！
+
+## 现代化架构
+
+本 Neovim 配置现采用高度统一的模块化架构，具有以下特点：
+
+- **统一化设计**：按功能聚合的集中配置管理
+- **扁平化架构**：简化目录结构，消除过度嵌套
+- **高性能加载**：优化文件加载和启动时间
+- **开发工具链**：完整工具链包含 LSP、DAP、Git、AI 助手等
+- **多语言支持**：支持 Flutter、Go、Lua、Markdown 等
+- **智能导航**：文件搜索、符号跳转、项目管理
+
+### 核心结构
+```
+nvim/
+├── init.lua                 # 主入口文件
+├── lua/config/             # 配置模块
+│   ├── defaults.lua        # 默认加载器
+│   ├── keymaps.lua        # 键位映射
+│   ├── plugins.lua        # 插件管理
+│   ├── lsp.lua           # LSP配置
+│   ├── autocomplete.lua   # 自动补全
+│   └── ...               # 其他模块
+└── lua/plugin/            # 自定义插件
+```
+
+## 安装步骤
+
+1. 备份你现有的 Neovim 配置：
+```bash
+mv ~/.config/nvim ~/.config/nvim.bak
+mv ~/.local/share/nvim ~/.local/share/nvim.bak
+```
+
+2. 克隆此仓库：
+```bash
+git clone https://github.com/theniceboy/nvim.git ~/.config/nvim
+```
+
+3. 安装必需的依赖：
+```bash
+# Python 支持
+pip install pynvim
+
+# Node.js 支持
+npm install -g neovim
+
+# 剪贴板支持 (Linux/macOS)
+# Linux
+sudo apt install xclip   # Debian/Ubuntu
+sudo pacman -S xclip    # Arch Linux
+# macOS
+brew install pbcopy
+
+# 可选但推荐
+brew install ripgrep fd  # 快速搜索工具
+```
+
+4. 启动 Neovim：
+```bash
+nvim
+```
+插件管理器会在首次启动时自动安装所有插件。
+
+## 配置说明
+
+### 机器特定设置
+创建 `lua/machine_specific.lua` 文件来存储你的本地设置：
+
+```lua
+-- machine_specific.lua 示例
+return {
+  python3_host_prog = '/你的/python3/路径',
+  node_host_prog = '/你的/node/路径',
+  -- 添加其他机器特定设置
+}
+```
+
+### 语言服务器
+本配置使用原生 LSP。服务器通过 [mason.nvim](https://github.com/williamboman/mason.nvim) 管理。
+
+安装语言服务器：
+1. 打开 Neovim
+2. 运行 `:Mason`
+3. 按 `i` 安装你需要的服务器
+
+常用语言服务器：
+```bash
+# JavaScript/TypeScript
+npm i -g typescript typescript-language-server
+
+# Python
+pip install python-lsp-server
+
+# Lua
+brew install lua-language-server  # macOS
+```
+
+### 按键自定义
+编辑 `lua/config/keymaps.lua` 来自定义按键映射：
+
+```lua
+-- 示例：修改 leader 键
+vim.g.mapleader = " "  -- 空格作为 leader 键
+
+-- 添加自定义按键映射
+vim.keymap.set('n', '<leader>w', ':w<CR>', { noremap = true })
+```
+
+## 安装要求
+
+- Neovim >= 0.9.0 (必需)
+- Git (用于插件管理)
+- 支持真彩色的现代终端
+- [Nerd Font](https://www.nerdfonts.com/) 字体 (用于图标显示)
+- Node.js >= 14.14 (用于 LSP)
+- Python >= 3.8 (用于部分插件)
+- ripgrep (用于全文搜索)
+- fd (用于文件查找)
+- lazygit (用于 Git 操作)
+
+### 可选依赖
+
+- xclip/pbcopy (用于系统剪贴板支持)
+- Node.js 包:
+  ```bash
+  # LSP 服务器
+  npm install -g typescript typescript-language-server
+  npm install -g vscode-langservers-extracted
+  npm install -g @ansible/ansible-language-server
+  ```
+- Python 包:
+  ```bash
+  # Python 支持
+  pip install pynvim
+  pip install python-lsp-server
+  ```
+- Lua LSP:
+  ```bash
+  # macOS
+  brew install lua-language-server
+  # Linux
+  # 参考 https://github.com/sumneko/lua-language-server
+  ```
+
+### 推荐工具
+
+- [fzf](https://github.com/junegunn/fzf) - 模糊查找
+- [delta](https://github.com/dandavison/delta) - Git 差异查看器
+- [zoxide](https://github.com/ajeetdsouza/zoxide) - 智能目录跳转
+- [yazi](https://github.com/sxyazi/yazi) - 终端文件管理器
 
 ---
 
@@ -39,7 +198,7 @@
 	- [4 终端键盘快捷键](#4-终端键盘快捷键)
 * [插件快捷键 (截图/动图已经准备好！)](#插件快捷键-截图动图已经准备好)
 	- [自动补全](#自动补全)
-		+ [COC (自动补全)](#coc-自动补全)
+		+ [nvim-cmp (自动补全)](#nvim-cmp-自动补全)
 		+ [Ultisnips](#ultisnips)
 	- [代码调试](#代码调试)
 		+ [vimspector (代码调试插件)](#vimspector-代码调试插件)
@@ -78,6 +237,59 @@
 	- [自定义垂直光标移动](#自定义垂直光标移动)
 
 <!-- /TOC -->
+
+## 插件系统
+
+本配置使用 [lazy.nvim](https://github.com/folke/lazy.nvim) 进行插件管理，精心挑选了79个插件并分为6大类：
+
+### 🎨 界面插件 (15个)
+- **主题**: gruvbox、onedark 等
+- **状态栏**: lualine.nvim
+- **标签栏**: bufferline.nvim
+- **窗口栏**: 自定义窗口标题栏
+- **滚动条**: 智能滚动条
+- **通知系统**: nvim-notify
+
+### ✏️ 编辑增强插件 (12个)
+- **注释**: nvim-comment
+- **包围**: nvim-surround
+- **多光标**: vim-visual-multi
+- **快速跳转**: leap.nvim
+- **编辑工具**: 多种编辑增强
+- **撤销**: undotree 可视化
+- **剪贴板**: neoclip.nvim 历史记录
+
+### 🛠️ 开发工具 (25个)
+- **LSP**: nvim-lspconfig + mason.nvim
+- **语法树**: nvim-treesitter
+- **调试器**: nvim-dap
+- **Git**: gitsigns、lazygit
+- **AI助手**: github-copilot
+- **自动补全**: nvim-cmp
+- **包管理器**: mason
+
+### 🧭 导航工具 (8个)
+- **Telescope**: 模糊搜索核心
+- **FZF**: 高性能搜索
+- **搜索工具**: 增强搜索功能
+- **项目管理**: project.nvim
+- **文件管理**: yazi.nvim
+- **命令面板**: commander.nvim
+
+### 🌐 语言支持 (10个)
+- **Markdown**: 增强支持
+- **LaTeX**: VimTeX
+- **Flutter**: 开发工具集
+- **Go**: Go语言工具
+- **Lua**: 开发增强
+- **Dart**: 语言支持
+
+### 🔧 实用工具 (9个)
+- **CSV**: 文件处理
+- **命令行**: wilder.nvim
+- **启动时间**: 分析工具
+- **缩进**: 可视化
+- **文件类型**: 增强检测
 
 ## 安装此配置后你需要做的事
 - [ ] 安装 `pynvim` (使用 `pip`)
@@ -216,15 +428,45 @@
 
 ## 插件快捷键 (截图/动图已经准备好！)
 ### 自动补全
-#### [COC (自动补全)](https://github.com/neoclide/coc.nvim)
-| 快捷键          | 行为               |
-|-----------------|--------------------|
-| `Space` `y`     | **打开剪切板历史** |
-| `gd`            | 列出定义列表       |
-| `gr`            | 列出参考列表       |
-| `gi`            | 待办事项清单       |
-| `gy`            | 转至类型定义       |
-| `Space` `r` `n` | 重命名变量         |
+
+本配置使用 [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) 作为补全引擎，提供智能且快速的补全体验。
+
+#### 补全来源
+- LSP 补全
+- 缓冲区补全
+- 路径补全
+- 代码片段补全 (使用 LuaSnip)
+- 命令行补全
+- 拼写检查补全
+
+#### 补全快捷键
+| 快捷键        | 行为                   |
+|---------------|------------------------|
+| `<CR>`        | 确认选中               |
+| `<Tab>`       | 下一个候选             |
+| `<S-Tab>`     | 上一个候选             |
+| `<C-e>`       | 取消补全               |
+| `<C-u>`       | 滚动文档上             |
+| `<C-d>`       | 滚动文档下             |
+| `<C-Space>`   | 触发补全               |
+
+#### 代码片段
+使用 [LuaSnip](https://github.com/L3MON4D3/LuaSnip) 进行代码片段管理：
+
+| 快捷键     | 行为                   |
+|------------|------------------------|
+| `<C-k>`    | 展开代码片段           |
+| `<C-j>`    | 跳至下一个占位符       |
+| `<C-h>`    | 跳至上一个占位符       |
+
+#### 特性
+- 智能上下文感知
+- 实时模糊匹配
+- 类型感知补全
+- 自动导入补全
+- 参数提示
+- 代码片段集成
+- 自定义排序
 
 <img alt="Gif" src="https://user-images.githubusercontent.com/251450/55285193-400a9000-53b9-11e9-8cff-ffe4983c5947.gif" width="60%" />
 
@@ -235,7 +477,7 @@
 | `Ctrl` `n` | 在一个代码片段中前移光标 |
 | `Ctrl` `e` | 在一个代码片段中后移光标 |
 
-![GIF Demo](https://raw.github.com/SirVer/ultisnips/master/doc/demo.gif)
+![GIF Demo](https://raw.githubusercontent.com/SirVer/ultisnips/master/doc/demo.gif)
 
 ### 代码调试
 #### [vimspector (代码调试插件)](https://github.com/puremourning/vimspector)
@@ -420,6 +662,52 @@ string
 
 <img alt="Png" src="https://raw.githubusercontent.com/airblade/vim-gitgutter/master/screenshot.png" width="60%" />
 
+### Git 集成
+
+本配置提供完整的 Git 工作流支持：
+
+#### [lazygit.nvim](https://github.com/kdheepak/lazygit.nvim)
+按 `<leader>gg` 打开 lazygit 界面，提供：
+- 完整的 Git 仓库管理
+- 分支操作与合并
+- 提交历史浏览
+- 文件状态管理
+- 冲突解决
+
+#### [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
+实时显示 Git 状态：
+
+| 快捷键          | 行为                   |
+|-----------------|------------------------|
+| `]c`            | 下一个改动             |
+| `[c`            | 上一个改动             |
+| `<leader>hp`    | 预览改动               |
+| `<leader>hs`    | 暂存当前块             |
+| `<leader>hu`    | 撤销暂存               |
+| `<leader>hr`    | 重置当前块             |
+| `<leader>hb`    | 显示行的提交信息       |
+
+功能特点：
+- 行级别的 Git 状态
+- 实时显示改动
+- 支持块级别操作
+- 集成 Git blame
+- 支持块历史查看
+
+#### [diffview.nvim](https://github.com/sindrets/diffview.nvim)
+强大的差异查看器：
+
+| 快捷键          | 行为                   |
+|-----------------|------------------------|
+| `<leader>gd`    | 打开差异视图           |
+| `<leader>gh`    | 查看文件历史           |
+
+特性：
+- 并排差异比较
+- 文件历史浏览
+- 提交历史查看
+- 合并冲突处理
+
 ### 其它
 #### [vim-calendar](https://github.com/itchyny/calendar.vim)
 | 快捷键  | 行为     |
@@ -492,3 +780,134 @@ string
 | `[` `d` `o` `SPACE`     | 将光标向上移动50行    |
 
 **注意: 目前, 使用此移动方式, 你最多只能垂直移动 199 行!**
+
+### 调试功能
+
+本配置使用 [nvim-dap](https://github.com/mfussenegger/nvim-dap) 进行代码调试，支持多种语言。
+
+#### 调试快捷键
+| 快捷键          | 行为                   |
+|-----------------|------------------------|
+| `<F5>`          | 开始/继续调试          |
+| `<F10>`         | 单步跳过               |
+| `<F11>`         | 单步进入               |
+| `<F12>`         | 单步退出               |
+| `<leader>b`     | 切换断点               |
+| `<leader>B`     | 设置条件断点           |
+| `<leader>dr`    | 打开 REPL              |
+| `<leader>dl`    | 运行最后的调试配置     |
+| `<leader>dh`    | 悬浮显示变量值         |
+
+#### 支持的语言
+- Python (通过 debugpy)
+- Go (通过 delve)
+- Lua (通过 local-lua-debugger-vscode)
+- JavaScript/TypeScript (通过 vscode-js-debug)
+- C/C++/Rust (通过 codelldb)
+
+#### 安装调试器
+使用 Mason 安装调试器：
+1. 运行 `:Mason`
+2. 搜索并安装需要的调试器（如 `debugpy`、`delve` 等）
+
+#### 调试配置示例
+```lua
+-- Python 调试配置示例
+require('dap').configurations.python = {
+  {
+    type = 'python',
+    request = 'launch',
+    name = "Launch file",
+    program = "${file}",
+    pythonPath = function()
+      return '/usr/bin/python3'
+    end,
+  },
+}
+```
+
+### LSP 快捷键
+| 快捷键          | 行为                   |
+|-----------------|------------------------|
+| `gd`            | 转到定义               |
+| `gr`            | 查看引用               |
+| `K`             | 显示悬浮文档           |
+| `<leader>rn`    | 重命名                 |
+| `<leader>ca`    | 代码操作               |
+| `[d`            | 上一个诊断             |
+| `]d`            | 下一个诊断             |
+| `<leader>f`     | 格式化代码             |
+| `<leader>e`     | 显示诊断列表           |
+| `<leader>o`     | 大纲/符号列表          |
+
+### 自动补全快捷键
+| 快捷键        | 行为                   |
+|---------------|------------------------|
+| `<CR>`        | 确认选中               |
+| `<Tab>`       | 下一个候选             |
+| `<S-Tab>`     | 上一个候选             |
+| `<C-e>`       | 取消补全               |
+| `<C-u>`       | 滚动文档上             |
+| `<C-d>`       | 滚动文档下             |
+| `<C-Space>`   | 触发补全               |
+
+### Telescope 快捷键
+| 快捷键          | 行为                   |
+|-----------------|------------------------|
+| `<leader>ff`    | 查找文件               |
+| `<leader>fg`    | 实时 grep              |
+| `<leader>fb`    | 查找缓冲区             |
+| `<leader>fh`    | 查找帮助               |
+| `<leader>fs`    | 查找符号               |
+| `<leader>fo`    | 最近文件               |
+| `<leader>fc`    | 执行命令               |
+
+### 文件导航
+
+#### Telescope - 模糊查找器
+[Telescope](https://github.com/nvim-telescope/telescope.nvim) 是一个高度可扩展的模糊查找器。
+
+| 快捷键          | 行为                   |
+|-----------------|------------------------|
+| `<leader>ff`    | 查找文件               |
+| `<leader>fg`    | 实时 grep              |
+| `<leader>fb`    | 查找缓冲区             |
+| `<leader>fh`    | 查找帮助               |
+| `<leader>fs`    | 查找符号               |
+| `<leader>fo`    | 最近文件               |
+| `<leader>fc`    | 执行命令               |
+
+在 Telescope 窗口中：
+- `<C-u>`/`<C-d>`: 预览窗口滚动
+- `<C-q>`: 将结果发送到 quickfix
+- `<Tab>`: 选择多个项目
+- `<C-v>`/`<C-x>`: 垂直/水平分屏打开
+
+#### 文件浏览器
+本配置提供两个文件浏览器选项：
+
+1. [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim)
+   - 按 `<leader>e` 打开文件树
+   - 在文件树中：
+     - `a`: 新建文件/文件夹
+     - `d`: 删除
+     - `r`: 重命名
+     - `y`: 复制路径
+     - `x`: 剪切
+     - `p`: 粘贴
+     - `c`: 复制
+     - `?`: 显示帮助
+
+2. [Yazi](https://github.com/sxyazi/yazi)
+   - 按 `<leader>ra` 打开终端文件管理器
+   - 现代化的终端文件管理器
+   - 支持图片预览
+   - 快速文件操作
+
+#### 项目管理
+使用 [Project.nvim](https://github.com/ahmedkhalf/project.nvim) 进行项目管理：
+
+- `<leader>fp`: 查找项目
+- `<leader>fw`: 在当前项目中查找文本
+- 自动检测 git 仓库
+- 记住上次访问位置

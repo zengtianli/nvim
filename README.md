@@ -2,12 +2,13 @@
 <center><a href="https://instaboard.page/gh-sponsor"><img src="https://user-images.githubusercontent.com/8187501/232345609-366fd597-8a32-4667-9e80-2487ebe6f7f6.png" alt="Sponsored by Instaboard"></img></a></center>
 <br/>
 
+> 🎉 **Major Update**: This configuration has been completely refactored with a modern architecture, reducing from 80+ files to 21 core files while maintaining all functionality!
 
-```
+```bash
+# Install language servers
 npm i -g vscode-langservers-extracted
 npm install -g @ansible/ansible-language-server
 ```
-
 
 <center><img src="https://raw.githubusercontent.com/theniceboy/nvim/master/demo.png"></center>
 
@@ -15,98 +16,156 @@ npm install -g @ansible/ansible-language-server
 
 Please **DO NOT** just copy this configuration folder without really looking at it! Please, at least, read this README file!
 
-<!-- TOC GFM -->
+## Modern Architecture
 
-* [Requirements](#requirements)
-* [After Installation, You Need To](#after-installation-you-need-to)
-* [After Installation, You Might Want To](#after-installation-you-might-want-to)
-  - [First of all](#first-of-all)
-  - [For Python Debugger (via `vimspector`)](#for-python-debugger-via-vimspector)
-  - [Config `Python` path](#config-python-path)
-  - [For Taglist:](#for-taglist)
-  - [For FZF](#for-fzf)
-  - [And also...](#and-also)
-* [Keyboard Shortcuts](#keyboard-shortcuts)
-  - [1 Basic Editor Features](#1-basic-editor-features)
-    + [1.1 The Most Basics](#11-the-most-basics)
-    + [1.2 Remapped Cursor Movement](#12-remapped-cursor-movement)
-    + [1.3 Remapped Insert Mode Keys](#13-remapped-insert-mode-keys)
-    + [1.4 Remapped Text Manipulating Commands in Normal Mode](#14-remapped-text-manipulating-commands-in-normal-mode)
-    + [1.5 Other Useful Normal Mode Remappings](#15-other-useful-normal-mode-remappings)
-    + [1.6 Remapped Commands in Visual Mode](#16-remapped-commands-in-visual-mode)
-  - [2 Window Management](#2-window-management)
-    + [2.1 Creating Window Through Split Screen](#21-creating-window-through-split-screen)
-    + [2.2 Moving the Cursor Between Different Windows](#22-moving-the-cursor-between-different-windows)
-    + [2.3 Resizing Different Windows](#23-resizing-different-windows)
-    + [2.4 Closing Windows](#24-closing-windows)
-  - [3 Tab Management](#3-tab-management)
-  - [4 Terminal Keyboard Shortcuts](#4-terminal-keyboard-shortcuts)
-* [Plugins Keybindings (Screenshots/GIF provided!)](#plugins-keybindings-screenshotsgif-provided)
-  - [AutoCompletion](#autocompletion)
-    + [COC (AutoCompletion)](#coc-autocompletion)
-    + [coc-snippets](#coc-snippets)
-  - [File Navigation](#file-navigation)
-    + [coc-explorer (file browser)](#coc-explorer-file-browser)
-    + [rnvimr - file browser](#rnvimr---file-browser)
-    + [FZF - the fuzzy file finder](#fzf---the-fuzzy-file-finder)
-    + [xtabline (the fancy tab line)](#xtabline-the-fancy-tab-line)
-  - [Text Editing Plugins](#text-editing-plugins)
-    + [vim-table-mode](#vim-table-mode)
-    + [Undotree](#undotree)
-    + [vim-visual-multi](#vim-visual-multi)
-    + [vim-surround](#vim-surround)
-    + [vim-subversive](#vim-subversive)
-    + [vim-easy-align](#vim-easy-align)
-    + [AutoFormat](#autoformat)
-    + [vim-markdown-toc (generate table of contents for markdown files)](#vim-markdown-toc-generate-table-of-contents-for-markdown-files)
-  - [Navigation Within Buffer](#navigation-within-buffer)
-    + [Vista.vim](#vistavim)
-  - [Find and Replace](#find-and-replace)
-    + [Far.vim - find and replace](#farvim---find-and-replace)
-  - [Git Related](#git-related)
-    + [vim-gitgutter](#vim-gitgutter)
-    + [fzf-gitignore](#fzf-gitignore)
-  - [Others](#others)
-    + [vim-calendar](#vim-calendar)
-    + [Goyo - Work without distraction](#goyo---work-without-distraction)
-    + [suda.vim](#sudavim)
-    + [coc-translator](#coc-translator)
-* [Custom Snippets](#custom-snippets)
-  - [Markdown](#markdown)
-* [Some Weird Stuff](#some-weird-stuff)
-  - [Press `tx` and enter your text](#press-tx-and-enter-your-text)
-  - [Customized Vertical Cursor Movement](#customized-vertical-cursor-movement)
+This Neovim configuration now uses a highly unified modular architecture with:
 
-<!-- /TOC -->
+- **Unified Design**: Centralized configuration management by functionality
+- **Flat Architecture**: Simplified directory structure
+- **High Performance**: Optimized file loading and startup time
+- **Development Tools**: Complete toolchain including LSP, DAP, Git, AI assistant
+- **Multi-language Support**: Flutter, Go, Lua, Markdown, etc.
+- **Smart Navigation**: File search, symbol jumping, project management
+
+### Core Structure
+```
+nvim/
+├── init.lua                 # Main entry
+├── lua/config/             # Configuration modules
+│   ├── defaults.lua        # Default loader
+│   ├── keymaps.lua        # Key mappings
+│   ├── plugins.lua        # Plugin management
+│   ├── lsp.lua           # LSP configuration
+│   ├── autocomplete.lua   # Autocomplete
+│   └── ...               # Other modules
+└── lua/plugin/            # Custom plugins
+```
 
 ## Requirements
-- This nvim configuration **REQUIRES** NeoVim 0.6.0+
-## After Installation, You Need To
-- Install `pip3`, and do `pip3 install --user pynvim`
-- Install `node`, and do `npm install -g neovim`
-- Install nerd-fonts (actually it's optional but it looks real good)
 
-## After Installation, You Might Want To
-### First of all
-- Do `:checkhealth`
+- Neovim >= 0.9.0 (Required)
+- Git (for plugin management)
+- A modern terminal with true color support
+- [Nerd Font](https://www.nerdfonts.com/) (for icons)
+- Node.js >= 14.14 (for LSP)
+- Python >= 3.8 (for some plugins)
+- ripgrep (for text search)
+- fd (for file finding)
+- lazygit (for Git operations)
 
-### For Python Debugger (via `vimspector`)
-- Install `debugpy` (`pip`)
+### Optional Dependencies
 
-### Config `Python` path
-- Well, make sure you have python
-- See `_machine_specific.vim`
+- xclip/pbcopy (for system clipboard support)
+- Node.js packages:
+  ```bash
+  # LSP servers
+  npm install -g typescript typescript-language-server
+  npm install -g vscode-langservers-extracted
+  npm install -g @ansible/ansible-language-server
+  ```
+- Python packages:
+  ```bash
+  # Python support
+  pip install pynvim
+  pip install python-lsp-server
+  ```
+- Lua LSP:
+  ```bash
+  # macOS
+  brew install lua-language-server
+  # Linux
+  # See https://github.com/sumneko/lua-language-server
+  ```
 
-### For Taglist:
-- Install `ctags` for function/class/variable list
+### Recommended Tools
 
-### For FZF
-- Install `fzf`
-- Install `ag` (`the_silver_searcher`)
+- [fzf](https://github.com/junegunn/fzf) - Fuzzy finder
+- [delta](https://github.com/dandavison/delta) - Git diff viewer
+- [zoxide](https://github.com/ajeetdsouza/zoxide) - Smart directory jumper
+- [yazi](https://github.com/sxyazi/yazi) - Terminal file manager
 
-### And also...
-- Install `figlet` for inputing text ASCII art
-- Install `xclip` for system clipboard access (`Linux` and `xorg` only)
+## Installation
+
+1. Back up your existing Neovim configuration:
+```bash
+mv ~/.config/nvim ~/.config/nvim.bak
+mv ~/.local/share/nvim ~/.local/share/nvim.bak
+```
+
+2. Clone this repository:
+```bash
+git clone https://github.com/theniceboy/nvim.git ~/.config/nvim
+```
+
+3. Install the required dependencies:
+```bash
+# Python support
+pip install pynvim
+
+# Node.js support
+npm install -g neovim
+
+# Clipboard support (Linux/macOS)
+# Linux
+sudo apt install xclip   # Debian/Ubuntu
+sudo pacman -S xclip    # Arch Linux
+# macOS
+brew install pbcopy
+
+# Optional but recommended
+brew install ripgrep fd  # Fast search tools
+```
+
+4. Start Neovim:
+```bash
+nvim
+```
+The plugin manager will automatically install all plugins on first launch.
+
+## Configuration
+
+### Machine-Specific Settings
+Create a `lua/machine_specific.lua` file for your local settings:
+
+```lua
+-- Example machine_specific.lua
+return {
+  python3_host_prog = '/path/to/python3',
+  node_host_prog = '/path/to/node',
+  -- Add other machine-specific settings
+}
+```
+
+### Language Servers
+This config uses native LSP. Servers are managed through [mason.nvim](https://github.com/williamboman/mason.nvim).
+
+To install language servers:
+1. Open Neovim
+2. Run `:Mason`
+3. Press `i` to install servers you need
+
+Common language servers:
+```bash
+# JavaScript/TypeScript
+npm i -g typescript typescript-language-server
+
+# Python
+pip install python-lsp-server
+
+# Lua
+brew install lua-language-server  # macOS
+```
+
+### Key Customization
+Edit `lua/config/keymaps.lua` to customize key mappings:
+
+```lua
+-- Example: Change leader key
+vim.g.mapleader = " "  -- Space as leader key
+
+-- Add custom keymaps
+vim.keymap.set('n', '<leader>w', ':w<CR>', { noremap = true })
+```
 
 ## Keyboard Shortcuts
 ### 1 Basic Editor Features
@@ -216,19 +275,100 @@ Use the arrow keys to resize the current window.
 |-------------|-------------------------------------------------------------|
 | `Ctrl` `n`  | Escape from terminal input mode                             |
 
-## Plugins Keybindings (Screenshots/GIF provided!)
-### AutoCompletion
-#### [COC (AutoCompletion)](https://github.com/neoclide/coc.nvim)
-| Shortcut        | Action                    |
-|-----------------|---------------------------|
-| `Space` `y`     | **Get yank history list** |
-| `gd`            | Go to definition          |
-| `gr`            | List references           |
-| `gi`            | List implementation       |
-| `gy`            | Go to type definition     |
-| `Space` `r` `n` | Rename a variable         |
+## Plugin System
 
-<img alt="Gif" src="https://user-images.githubusercontent.com/251450/55285193-400a9000-53b9-11e9-8cff-ffe4983c5947.gif" width="60%" />
+This configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management, with 79 carefully selected plugins organized into 6 categories:
+
+### 🎨 UI Plugins (15)
+- **Themes**: gruvbox, onedark, etc.
+- **Status Line**: lualine.nvim
+- **Tab Line**: bufferline.nvim
+- **Window Bar**: Custom window title bar
+- **Scroll Bar**: Smart scrollbar
+- **Notifications**: nvim-notify
+
+### ✏️ Editing Plugins (12)
+- **Comments**: nvim-comment
+- **Surround**: nvim-surround
+- **Multi-cursor**: vim-visual-multi
+- **Quick Jump**: leap.nvim
+- **Editor Tools**: Various editing enhancements
+- **Undo**: undotree visualization
+- **Clipboard**: neoclip.nvim history
+
+### 🛠️ Development Tools (25)
+- **LSP**: nvim-lspconfig + mason.nvim
+- **Treesitter**: nvim-treesitter
+- **Debugger**: nvim-dap
+- **Git**: gitsigns, lazygit
+- **Copilot**: github-copilot
+- **Completion**: nvim-cmp
+- **Package Manager**: mason
+
+### 🧭 Navigation (8)
+- **Telescope**: fuzzy finder core
+- **FZF**: high-performance search
+- **Search Tools**: Enhanced searching
+- **Project**: project management
+- **File Manager**: yazi.nvim
+- **Command Palette**: commander.nvim
+
+### 🌐 Language Support (10)
+- **Markdown**: Enhanced support
+- **LaTeX**: VimTeX
+- **Flutter**: Development toolkit
+- **Go**: Go tools
+- **Lua**: Enhanced development
+- **Dart**: Language support
+
+### 🔧 Utilities (9)
+- **CSV**: File handling
+- **Command Line**: wilder.nvim
+- **Startup Time**: Analysis
+- **Indent**: Visualization
+- **File Types**: Enhanced detection
+
+## Plugins Keybindings (Screenshots/GIF provided!)
+### Auto-completion
+
+This configuration uses [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) as the completion engine, providing a smart and fast completion experience.
+
+#### Completion Sources
+- LSP completion
+- Buffer completion
+- Path completion
+- Snippet completion (using LuaSnip)
+- Command line completion
+- Spell checking completion
+
+#### Completion Keybindings
+| Key Binding   | Action                |
+|--------------|----------------------|
+| `<CR>`       | Confirm Selection    |
+| `<Tab>`      | Next Candidate       |
+| `<S-Tab>`    | Previous Candidate   |
+| `<C-e>`      | Cancel Completion    |
+| `<C-u>`      | Scroll Docs Up      |
+| `<C-d>`      | Scroll Docs Down    |
+| `<C-Space>`  | Trigger Completion   |
+
+#### Snippets
+Using [LuaSnip](https://github.com/L3MON4D3/LuaSnip) for snippet management:
+
+| Key Binding | Action                |
+|------------|----------------------|
+| `<C-k>`    | Expand Snippet       |
+| `<C-j>`    | Next Placeholder     |
+| `<C-h>`    | Previous Placeholder |
+
+#### Features
+- Smart context awareness
+- Real-time fuzzy matching
+- Type-aware completion
+- Auto-import completion
+- Parameter hints
+- Snippet integration
+- Custom sorting
 
 #### [coc-snippets](https://github.com/neoclide/coc-snippets)
 | Shortcut   | Action                                           |
@@ -240,48 +380,54 @@ Use the arrow keys to resize the current window.
 ![GIF Demo](https://raw.github.com/SirVer/ultisnips/master/doc/demo.gif)
 
 ### File Navigation
-#### [coc-explorer (file browser)](https://github.com/weirongxu/coc-explorer)
-| Shortcut | Action                  |
-|----------|-------------------------|
-| `tt`     | **Open file browser**   |
-| `?`      | show help (in explorer) |
 
-<img alt="Png" src="https://user-images.githubusercontent.com/1709861/64966850-1e9f5100-d8d2-11e9-9490-438c6d1cf378.png" width="60%" />
+#### Telescope - Fuzzy Finder
+[Telescope](https://github.com/nvim-telescope/telescope.nvim) is a highly extendable fuzzy finder.
 
-#### [rnvimr - file browser](https://github.com/kevinhwang91/rnvimr)
-- [ ] Make sure you have ranger installed
+| Key Binding     | Action                |
+|-----------------|----------------------|
+| `<leader>ff`    | Find Files           |
+| `<leader>fg`    | Live Grep            |
+| `<leader>fb`    | Find Buffers         |
+| `<leader>fh`    | Find Help            |
+| `<leader>fs`    | Find Symbols         |
+| `<leader>fo`    | Recent Files         |
+| `<leader>fc`    | Execute Command      |
 
-Press `R` to open Ranger (file selector)
+In Telescope window:
+- `<C-u>`/`<C-d>`: Scroll preview
+- `<C-q>`: Send to quickfix
+- `<Tab>`: Select multiple items
+- `<C-v>`/`<C-x>`: Open in vertical/horizontal split
 
-And Within rnvimr (ranger), you can:
-| Shortcut   | Action                             |
-|------------|------------------------------------|
-| `Ctrl` `t` | Open the file in a new tab         |
-| `Ctrl` `x` | Split up and down with the file    |
-| `Ctrl` `v` | Split left and right with the file |
+#### File Browser
+This configuration provides two file browser options:
 
-<img alt="Gif" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif" width="60%" />
+1. [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim)
+   - Press `<leader>e` to open file tree
+   - In the file tree:
+     - `a`: Add file/directory
+     - `d`: Delete
+     - `r`: Rename
+     - `y`: Copy path
+     - `x`: Cut
+     - `p`: Paste
+     - `c`: Copy
+     - `?`: Show help
 
-#### [FZF - the fuzzy file finder](https://github.com/junegunn/fzf.vim)
-| Shortcut   | Action             |
-|------------|--------------------|
-| `Ctrl` `p` | **FZF Files**      |
-| `Ctrl` `u` | Move up 1 item     |
-| `Ctrl` `e` | Move down 1 item   |
-| `Ctrl` `w` | FZF Buffers        |
-| `Ctrl` `f` | FZF Files' Content |
-| `Ctrl` `h` | FZF Recent Files   |
-| `Ctrl` `t` | FZF Tags           |
+2. [Yazi](https://github.com/sxyazi/yazi)
+   - Press `<leader>ra` to open terminal file manager
+   - Modern terminal file manager
+   - Image preview support
+   - Fast file operations
 
-<img alt="Gif" src="https://jesseleite.com/uploads/posts/2/tag-finder-opt.gif" width="60%" />
+#### Project Management
+Using [Project.nvim](https://github.com/ahmedkhalf/project.nvim) for project management:
 
-#### [xtabline (the fancy tab line)](https://github.com/mg979/vim-xtabline)
-| Shortcut | What it creates   |
-|----------|-------------------|
-| `to`     | Cycle tab mode    |
-| `\p`     | Show current path |
-
-<img alt="Gif" src="https://i.imgur.com/yU6qbU5.gif" width="60%" />
+- `<leader>fp`: Find projects
+- `<leader>fw`: Find text in current project
+- Automatic git repository detection
+- Remember last visited position
 
 ### Text Editing Plugins
 #### [vim-table-mode](https://github.com/dhruvasagar/vim-table-mode)
@@ -295,163 +441,120 @@ See `:help table-mode.txt` for more.
 #### [Undotree](https://github.com/mbbill/undotree)
 | Shortcut      | Action        |
 |---------------|---------------|
-| `Shift` + `L` | Open Undotree |
-| `u`           | Newer Version |
-| `e`           | Older Version |
+| `Shift` + `
 
-<img alt="Png" src="https://camo.githubusercontent.com/56430626a5444ea2f0249d71f9288775277c7f5d/68747470733a2f2f73697465732e676f6f676c652e636f6d2f736974652f6d6262696c6c2f756e646f747265655f6e65772e706e67" width="60%" />
+### Debugging Features
 
-#### [vim-visual-multi](https://github.com/mg979/vim-visual-multi)
-| Shortcut   | Action                                           |
-|------------|--------------------------------------------------|
-| `Ctrl`+`k` | **Select next key (multiple cursors)**           |
-| `q`        | **Deselect the current keys (multiple cursors)** |
-| `-`        | Select the previous key                          |
-| `=`        | Select the next key                              |
-| `Esc`      | Quit mutiple cursors                             |
+This configuration uses [nvim-dap](https://github.com/mfussenegger/nvim-dap) for debugging, supporting multiple languages.
 
-<img alt="Gif" src="https://raw.githubusercontent.com/terryma/vim-multiple-cursors/master/assets/example1.gif" width="60%" />
-<img alt="Gif" src="https://raw.githubusercontent.com/terryma/vim-multiple-cursors/master/assets/example2.gif" width="60%" />
-<img alt="Gif" src="https://raw.githubusercontent.com/terryma/vim-multiple-cursors/master/assets/example3.gif" width="60%" />
-<img alt="Gif" src="https://raw.githubusercontent.com/terryma/vim-multiple-cursors/master/assets/example4.gif" width="60%" />
+#### Debugging Keybindings
+| Key Binding     | Action                |
+|-----------------|----------------------|
+| `<F5>`          | Start/Continue Debug  |
+| `<F10>`         | Step Over            |
+| `<F11>`         | Step Into            |
+| `<F12>`         | Step Out             |
+| `<leader>b`     | Toggle Breakpoint    |
+| `<leader>B`     | Set Condition Break  |
+| `<leader>dr`    | Open REPL            |
+| `<leader>dl`    | Run Last Config      |
+| `<leader>dh`    | Hover Variables      |
 
-#### [vim-surround](https://github.com/tpope/vim-surround)
-To add surround (`string` -> `"string"`):
-```
-string
-```
-press: `yskw'`:
-```
-'string'
-```
+#### Supported Languages
+- Python (via debugpy)
+- Go (via delve)
+- Lua (via local-lua-debugger-vscode)
+- JavaScript/TypeScript (via vscode-js-debug)
+- C/C++/Rust (via codelldb)
 
-To change surround
-```
-'string'
-```
-press: `cs'"`:
-```
-"string"
-```
+#### Installing Debuggers
+Use Mason to install debuggers:
+1. Run `:Mason`
+2. Search and install needed debuggers (e.g., `debugpy`, `delve`, etc.)
 
-<img alt="Gif" src="https://two-wrongs.com/image/surround_vim.gif" width="60%" />
-
-#### [vim-subversive](https://github.com/svermeulen/vim-subversive)
-New operator: `s`:
-
-You can execute `s<motion>` to substitute the text object provided by the motion with the contents of the default register (or an explicit register if provided). For example, you could execute `skw` to replace the current word under the cursor with the current yank, or `skp` to replace the paragraph, etc.
-
-#### [vim-easy-align](https://github.com/junegunn/vim-easy-align)
-Press `ga` + **symbol** in normal or visual mode to align text based on **symbol**
-
-<img alt="Gif" src="https://raw.githubusercontent.com/junegunn/i/master/easy-align/equals.gif" width="60%" />
-
-#### [AutoFormat](https://github.com/Chiel92/vim-autoformat)
-Press `\` `f` to format code
-
-#### [vim-markdown-toc (generate table of contents for markdown files)](https://github.com/mzlogin/vim-markdown-toc)
-In `markdown` files, type `:Gen` then tab, you'll see your options.
-
-<img alt="Gif" src="https://raw.githubusercontent.com/mzlogin/vim-markdown-toc/master/screenshots/english.gif" width="60%" />
-
-### Navigation Within Buffer
-#### [Vista.vim](https://github.com/liuchengxu/vista.vim)
-Press `T` to toggle function and variable list
-
-<img alt="Gif" src="https://user-images.githubusercontent.com/8850248/56469894-14d40780-6472-11e9-802f-729ac53bd4d5.gif" width="60%" />
-
-### Find and Replace
-#### [Far.vim - find and replace](https://github.com/brooth/far.vim)
-Press `SPACE` `f` `r` to search in cwd.
-
-<img alt="Gif" src="https://cloud.githubusercontent.com/assets/9823254/20861878/77dd1882-b9b4-11e6-9b48-8bc60f3d7ec0.gif" width="60%" />
-
-### Git Related
-#### [vim-gitgutter](https://github.com/airblade/vim-gitgutter)
-| Shortcut        | Action                            |
-|-----------------|-----------------------------------|
-| `H`             | **Show git hunk at current line** |
-| `SPACE` `g` `-` | Go to previous git hunk           |
-| `SPACE` `g` `+` | Go to next git hunk               |
-| `SPACE` `g` `f` | Fold everything except hunks      |
-
-#### [fzf-gitignore](https://github.com/fszymanski/fzf-gitignore)
-Press `Space` `g` `i` to create a `.gitignore` file
-
-<img alt="Png" src="https://user-images.githubusercontent.com/25827968/42945393-96c662da-8b68-11e8-8279-5bcd2e956ca9.png" width="60%" />
-
-<img alt="Png" src="https://raw.githubusercontent.com/airblade/vim-gitgutter/master/screenshot.png" width="60%" />
-
-### Others
-#### [vim-calendar](https://github.com/itchyny/calendar.vim)
-| Shortcut | Action        |
-|----------|---------------|
-| `\` `\`  | Show clock    |
-| `\` `c`  | Show calendar |
-
-<img alt="Png" src="https://raw.githubusercontent.com/wiki/itchyny/calendar.vim/image/image.png" width="60%" />
-
-#### [Goyo - Work without distraction](https://github.com/junegunn/goyo.vim)
-Press `g` `y` to toggle Goyo
-
-<img alt="Png" src="https://raw.github.com/junegunn/i/master/goyo.png" width="60%" />
-
-#### [suda.vim](https://github.com/lambdalisue/suda.vim)
-Forgot to `sudo vim ...`? Just do `:sudowrite` or `:sw`
-
-#### [coc-translator](https://github.com/voldikss/coc-translator)
-Press `ts` to **translate word under cursor**.
-
-<img alt="Png" src="https://user-images.githubusercontent.com/20282795/72232547-b56be800-35fc-11ea-980a-3402fea13ec1.png" width="60%" />
-
-## Custom Snippets
-### Markdown
-| Shortcut | What it creates     |
-|----------|---------------------|
-| `,n`     | ---                 |
-| `,b`     | **Bold** text       |
-| `,s`     | ~~sliced~~ text     |
-| `,i`     | *italic* text       |
-| `,d`     | `code block`        |
-| `,c`     | big `block of code` |
-| `,m`     | - [ ] check mark    |
-| `,p`     | picture             |
-| `,a`     | [link]()            |
-| `,1`     | # H1                |
-| `,2`     | ## H2               |
-| `,3`     | ### H3              |
-| `,4`     | #### H4             |
-| `,l`     | --------            |
-
-`,f` to go to the next `<++>` (placeholder)
-
-`,w` to go to the next `<++>` (placeholder) and then press `Enter` for you
-
-## Some Weird Stuff
-### Press `tx` and enter your text
-`tx Hello<Enter>`
-```
- _   _      _ _
-| | | | ___| | | ___
-| |_| |/ _ \ | |/ _ \
-|  _  |  __/ | | (_) |
-|_| |_|\___|_|_|\___/
+#### Debug Configuration Example
+```lua
+-- Python debug configuration example
+require('dap').configurations.python = {
+  {
+    type = 'python',
+    request = 'launch',
+    name = "Launch file",
+    program = "${file}",
+    pythonPath = function()
+      return '/usr/bin/python3'
+    end,
+  },
+}
 ```
 
-### Customized Vertical Cursor Movement
+### LSP Keybindings
+| Key Binding     | Action                |
+|-----------------|----------------------|
+| `gd`            | Go to Definition     |
+| `gr`            | Find References      |
+| `K`             | Hover Documentation  |
+| `<leader>rn`    | Rename              |
+| `<leader>ca`    | Code Action         |
+| `[d`            | Previous Diagnostic  |
+| `]d`            | Next Diagnostic      |
+| `<leader>f`     | Format Code         |
+| `<leader>e`     | Show Diagnostics    |
+| `<leader>o`     | Outline/Symbols     |
 
-This NeoVim configuration includes a customized vertical cursor movement tailored for Colemak users. It can be located in `cursor.vim`, and it serves as an alternative to the "number + up/down" key combination.
+### Completion Keybindings
+| Key Binding   | Action                |
+|--------------|----------------------|
+| `<CR>`       | Confirm Selection    |
+| `<Tab>`      | Next Candidate       |
+| `<S-Tab>`    | Previous Candidate   |
+| `<C-e>`      | Cancel Completion    |
+| `<C-u>`      | Scroll Docs Up      |
+| `<C-d>`      | Scroll Docs Down    |
+| `<C-Space>`  | Trigger Completion   |
 
-In order to move the cursor up `x` lines, press the `[` key, and treat the middle row of the Colemak keyboard layout ("arstdhneio") as number 1 to 0. Press the numbers that you'd like your cursor to move (`x`) and press the space bar.
+### Git Integration
 
-To move the cursor down, press the `'` key instead of the `[` key, and the rest would be the same.
+This configuration provides comprehensive Git workflow support:
 
-Example:
-| Shortcut                | Action                         |
-|-------------------------|--------------------------------|
-| `[` `a` `o` `o` `SPACE` | Move the cursor up 100 lines   |
-| `'` `a` `r` `s` `SPACE` | Move the cursor down 123 lines |
-| `[` `d` `o` `SPACE`     | Move the cursor up 50 lines    |
+#### [lazygit.nvim](https://github.com/kdheepak/lazygit.nvim)
+Press `<leader>gg` to open lazygit interface, providing:
+- Complete Git repository management
+- Branch operations and merging
+- Commit history browsing
+- File status management
+- Conflict resolution
 
-**Note: As of now, you may only move vertically up to 199 lines with this key configuration!**
+#### [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
+Real-time Git status display:
 
+| Key Binding     | Action                |
+|-----------------|----------------------|
+| `]c`            | Next Change          |
+| `[c`            | Previous Change      |
+| `<leader>hp`    | Preview Changes      |
+| `<leader>hs`    | Stage Hunk           |
+| `<leader>hu`    | Undo Stage           |
+| `<leader>hr`    | Reset Hunk           |
+| `<leader>hb`    | Show Line Blame      |
+
+Features:
+- Line-level Git status
+- Real-time change indicators
+- Hunk-level operations
+- Git blame integration
+- Hunk history preview
+
+#### [diffview.nvim](https://github.com/sindrets/diffview.nvim)
+Powerful diff viewer:
+
+| Key Binding     | Action                |
+|-----------------|----------------------|
+| `<leader>gd`    | Open Diff View       |
+| `<leader>gh`    | View File History    |
+
+Features:
+- Side-by-side diff comparison
+- File history browsing
+- Commit history viewing
+- Merge conflict handling
