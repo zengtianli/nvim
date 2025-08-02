@@ -51,7 +51,6 @@ local nmappings = {
 
 	-- 其他工具
 	{ from = "<leader>v", to = ":Vista!!<CR>", desc = "切换代码大纲" },
-	{ from = "<leader>mt", to = ":TableModeToggle<CR>", desc = "切换表格模式" },
 	{ from = "<leader>o", to = "za", desc = "切换折叠" },
 	{ from = "<f10>", to = ":TSHighlightCapturesUnderCursor<CR>", desc = "显示光标下的语法高亮信息" },
 }
@@ -123,6 +122,13 @@ local text_processing_mappings = {
 	-- 性能分析
 	{ from = "<leader>pr", to = ":profile start profile.log<CR>:profile func *<CR>:profile file *<CR>", desc = "开始性能分析" },
 	{ from = "<leader>rd", to = ":%s/\\\\[[^\\\\]]*\\\\]//g<CR>", mode = "n", desc = "删除文件中所有中括号引用" },
+
+	-- 表格模式
+	{ from = "<leader>mt", to = ":TableModeToggle<CR>", desc = "切换表格模式" },
+	
+	-- Marp 幻灯片预览
+	{ from = "<leader>mp", to = ":MarpToggle<CR>", desc = "切换 Marp 幻灯片预览" },
+	{ from = "<leader>ms", to = ":MarpStatus<CR>", desc = "查看 Marp 服务器状态" },
 }
 
 -- ==========================================

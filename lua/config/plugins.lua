@@ -485,6 +485,32 @@ endfunc]])
     build = "yarn install",
     config = function() vim.g.instant_markdown_autostart = 0 end
   },
+  -- Marp 幻灯片预览
+  {
+    "mpas/marp-nvim",
+    ft = { "markdown" },
+    config = function()
+      require("marp").setup({
+        port = 8080,  -- Marp 服务器端口
+        wait_for_response_timeout = 10,  -- 等待服务器响应的超时时间
+        wait_for_response_delay = 1,     -- 连接重试延迟
+      })
+    end
+  },
+  -- 表格模式
+  {
+    "dhruvasagar/vim-table-mode",
+    ft = { "markdown", "text", "rst", "org" },
+    config = function()
+      -- 表格模式配置
+      vim.g.table_mode_corner = '|'
+      vim.g.table_mode_corner_corner = '|'
+      vim.g.table_mode_header_fillchar = '='
+      vim.g.table_mode_align_char = ':'
+      vim.g.table_mode_delimiter = ' | '
+      vim.g.table_mode_fillchar = '-'
+    end
+  },
   {
     "lervag/vimtex",
     init = function()
