@@ -105,14 +105,7 @@ local plugins = {
     }
   },
 
-  -- 顶部导航栏
-  {
-    "Bekaboo/dropbar.nvim",
-    config = function()
-      vim.keymap.set('n', '<Leader>b', require('dropbar.api').pick)
-      require("dropbar").setup({})
-    end
-  },
+
 
   -- 滚动条
   {
@@ -367,30 +360,40 @@ endfunc]])
     priority = 1000,
     build = ":TSUpdate",
     config = function()
+      -- 禁用内置的折叠，使用 ufo 插件代替
+      vim.opt.foldmethod = "manual"
+      vim.opt.foldexpr = ""
       vim.opt.smartindent = false
+
       require("nvim-treesitter.configs").setup({
-        auto_install = true,
+        auto_install = false,  -- 禁用自动安装
         sync_install = false,
         ensure_installed = {
-          "markdown", "html", "javascript", "typescript", "tsx", "query", "dart", "java",
-          "c", "prisma", "bash", "go", "lua", "kdl", "vim", "terraform", "dockerfile", "yaml", "python"
+          "lua", "vim", "vimdoc",  -- 只保留最基础的几个
         },
-        highlight = { enable = true, disable = { "csv" } },
-        indent = {
+        highlight = { 
           enable = true,
-          disable = function(lang, bufnr)
-            local disallowed_filetypes = { "yaml", "dart" }
-            return vim.tbl_contains(disallowed_filetypes, lang)
-          end
+          disable = function(lang, buf)
+            local max_filesize = 100 * 1024 -- 100 KB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+              return true
+            end
+            return false
+          end,
+          additional_vim_regex_highlighting = false,
+        },
+        indent = {
+          enable = false,  -- 禁用 treesitter 缩进
         },
         incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = "<c-j>", node_incremental = "<c-j>",
-            node_decremental = "<c-k>", scope_incremental = "<c-l>"
-          }
+          enable = false,  -- 禁用增量选择
         }
       })
+
+      -- 设置更保守的高亮限制
+      vim.g.ts_highlight_lua = false  -- 禁用 Lua 高亮优化
+      vim.g.ts_highlight = false      -- 禁用所有高亮优化
     end
   },
   {
