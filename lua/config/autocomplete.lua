@@ -17,17 +17,7 @@ local limitStr = function(str)
   return str
 end
 
-local dartColonFirst = function(entry1, entry2)
-  if vim.bo.filetype ~= "dart" then return nil end
-  local entry1EndsWithColon = string.find(entry1.completion_item.label, ":") and entry1.source.name == 'nvim_lsp'
-  local entry2EndsWithColon = string.find(entry2.completion_item.label, ":") and entry2.source.name == 'nvim_lsp'
-  if entry1EndsWithColon and not entry2EndsWithColon then
-    return true
-  elseif not entry1EndsWithColon and entry2EndsWithColon then
-    return false
-  end
-  return nil
-end
+
 
 local pythonUnderscoreSecond = function(entry1, entry2)
   if vim.bo.filetype ~= "python" then return nil end
@@ -41,17 +31,7 @@ local pythonUnderscoreSecond = function(entry1, entry2)
   return nil
 end
 
-local moveCursorBeforeComma = function()
-  if vim.bo.filetype ~= "dart" then return end
-  vim.defer_fn(function()
-    local line = vim.api.nvim_get_current_line()
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local char = line:sub(col - 2, col)
-    if char == ": ," then
-      vim.api.nvim_win_set_cursor(0, { row, col - 1 })
-    end
-  end, 100)
-end
+
 
 local setCompHL = function()
   local fgdark = "#2E3440"
@@ -126,7 +106,6 @@ function M.setup()
     },
     sorting = {
       comparators = {
-        dartColonFirst,
         pythonUnderscoreSecond,
         cmp.config.compare.offset,
         cmp.config.compare.exact,

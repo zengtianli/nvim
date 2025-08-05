@@ -19,42 +19,7 @@ local limitStr = function(str)
   return str
 end
 
-local dartColonFirst = function(entry1, entry2)
-  if vim.bo.filetype ~= "dart" then return nil end
-  local entry1EndsWithColon = string.find(entry1.completion_item.label, ":") and entry1.source.name == 'nvim_lsp'
-  local entry2EndsWithColon = string.find(entry2.completion_item.label, ":") and entry2.source.name == 'nvim_lsp'
-  if entry1EndsWithColon and not entry2EndsWithColon then
-    return true
-  elseif not entry1EndsWithColon and entry2EndsWithColon then
-    return false
-  end
-  return nil
-end
 
-local moveCursorBeforeComma = function()
-  if vim.bo.filetype ~= "dart" then return end
-  vim.defer_fn(function()
-    local line = vim.api.nvim_get_current_line()
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local char = line:sub(col - 2, col)
-    if char == ": ," then
-      vim.api.nvim_win_set_cursor(0, { row, col - 1 })
-    end
-  end, 100)
-end
-
--- Flutter预览堆栈跟踪
-local preview_stack_trace = function()
-  local line = vim.api.nvim_get_current_line()
-  local pattern = "package:[^/]+/([^:]+):(%d+):(%d+)"
-  local filepath, line_nr, column_nr = string.match(line, pattern)
-  if filepath and line_nr and column_nr then
-    vim.cmd(":wincmd k")
-    vim.cmd("e " .. filepath)
-    vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), tonumber(column_nr) })
-    vim.cmd(":wincmd j")
-  end
-end
 
 -- 配置文档和签名
 F.configureDocAndSignature = function()
@@ -152,7 +117,7 @@ M = {
       { 'j-hui/fidget.nvim', tag = "legacy" },
       "folke/neodev.nvim",
       "ray-x/lsp_signature.nvim",
-      "ldelossa/nvim-dap-projects",
+
       "airblade/vim-rooter",
       "b0o/schemastore.nvim",
       {
@@ -224,64 +189,7 @@ M = {
       -- JSON LSP配置
       lspconfig.jsonls.setup({ on_attach = function() end })
 
-      -- Flutter LSP配置
-      vim.api.nvim_create_autocmd("BufEnter", {
-        pattern = "__FLUTTER_DEV_LOG__",
-        callback = function()
-          vim.keymap.set("n", "p", preview_stack_trace, { silent = true, noremap = true, buffer = true })
-        end
-      })
-      
-      local dart_lsp = lsp.build_options('dartls', {})
-      local flutter = require('flutter-tools')
-      flutter.setup({
-        fvm = true,
-        widget_guides = { enabled = true },
-        ui = { border = "rounded", notification_style = 'nvim-notify' },
-        lsp = {
-          on_attach = function()
-            vim.cmd('highlight! link FlutterWidgetGuides Comment')
-          end,
-          capabilities = dart_lsp.capabilities,
-          settings = {
-            enableSnippets = false, showTodos = true, completeFunctionCalls = true,
-            analysisExcludedFolders = {
-              vim.fn.expand '$HOME/.pub-cache',
-              vim.fn.expand '$HOME/fvm',
-            },
-            lineLength = vim.g.flutter_format_line_length,
-          },
-        },
-        dev_log = {
-          enabled = true, notify_errors = true,
-          open_cmd = "botright 40vnew",
-        },
-        debugger = {
-          enabled = true, run_via_dap = true,
-          exception_breakpoints = {
-            {
-              filter = 'raised', label = 'Exceptions',
-              condition = "!(url:startsWith('package:flutter/') || url:startsWith('package:flutter_test/') || url:startsWith('package:dartpad_sample/') || url:startsWith('package:flutter_localizations/'))"
-            }
-          },
-          register_configurations = function(_)
-            local dap = require("dap")
-            if not dap.configurations.dart then
-              dap.adapters.dart = {
-                type = "executable", command = "flutter", args = { "debug_adapter" }
-              }
-              dap.configurations.dart = {
-                {
-                  type = "dart", request = "launch", name = "Launch Flutter Program",
-                  program = "lib/main.dart", cwd = "${workspaceFolder}",
-                  toolArgs = { "-d", "macos" }
-                }
-              }
-            end
-            require("dap.ext.vscode").load_launchjs()
-          end,
-        },
-      })
+
 
       -- 其他LSP服务器配置
       require 'lspconfig'.html.setup {}
@@ -363,13 +271,13 @@ M = {
         require('cmp_nvim_lsp').default_capabilities()
       )
 
-      require('nvim-dap-projects').search_project_config()
+
       F.configureDocAndSignature()
       F.configureKeybinds()
 
       -- 格式化文件类型配置
       local format_on_save_filetypes = {
-        dart = true, json = true, go = true, lua = true, html = true, css = true,
+        json = true, lua = true, html = true, css = true,
         javascript = true, typescript = true, typescriptreact = true,
         c = true, cpp = true, objc = true, objcpp = true,
         dockerfile = true, terraform = false, tex = true, toml = true, prisma = true

@@ -110,12 +110,9 @@ M = {
       })
 
       -- 加载扩展
-      ts.load_extension('neoclip')
-      ts.load_extension('dap')
       ts.load_extension('telescope-tabs')
       ts.load_extension('fzf')
       ts.load_extension('simulators')
-      ts.load_extension("flutter")
 
       -- 配置模拟器
       require("simulators").setup({

@@ -198,38 +198,7 @@ unmap ic
     end
   },
 
-  -- 快速跳转
-  {
-    "folke/flash.nvim",
-    event = "VeryLazy",
-    opts = {
-      labels = "arstneiowfuydh",
-      jump = { jumplist = true, pos = "start", history = false, register = false, nohlsearch = false, autojump = false, inclusive = nil },
-      label = { uppercase = false, exclude = "", current = false, after = true, before = false, style = "inline", reuse = "all", distance = true, min_pattern_length = 0, rainbow = { enabled = true, shade = 8 } },
-      modes = {
-        search = { enabled = false },
-        char = { enabled = false },
-        treesitter = {
-          labels = "arstneiowfuydh", jump = { pos = "range" }, search = { incremental = false },
-          label = { before = true, after = true, style = "inline" },
-          highlight = { backdrop = false, matches = false }
-        },
-        treesitter_search = {
-          jump = { pos = "range" }, search = { multi_window = true, wrap = true, incremental = false },
-          remote_op = { restore = true }, label = { before = true, after = true, style = "inline" }
-        },
-        remote = { remote_op = { restore = true, motion = true } }
-      },
-      prompt = {
-        enabled = true, prefix = { { "⚡", "FlashPromptIcon" } },
-        win_config = { relative = "editor", width = 1, height = 1, row = -1, col = 0, zindex = 1000 }
-      }
-    },
-    keys = {
-      { "tt", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "/", mode = { "o", "x" }, function() require("flash").jump() end, desc = "Flash Treesitter Search" }
-    }
-  },
+
 
   -- 编辑器增强
   {
@@ -305,43 +274,9 @@ unmap ic
     config = function() require("nvim-autopairs").setup({}) end
   },
 
-  -- 历史记录
-  {
-    "mbbill/undotree",
-    config = function()
-      vim.cmd([[
-noremap <leader>l :UndotreeToggle<CR>
-let g:undotree_DiffAutoOpen = 1
-let g:undotree_SetFocusWhenToggle = 1
-let g:undotree_ShortIndicators = 1
-let g:undotree_WindowLayout = 2
-let g:undotree_DiffpanelHeight = 8
-let g:undotree_SplitWidth = 24
-function g:Undotree_CustomMap()
-endfunc]])
-    end
-  },
 
-  -- 剪贴板增强
-  {
-    "AckslD/nvim-neoclip.lua",
-    dependencies = { 'nvim-telescope/telescope.nvim', { 'kkharji/sqlite.lua', module = 'sqlite' } },
-    config = function()
-      vim.keymap.set("n", "<leader>y", ":Telescope neoclip<CR>", { noremap = true })
-      require('neoclip').setup({
-        history = 1000,
-        enable_persistent_history = true,
-        keys = {
-          telescope = {
-            i = {
-              select = '<c-y>', paste = '<cr>', paste_behind = '<c-g>',
-              replay = '<c-q>', delete = '<c-d>', edit = '<c-k>', custom = {}
-            }
-          }
-        }
-      })
-    end
-  },
+
+
 
   -- ==========================================
   -- 语言支持和开发工具
@@ -409,74 +344,7 @@ endfunc]])
     end
   },
 
-  -- 调试器
-  {
-    "mfussenegger/nvim-dap",
-    dependencies = {
-      {
-        "ravenxrz/DAPInstall.nvim",
-        config = function()
-          local dap_install = require("dap-install")
-          dap_install.setup({ installation_path = vim.fn.stdpath("data") .. "/dapinstall/" })
-        end
-      },
-      "theHamsta/nvim-dap-virtual-text",
-      { "rcarriga/nvim-dap-ui", dependencies = { "nvim-neotest/nvim-nio" } },
-      "nvim-dap-virtual-text",
-      "nvim-telescope/telescope-dap.nvim"
-    },
-    config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
-      dapui.setup()
-      require("nvim-dap-virtual-text").setup()
 
-      local m = { noremap = true }
-      vim.keymap.set("n", "<leader>'t", dap.toggle_breakpoint, m)
-      vim.keymap.set("n", "<leader>'v", require('dap.ui.widgets').hover, m)
-      vim.keymap.set("n", "<leader>'n", function()
-        vim.cmd("write")
-        local filetype = vim.bo.filetype
-        if filetype == "cpp" or filetype == "c" then
-          os.execute("gcc " .. vim.fn.expand("%") .. " -g -o " .. vim.fn.expand("%<"))
-        end
-        dap.continue()
-      end, m)
-      vim.keymap.set("n", "<leader>'s", dap.step_over, m)
-      vim.keymap.set("n", "<leader>'q", dap.terminate, m)
-      vim.keymap.set("n", "<leader>'u", dapui.toggle, m)
-
-      vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#993939', bg = '#31353f' })
-      vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef', bg = '#31353f' })
-      vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#ffffff', bg = '#FE3C25' })
-
-      vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-      vim.fn.sign_define('DapBreakpointCondition', { text = 'ﳁ', texthl = 'DapBreakpoint', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-      vim.fn.sign_define('DapBreakpointRejected', { text = '', texthl = 'DapBreakpoint', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-      vim.fn.sign_define('DapLogPoint', { text = '', texthl = 'DapLogPoint', linehl = 'DapLogPoint', numhl = 'DapLogPoint' })
-      vim.fn.sign_define('DapStopped', { text = '', texthl = 'DapStopped', linehl = 'DapStopped', numhl = 'DapStopped' })
-
-      dap.adapters.codelldb = {
-        type = 'server', port = "${port}",
-        executable = { command = vim.g.codelldb_path, args = { "--port", "${port}" } }
-      }
-      dap.configurations.cpp = {
-        {
-          name = "Launch file", type = "codelldb", request = "launch",
-          program = function()
-            local exe = vim.g.c_debug_program or vim.fn.expand("%:r")
-            return vim.fn.getcwd() .. '/' .. exe
-          end,
-          cwd = '${workspaceFolder}', stopOnEntry = false
-        }
-      }
-      dap.configurations.c = dap.configurations.cpp
-      dap.configurations.rust = dap.configurations.cpp
-
-      local dap_install = require("dap-install")
-      dap_install.config("codelldb", {})
-    end
-  },
 
   -- 语言特定插件
   {
@@ -548,34 +416,9 @@ endfunc]])
       vim.g.vimtex_quickfix_ignore_filters = { 'Font shape', "badness 10000", "Package hyperref Warning" }
     end
   },
-  {
-    'theniceboy/flutter-tools.nvim',
-    ft = 'dart',
-    dependencies = { 'nvim-lua/plenary.nvim', 'stevearc/dressing.nvim' }
-  },
-  {
-    "dart-lang/dart-vim-plugin",
-    ft = "dart",
-    config = function()
-      vim.g.dart_corelib_highlight = false
-      vim.g.dart_format_on_save = false
-    end
-  },
-  {
-    "ray-x/go.nvim",
-    dependencies = { "ray-x/guihua.lua", "neovim/nvim-lspconfig", "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      require("go").setup({})
-      local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        pattern = "*.go",
-        callback = function() require('go.format').goimport() end,
-        group = format_sync_grp
-      })
-    end,
-    ft = { "go", 'gomod' },
-    build = ':lua require("go.install").update_all_sync()'
-  },
+
+
+
 
   -- 版本控制
   {

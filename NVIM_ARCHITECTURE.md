@@ -480,15 +480,15 @@ nvim/
 - **comment**: nvim-comment 智能注释
 - **surround**: nvim-surround 环绕操作
 - **multi-cursor**: vim-visual-multi 多光标
-- **leap**: leap.nvim 快速跳转
+- **leap**: leap.nvim 快速跳转.delete
 - **editor**: 多种编辑增强工具
-- **undo**: undotree 撤销历史可视化
-- **yank**: neoclip.nvim 剪贴板历史
+- **undo**: undotree 撤销历史可视化. delete
+- **yank**: neoclip.nvim 剪贴板历史. delete
 
 #### 🛠️ 开发工具插件 (25个)
 - **LSP**: nvim-lspconfig + mason.nvim LSP 管理
 - **treesitter**: nvim-treesitter 语法高亮和解析
-- **debugger**: nvim-dap 调试器系统
+- **debugger**: nvim-dap 调试器系统.delete
 - **git**: gitsigns, lazygit 版本控制
 - **copilot**: github-copilot AI 代码助手
 - **autocomplete**: nvim-cmp 自动补全系统
@@ -498,17 +498,17 @@ nvim/
 - **telescope**: telescope.nvim 模糊搜索核心
 - **fzf**: fzf.vim 高性能搜索
 - **search**: 搜索增强工具
-- **project**: project.nvim 项目管理
+- **project**: project.nvim 项目管理.delete
 - **yazi**: yazi.nvim 文件管理器
 - **commander**: commander.nvim 命令面板
 
 #### 🌐 语言支持插件 (10个)
 - **markdown**: 增强的 Markdown 支持
 - **tex**: VimTeX LaTeX 支持
-- **flutter**: Flutter 开发工具集
-- **go**: Go 语言工具
+- **flutter**: Flutter 开发工具集.delete
+- **go**: Go 语言工具.delete
 - **lua**: Lua 开发增强
-- **dart**: Dart 语言支持
+- **dart**: Dart 语言支持.delete
 
 #### 🔧 实用工具插件 (9个)
 - **csv**: CSV 文件处理

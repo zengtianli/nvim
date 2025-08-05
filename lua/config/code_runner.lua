@@ -45,9 +45,7 @@ function M.run_code()
 	elseif filetype == 'tex' then
 		vim.cmd('silent! VimtexStop')
 		vim.cmd('silent! VimtexCompile')
-	elseif filetype == 'dart' then
-		vim.cmd('CocCommand flutter.run -d ' .. vim.g.flutter_default_device .. ' ' .. vim.g.flutter_run_args)
-		vim.cmd('silent! CocCommand flutter.dev.openDevLog')
+	
 	elseif filetype == 'javascript' then
 		vim.opt.splitbelow = true
 		vim.cmd('sp')
