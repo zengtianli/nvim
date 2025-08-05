@@ -277,7 +277,7 @@ Use the arrow keys to resize the current window.
 
 ## Plugin System
 
-This configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management, with 79 carefully selected plugins organized into 6 categories:
+This configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management, with 72 carefully selected plugins organized into 6 categories:
 
 ### 🎨 UI Plugins (15)
 - **Themes**: gruvbox, onedark, etc.
@@ -287,39 +287,33 @@ This configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) for plug
 - **Scroll Bar**: Smart scrollbar
 - **Notifications**: nvim-notify
 
-### ✏️ Editing Plugins (12)
+### ✏️ Editing Plugins (9)
 - **Comments**: nvim-comment
 - **Surround**: nvim-surround
 - **Multi-cursor**: vim-visual-multi
-- **Quick Jump**: leap.nvim
 - **Editor Tools**: Various editing enhancements
-- **Undo**: undotree visualization
-- **Clipboard**: neoclip.nvim history
+- **Autopairs**: Auto-pairing plugin
+- **Move**: Code block movement plugin
 
-### 🛠️ Development Tools (25)
+### 🛠️ Development Tools (22)
 - **LSP**: nvim-lspconfig + mason.nvim
 - **Treesitter**: nvim-treesitter
-- **Debugger**: nvim-dap
 - **Git**: gitsigns, lazygit
 - **Copilot**: github-copilot
 - **Completion**: nvim-cmp
 - **Package Manager**: mason
 
-### 🧭 Navigation (8)
+### 🧭 Navigation (7)
 - **Telescope**: fuzzy finder core
 - **FZF**: high-performance search
 - **Search Tools**: Enhanced searching
-- **Project**: project management
 - **File Manager**: yazi.nvim
 - **Command Palette**: commander.nvim
 
-### 🌐 Language Support (10)
+### 🌐 Language Support (7)
 - **Markdown**: Enhanced support
 - **LaTeX**: VimTeX
-- **Flutter**: Development toolkit
-- **Go**: Go tools
 - **Lua**: Enhanced development
-- **Dart**: Language support
 
 ### 🔧 Utilities (9)
 - **CSV**: File handling
@@ -421,13 +415,7 @@ This configuration provides two file browser options:
    - Image preview support
    - Fast file operations
 
-#### Project Management
-Using [Project.nvim](https://github.com/ahmedkhalf/project.nvim) for project management:
 
-- `<leader>fp`: Find projects
-- `<leader>fw`: Find text in current project
-- Automatic git repository detection
-- Remember last visited position
 
 ### Text Editing Plugins
 #### [vim-table-mode](https://github.com/dhruvasagar/vim-table-mode)
@@ -443,50 +431,7 @@ See `:help table-mode.txt` for more.
 |---------------|---------------|
 | `Shift` + `
 
-### Debugging Features
 
-This configuration uses [nvim-dap](https://github.com/mfussenegger/nvim-dap) for debugging, supporting multiple languages.
-
-#### Debugging Keybindings
-| Key Binding     | Action                |
-|-----------------|----------------------|
-| `<F5>`          | Start/Continue Debug  |
-| `<F10>`         | Step Over            |
-| `<F11>`         | Step Into            |
-| `<F12>`         | Step Out             |
-| `<leader>b`     | Toggle Breakpoint    |
-| `<leader>B`     | Set Condition Break  |
-| `<leader>dr`    | Open REPL            |
-| `<leader>dl`    | Run Last Config      |
-| `<leader>dh`    | Hover Variables      |
-
-#### Supported Languages
-- Python (via debugpy)
-- Go (via delve)
-- Lua (via local-lua-debugger-vscode)
-- JavaScript/TypeScript (via vscode-js-debug)
-- C/C++/Rust (via codelldb)
-
-#### Installing Debuggers
-Use Mason to install debuggers:
-1. Run `:Mason`
-2. Search and install needed debuggers (e.g., `debugpy`, `delve`, etc.)
-
-#### Debug Configuration Example
-```lua
--- Python debug configuration example
-require('dap').configurations.python = {
-  {
-    type = 'python',
-    request = 'launch',
-    name = "Launch file",
-    program = "${file}",
-    pythonPath = function()
-      return '/usr/bin/python3'
-    end,
-  },
-}
-```
 
 ### LSP Keybindings
 | Key Binding     | Action                |

@@ -1,35 +1,36 @@
-# Neovim 配置重构总结
+# Neovim 配置重构与优化总结
 
 ## 📋 重构目标
-- 保持所有功能不变 ✅
+- 保持所有核心功能不变 ✅
+- 精简插件生态系统 ✅
 - 改善代码逻辑结构 ✅
 - 更好的模块化组织 ✅
 - 清晰的依赖关系 ✅
+- 提升启动性能 ✅
 
 ## 🏗️ 重构内容
 
-### 1. 文件结构重组
+### 1. 统一化架构实现
 
-#### 新增核心配置模块
-- `lua/config/core/options.lua` - vim 选项配置
-- `lua/config/core/autocmds.lua` - 自动命令配置
-- `lua/config/core/terminal.lua` - 终端配置
-- `lua/config/core/machine_specific.lua` - 机器特定配置管理
+#### 核心统一文件
+- `lua/config/defaults.lua` - 统一配置加载器
+- `lua/config/keymaps.lua` - 统一键位映射
+- `lua/config/plugins.lua` - 统一插件管理 (72个插件)
+- `lua/config/lsp.lua` - 统一LSP配置
+- `lua/config/autocomplete.lua` - 统一自动补全
+- `lua/config/telescope.lua` - 统一搜索配置
+- `lua/config/ftplugin.lua` - 统一文件类型配置
 
-#### 插件配置重组
-- `lua/config/lazy_nvim.lua` - Lazy.nvim 管理器配置
-- `lua/config/plugin_list.lua` - 插件列表管理
-- `lua/config/custom_plugins.lua` - 自定义插件加载器
-- `lua/config/plugins/categories/` - 按功能分类的插件配置
-  - `ui.lua` - 界面相关插件
-  - `editing.lua` - 编辑增强插件
-  - `development.lua` - 开发工具插件
-  - `navigation.lua` - 导航搜索插件
-  - `utilities.lua` - 实用工具插件
+#### 工具模块
+- `lua/config/code_runner.lua` - 代码运行器
+- `lua/config/markdown_utils.lua` - Markdown工具
+- `lua/config/text_utils.lua` - 文本处理工具
 
-#### 工具模块整合
-- `lua/config/utils/init.lua` - 统一工具模块入口
-- `lua/config/loader.lua` - 模块加载器
+#### 自定义插件 (4个)
+- `lua/plugin/compile_run.lua` - 编译运行工具
+- `lua/plugin/swap_ternary.lua` - 三元运算符交换
+- `lua/plugin/vertical_cursor_movement.lua` - 垂直光标移动
+- `lua/plugin/ctrlu.lua` - 控制工具
 
 ### 2. 重构前后对比
 
@@ -101,12 +102,13 @@ require("config.plugins")
 - 明确的加载顺序
 - 依赖关系管理
 
-#### 插件分类系统
-- UI界面插件分类
-- 编辑增强插件分类
-- 开发工具插件分类
-- 导航搜索插件分类
-- 实用工具插件分类
+#### 插件分类系统 (72个插件)
+- UI界面插件 (15个): 主题、状态栏、标签栏等
+- 编辑增强插件 (9个): 注释、包围、多光标、移动等
+- 开发工具插件 (22个): LSP、treesitter、Git、AI助手等
+- 导航搜索插件 (7个): Telescope、FZF、搜索、文件管理等
+- 语言支持插件 (7个): Markdown、LaTeX、Lua等
+- 实用工具插件 (9个): 自动补全、CSV、命令行增强等
 
 #### 改进的错误处理
 - 模块加载失败时的友好提示
@@ -138,8 +140,9 @@ require("config.plugins")
 - 所有个人配置保持不变
 
 如需修改配置，现在可以：
-- 在 `lua/config/core/` 中修改基础配置
-- 在 `lua/config/plugins/categories/` 中管理插件
-- 在 `lua/config/utils/` 中添加工具函数
+- 在 `lua/config/plugins.lua` 中管理所有插件
+- 在 `lua/config/lsp.lua` 中配置语言服务器
+- 在 `lua/config/keymaps.lua` 中修改快捷键
+- 在 `lua/config/` 目录中添加工具函数
 
-重构提供了更好的代码组织，同时完全保持了功能不变的原则。
+重构和优化提供了更好的代码组织和更精简的插件生态，同时保持了所有核心功能。
