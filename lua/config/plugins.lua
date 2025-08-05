@@ -485,6 +485,35 @@ endfunc]])
     build = "yarn install",
     config = function() vim.g.instant_markdown_autostart = 0 end
   },
+  -- Markdown 目录生成
+  {
+    "hedyhli/markdown-toc.nvim",
+    ft = "markdown",
+    cmd = { "Mtoc" },
+    config = function()
+      require('mtoc').setup({
+        headings = {
+          before_toc = false,  -- 不包含 TOC 前的标题
+        },
+        fences = {
+          enabled = true,
+          start_text = "mtoc-start",
+          end_text = "mtoc-end"
+        },
+        auto_update = true,  -- 保存时自动更新
+        toc_list = {
+          markers = '*',
+          cycle_markers = false,
+        },
+      })
+      
+      -- 设置快捷键
+      vim.keymap.set("n", "<leader>mt", ":Mtoc<CR>", { noremap = true, silent = true, desc = "生成/更新 TOC" })
+      vim.keymap.set("n", "<leader>mi", ":Mtoc insert<CR>", { noremap = true, silent = true, desc = "插入 TOC" })
+      vim.keymap.set("n", "<leader>mu", ":Mtoc update<CR>", { noremap = true, silent = true, desc = "更新 TOC" })
+      vim.keymap.set("n", "<leader>mr", ":Mtoc remove<CR>", { noremap = true, silent = true, desc = "删除 TOC" })
+    end
+  },
   -- Marp 幻灯片预览
   {
     "mpas/marp-nvim",
