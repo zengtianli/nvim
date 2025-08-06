@@ -9,18 +9,8 @@ M = {
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
-      "nvim-tree/nvim-web-devicons",
       "nvim-lua/plenary.nvim",
-      {
-        "LukasPietzschmann/telescope-tabs",
-        config = function()
-          local tstabs = require('telescope-tabs')
-          tstabs.setup({})
-        end
-      },
       { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-      'stevearc/dressing.nvim',
-      'dimaportenko/telescope-simulators.nvim',
     },
     config = function()
       local builtin = require('telescope.builtin')
@@ -95,30 +85,8 @@ M = {
         }
       })
 
-      -- dressing配置
-      require('dressing').setup({
-        select = {
-          get_config = function(opts)
-            if opts.kind == 'codeaction' then
-              return {
-                backend = 'telescope',
-                telescope = require('telescope.themes').get_cursor()
-              }
-            end
-          end
-        }
-      })
-
       -- 加载扩展
-      ts.load_extension('telescope-tabs')
       ts.load_extension('fzf')
-      ts.load_extension('simulators')
-
-      -- 配置模拟器
-      require("simulators").setup({
-        android_emulator = false,
-        apple_simulator = true,
-      })
     end
   },
   {
@@ -128,7 +96,6 @@ M = {
       commander.setup({ telescope = { enable = true } })
       vim.keymap.set('n', '<c-q>', require("commander").show, m)
       commander.add({
-        { desc = "Run Simulator", cmd = "<CMD>Telescope simulators run<CR>" },
         { desc = "Git diff", cmd = "<CMD>Telescope git_status<CR>" }
       })
     end

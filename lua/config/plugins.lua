@@ -84,7 +84,7 @@ local plugins = {
   -- 标签栏
   {
     'akinsho/bufferline.nvim',
-    dependencies = 'nvim-tree/nvim-web-devicons',
+
     opts = {
       options = {
         mode = "tabs",
@@ -208,25 +208,10 @@ unmap ic
       vim.cmd("hi IlluminatedWordText guibg=#393E4D gui=none")
     end
   },
-  {
-    "dkarter/bullets.vim",
-    lazy = false,
-    ft = { "markdown", "txt" },
-  },
-  {
-    "NvChad/nvim-colorizer.lua",
-    opts = {
-      filetypes = { "*" },
-      user_default_options = {
-        RGB = true, RRGGBB = true, names = true, RRGGBBAA = false, AARRGGBB = true,
-        rgb_fn = false, hsl_fn = false, css = false, css_fn = false,
-        mode = "virtualtext", tailwind = true, sass = { enable = false }, virtualtext = "■"
-      },
-      buftypes = {}
-    }
-  },
+
+
   { 'theniceboy/antovim', lazy = false },
-  { 'gcmt/wildfire.vim', lazy = false },
+
 
   -- 移动增强
   {
@@ -387,28 +372,8 @@ unmap ic
       })
     end
   },
-  -- 表格模式
-  {
-    "dhruvasagar/vim-table-mode",
-    ft = { "markdown", "text", "rst", "org" },
-    config = function()
-      -- 表格模式配置
-      vim.g.table_mode_corner = '|'
-      vim.g.table_mode_corner_corner = '|'
-      vim.g.table_mode_header_fillchar = '='
-      vim.g.table_mode_align_char = ':'
-      vim.g.table_mode_delimiter = ' | '
-      vim.g.table_mode_fillchar = '-'
-    end
-  },
-  {
-    "lervag/vimtex",
-    init = function()
-      vim.g.vimtex_view_method = "skim"
-      vim.g.vimtex_mappings_enabled = 0
-      vim.g.vimtex_quickfix_ignore_filters = { 'Font shape', "badness 10000", "Package hyperref Warning" }
-    end
-  },
+
+
 
 
 
@@ -529,25 +494,9 @@ unmap ic
     config = function() require("scrollbar.handlers.search").setup() end
   },
 
-  -- 跳转工具
-  {
-    "pechorin/any-jump.vim",
-    config = function()
-      vim.g.any_jump_disable_default_keybindings = true
-      vim.g.any_jump_window_width_ratio = 0.9
-      vim.g.any_jump_window_height_ratio = 0.9
-    end
-  },
 
-  -- 查找替换
-  {
-    "MagicDuck/grug-far.nvim",
-    keys = {
-      { "<leader>F", mode = "n", function() vim.cmd(":GrugFar") end, desc = "Project find and replace" },
-      { "<leader>f", mode = "n", function() vim.cmd(":GrugFar -g %") end, desc = "Current file find and replace" },
-      { "<leader>fw", mode = "v", function() vim.cmd(":GrugFarWithin") end, desc = "Find and replace within selection" }
-    }
-  },
+
+
 
   -- 项目管理
   {
@@ -597,14 +546,14 @@ unmap ic
   -- 命令行增强
   {
     'gelguy/wilder.nvim',
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+
     config = function()
       local wilder = require('wilder')
       wilder.setup { modes = { ':' }, next_key = '<Tab>', previous_key = '<S-Tab>' }
       wilder.set_option('renderer', wilder.popupmenu_renderer(
         wilder.popupmenu_palette_theme({
           highlights = { border = 'Normal' },
-          left = { ' ', wilder.popupmenu_devicons() },
+          left = { ' ' },
           right = { ' ', wilder.popupmenu_scrollbar() },
           border = 'rounded', max_height = '75%', min_height = 0,
           prompt_position = 'top', reverse = 0

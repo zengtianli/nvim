@@ -20,7 +20,7 @@ local compileRun = function()
 		split()
 		vim.cmd("term luajit %")
 	elseif ft == 'tex' then
-		vim.cmd(":VimtexCompile")
+		    vim.cmd("!pdflatex %")
 	elseif ft == 'python' then
 		split()
 		vim.cmd("term python3 %")

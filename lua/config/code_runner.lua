@@ -43,8 +43,7 @@ function M.run_code()
 	elseif filetype == 'markdown' then
 		vim.cmd('InstantMarkdownPreview')
 	elseif filetype == 'tex' then
-		vim.cmd('silent! VimtexStop')
-		vim.cmd('silent! VimtexCompile')
+		  -- LaTeX compilation can be handled by other means if needed
 	
 	elseif filetype == 'javascript' then
 		vim.opt.splitbelow = true
