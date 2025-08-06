@@ -2,7 +2,7 @@
 
 #配置 #编辑器 #开发 #现代化
 
-> ⚙️ **Neovim配置** 是现代化 [[Neovim] aaaaaa的核心，通过合理配置可以打造出强大的开发环境。
+> ⚙️ **Neovim配置** 是现代化 Neovim 的核心，通过合理配置可以打造出强大的开发环境。
 
 ## 🔄 从 Vim 迁移
 
@@ -30,101 +30,100 @@ Neovim 完全兼容 Vim 配置，你可以：
 ~/.config/nvim/
 ├── init.lua                 # 主配置文件
 ├── lua/
-│   ├── core/                # 核心配置
-│   │   ├── options.lua      # 基础选项
+│   ├── config/              # 核心配置
+│   │   ├── core/
+│   │   │   └── options.lua  # 基础选项（含 Python provider）
+│   │   ├── defaults.lua     # 配置加载器
 │   │   ├── keymaps.lua      # 键位映射
-│   │   └── autocmds.lua     # 自动命令
-│   ├── plugins/             # 插件配置
-│   │   ├── init.lua         # 插件管理器
+│   │   ├── plugins.lua      # 插件管理（51个插件）
 │   │   ├── lsp.lua          # LSP配置
-│   │   ├── treesitter.lua   # 语法高亮
+│   │   ├── autocomplete.lua # 自动补全
 │   │   ├── telescope.lua    # 模糊搜索
-│   │   └── cmp.lua          # 自动完成
-│   └── utils/               # 工具函数
-│       └── helpers.lua      # 辅助函数
+│   │   └── ftplugin.lua     # 文件类型配置
+│   └── plugin/              # 自定义插件
+│       ├── compile_run.lua  # 编译运行
+│       ├── swap_ternary.lua # 三元运算符交换
+│       └── ...
 ```
 
 ### 主配置文件
 ```lua
 -- ~/.config/nvim/init.lua
 
--- 设置 Leader 键
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
 -- 加载核心配置
-require("core.options")
-require("core.keymaps")
-require("core.autocmds")
+require("config.defaults")
 
--- 加载插件
-require("plugins")
+-- 加载键位映射
+require("config.keymaps")
 
--- 加载工具函数
-require("utils.helpers")
+-- 加载插件配置
+require("config.plugins")
 ```
 
 ## ⚙️ 核心配置
 
 ### 基础选项配置
 ```lua
--- ~/.config/nvim/lua/core/options.lua
+-- ~/.config/nvim/lua/config/core/options.lua
 
-local opt = vim.opt
+-- Python provider 配置（解决健康检查问题）
+vim.g.python3_host_prog = vim.fn.exepath('python3') or '/Users/tianli/miniforge3/bin/python3'
 
--- Vim 兼容性设置
-vim.g.loaded_netrw = 1        -- 禁用 netrw
-vim.g.loaded_netrwPlugin = 1  -- 禁用 netrw 插件
-vim.g.mapleader = " "         -- 设置 Leader 键
-vim.g.maplocalleader = "\\"   -- 设置 Local Leader 键
-
--- 行号和相对行号
-opt.number = true
-opt.relativenumber = true
-
--- 缩进设置
-opt.tabstop = 4
-opt.softtabstop = 4
-opt.shiftwidth = 4
-opt.expandtab = true
-opt.smartindent = true
+-- 基础设置
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.cursorline = true
+vim.opt.wrap = false
+vim.opt.sidescroll = 5
+vim.opt.listchars = { tab = '→ ', trail = '·', nbsp = '␣' }
 
 -- 搜索设置
-opt.hlsearch = false
-opt.incsearch = true
-opt.ignorecase = true
-opt.smartcase = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.hlsearch = true
+vim.opt.incsearch = true
 
--- 外观设置
-opt.termguicolors = true
-opt.background = "dark"
-opt.signcolumn = "yes"
-opt.wrap = false
-opt.cursorline = true
-opt.scrolloff = 8
-opt.sidescrolloff = 8
+-- 缩进设置
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.autoindent = true
+vim.opt.smartindent = true
 
--- 文件和备份
-opt.backup = false
-opt.writebackup = false
-opt.undofile = true
-opt.swapfile = false
+-- 文件处理
+vim.opt.autoread = true
+vim.opt.backup = false
+vim.opt.writebackup = false
+vim.opt.swapfile = false
+vim.opt.undofile = true
+vim.opt.undodir = vim.fn.expand('~/.local/share/nvim/undo')
 
--- 分割窗口
-opt.splitbelow = true
-opt.splitright = true
+-- UI 设置
+vim.opt.termguicolors = true
+vim.opt.signcolumn = 'yes'
+vim.opt.scrolloff = 8
+vim.opt.sidescrolloff = 8
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
+-- 性能设置
+vim.opt.updatetime = 250
+vim.opt.timeoutlen = 300
+vim.opt.lazyredraw = true
+
+-- 折叠设置
+vim.opt.foldmethod = 'manual'
+vim.opt.foldlevel = 99
 
 -- 其他设置
-opt.clipboard = "unnamedplus"
-opt.mouse = "a"
-opt.updatetime = 300
-opt.timeoutlen = 500
-opt.completeopt = { "menuone", "noselect" }
+vim.opt.mouse = 'a'
+vim.opt.clipboard = 'unnamedplus'
+vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
 ```
 
 ### 键位映射配置
 ```lua
--- ~/.config/nvim/lua/core/keymaps.lua
+-- ~/.config/nvim/lua/config/keymaps.lua
 
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
@@ -178,7 +177,7 @@ keymap("n", "N", "Nzzzv", opts)
 
 ### Lazy.nvim 配置
 ```lua
--- ~/.config/nvim/lua/plugins/init.lua
+-- ~/.config/nvim/lua/config/plugins.lua
 
 -- 自动安装 lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -194,7 +193,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- 插件规范
+-- 插件规范（51个精选插件）
 require("lazy").setup({
   -- 颜色主题
   {
@@ -208,11 +207,14 @@ require("lazy").setup({
 
   -- 文件浏览器
   {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-      require("nvim-tree").setup()
-    end,
+    "mikavilpas/yazi.nvim",
+    event = "VeryLazy",
+    keys = {
+      { "R", "<cmd>Yazi<cr>", desc = "Open yazi at the current file" },
+    },
+    opts = {
+      open_for_directories = false,
+    },
   },
 
   -- 模糊搜索
@@ -221,7 +223,7 @@ require("lazy").setup({
     branch = "0.1.x",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("plugins.telescope")
+      require("config.telescope")
     end,
   },
 
@@ -233,7 +235,7 @@ require("lazy").setup({
       "williamboman/mason-lspconfig.nvim",
     },
     config = function()
-      require("plugins.lsp")
+      require("config.lsp")
     end,
   },
 
@@ -249,7 +251,7 @@ require("lazy").setup({
       "saadparwaiz1/cmp_luasnip",
     },
     config = function()
-      require("plugins.cmp")
+      require("config.autocomplete")
     end,
   },
 
@@ -258,7 +260,12 @@ require("lazy").setup({
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      require("plugins.treesitter")
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "javascript", "typescript", "python" },
+        sync_install = false,
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
     end,
   },
 
@@ -273,7 +280,6 @@ require("lazy").setup({
   -- 状态栏
   {
     "nvim-lualine/lualine.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("lualine").setup()
     end,
@@ -282,9 +288,65 @@ require("lazy").setup({
   -- 注释插件
   {
     "numToStr/Comment.nvim",
+    event = "BufRead",
     config = function()
-      require("Comment").setup()
-    end,
+      require('Comment').setup({
+        padding = true,
+        sticky = true,
+        ignore = '^$',
+        toggler = {
+          line = 'gcc',
+          block = 'gbc'
+        },
+        opleader = {
+          line = 'gc',
+          block = 'gb'
+        },
+        mappings = {
+          basic = true,
+          extra = true
+        }
+      })
+      -- 保持原有快捷键
+      vim.keymap.set('n', '<leader>cn', 'gcc', { remap = true })
+      vim.keymap.set('v', '<leader>cn', 'gc', { remap = true })
+      vim.keymap.set('n', '<leader>cu', 'gcc', { remap = true })
+      vim.keymap.set('v', '<leader>cu', 'gc', { remap = true })
+    end
+  },
+
+  -- Markdown 预览
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = "cd app && npm install",
+    config = function()
+      vim.g.mkdp_auto_start = 0
+      vim.g.mkdp_auto_close = 1
+      vim.g.mkdp_refresh_slow = 0
+      vim.g.mkdp_command_for_global = 0
+      vim.g.mkdp_open_to_the_world = 0
+      vim.g.mkdp_open_ip = ''
+      vim.g.mkdp_browser = ''
+      vim.g.mkdp_echo_preview_url = 0
+      vim.g.mkdp_browserfunc = ''
+      vim.g.mkdp_preview_options = {
+        mkit = {},
+        katex = {},
+        uml = {},
+        maid = {},
+        disable_sync_scroll = 0,
+        sync_scroll_type = 'middle',
+        hide_yaml_meta = 1,
+        sequence_diagrams = {},
+        flowchart_diagrams = {}
+      }
+      vim.g.mkdp_markdown_css = ''
+      vim.g.mkdp_highlight_css = ''
+      vim.g.mkdp_port = ''
+      vim.g.mkdp_page_title = '「${name}」'
+    end
   },
 
   -- 括号自动配对
@@ -310,7 +372,7 @@ require("lazy").setup({
 
 ### Language Server 设置
 ```lua
--- ~/.config/nvim/lua/plugins/lsp.lua
+-- ~/.config/nvim/lua/config/lsp.lua
 
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
@@ -332,11 +394,13 @@ mason_lspconfig.setup({
   ensure_installed = {
     "lua_ls",
     "pyright",
-    "tsserver",
+    "ts_ls",
     "rust_analyzer",
     "gopls",
     "clangd",
-    "java_language_server",
+    "html",
+    "cssls",
+    "jsonls",
   },
   automatic_installation = true,
 })
@@ -396,7 +460,7 @@ mason_lspconfig.setup_handlers({
 
 ### 模糊搜索设置
 ```lua
--- ~/.config/nvim/lua/plugins/telescope.lua
+-- ~/.config/nvim/lua/config/telescope.lua
 
 local telescope = require("telescope")
 local actions = require("telescope.actions")
@@ -477,61 +541,63 @@ keymap("n", "<leader>fk", ":Telescope keymaps<CR>", opts)
 
 ### 主题配置
 ```lua
--- ~/.config/nvim/lua/plugins/colorscheme.lua
-
--- Catppuccin 主题配置
-require("catppuccin").setup({
-  flavour = "mocha", -- latte, frappe, macchiato, mocha
-  background = {
-    light = "latte",
-    dark = "mocha",
-  },
-  transparent_background = false,
-  show_end_of_buffer = false,
-  term_colors = false,
-  dim_inactive = {
-    enabled = false,
-    shade = "dark",
-    percentage = 0.15,
-  },
-  no_italic = false,
-  no_bold = false,
-  no_underline = false,
-  styles = {
-    comments = { "italic" },
-    conditionals = { "italic" },
-    loops = {},
-    functions = {},
-    keywords = {},
-    strings = {},
-    variables = {},
-    numbers = {},
-    booleans = {},
-    properties = {},
-    types = {},
-    operators = {},
-  },
-  custom_highlights = {},
-  integrations = {
-    cmp = true,
-    gitsigns = true,
-    nvimtree = true,
-    telescope = true,
-    treesitter = true,
-    indent_blankline = {
-      enabled = true,
-      colored_indent_levels = false,
-    },
-  },
-})
-
--- 设置颜色方案
-vim.cmd.colorscheme "catppuccin"
+-- 在 plugins.lua 中配置 Catppuccin 主题
+{
+  "catppuccin/nvim",
+  name = "catppuccin",
+  priority = 1000,
+  config = function()
+    require("catppuccin").setup({
+      flavour = "mocha", -- latte, frappe, macchiato, mocha
+      background = {
+        light = "latte",
+        dark = "mocha",
+      },
+      transparent_background = false,
+      show_end_of_buffer = false,
+      term_colors = false,
+      dim_inactive = {
+        enabled = false,
+        shade = "dark",
+        percentage = 0.15,
+      },
+      no_italic = false,
+      no_bold = false,
+      no_underline = false,
+      styles = {
+        comments = { "italic" },
+        conditionals = { "italic" },
+        loops = {},
+        functions = {},
+        keywords = {},
+        strings = {},
+        variables = {},
+        numbers = {},
+        booleans = {},
+        properties = {},
+        types = {},
+        operators = {},
+      },
+      custom_highlights = {},
+      integrations = {
+        cmp = true,
+        gitsigns = true,
+        telescope = true,
+        treesitter = true,
+        indent_blankline = {
+          enabled = true,
+          colored_indent_levels = false,
+        },
+      },
+    })
+    vim.cmd.colorscheme "catppuccin"
+  end,
+},
 ```
 
 ## 🔗 工具集成
 
-### [[Git]] 集成
+### Git 集成
 ```lua
 -- Git 相关配置
 require("gitsigns").setup({
@@ -562,38 +628,11 @@ require("gitsigns").setup({
 })
 ```
 
-### [[Tmux]] 集成
-```lua
--- Tmux 导航集成
-vim.keymap.set("n", "<C-h>", ":TmuxNavigateLeft<CR>", { silent = true })
-vim.keymap.set("n", "<C-j>", ":TmuxNavigateDown<CR>", { silent = true })
-vim.keymap.set("n", "<C-k>", ":TmuxNavigateUp<CR>", { silent = true })
-vim.keymap.set("n", "<C-l>", ":TmuxNavigateRight<CR>", { silent = true })
-```
-
-### [[FZF]] 集成
-```lua
--- FZF 与 Telescope 结合使用
-vim.keymap.set("n", "<leader>ff", function()
-  require("telescope.builtin").find_files({
-    find_command = { "fd", "--type", "f", "--strip-cwd-prefix" }
-  })
-end)
-
-vim.keymap.set("n", "<leader>fg", function()
-  require("telescope.builtin").live_grep({
-    additional_args = function()
-      return { "--hidden" }
-    end
-  })
-end)
-```
-
 ## 🚀 高级配置
 
 ### 自动命令
 ```lua
--- ~/.config/nvim/lua/core/autocmds.lua
+-- ~/.config/nvim/lua/config/core/autocmds.lua
 
 local augroup = vim.api.nvim_create_augroup
 local autocmd = vim.api.nvim_create_autocmd
@@ -646,7 +685,7 @@ autocmd("VimResized", {
 
 ### 性能优化
 ```lua
--- ~/.config/nvim/lua/core/performance.lua
+-- ~/.config/nvim/lua/config/core/performance.lua
 
 -- 减少重绘
 vim.opt.lazyredraw = true
@@ -678,24 +717,104 @@ vim.g.loaded_netrwSettings = 1
 vim.g.loaded_netrwFileHandlers = 1
 ```
 
+## 🩺 健康检查和故障排除
+
+### 运行健康检查
+```bash
+# 在 Neovim 中运行
+:checkhealth
+
+# 检查特定组件
+:checkhealth vim.lsp
+:checkhealth mason
+:checkhealth telescope
+```
+
+### 常见问题和解决方案
+
+#### 1. Python Provider 错误
+**问题**: `ERROR Failed to run healthcheck for "vim.provider" plugin`
+
+**解决方案**:
+```lua
+-- 在 lua/config/core/options.lua 中配置
+vim.g.python3_host_prog = vim.fn.exepath('python3') or '/Users/tianli/miniforge3/bin/python3'
+```
+
+#### 2. Lua 版本警告
+**问题**: `WARNING lua version 5.1 needed, but found Lua 5.4.8`
+
+**解决方案**: 可以安全忽略，Neovim 使用内置 LuaJIT，功能完全正常。
+
+#### 3. 插件安装错误
+**问题**: 插件更新时出现 Git 冲突
+
+**解决方案**:
+```bash
+# 清理插件缓存
+rm -rf ~/.local/share/nvim/lazy/problematic-plugin
+rm -rf ~/.cache/nvim/lazy
+
+# 重新同步
+:Lazy sync
+```
+
+#### 4. LSP 服务器不工作
+**问题**: 语言服务器无法启动
+
+**解决方案**:
+```bash
+# 检查 Mason 安装状态
+:Mason
+
+# 重新安装语言服务器
+:MasonInstall lua-language-server
+
+# 检查 LSP 状态
+:LspInfo
+```
+
+#### 5. 缺少 init.vim 警告
+**解决方案**: 创建兼容性文件
+```bash
+mkdir -p ~/.config/nvim
+echo '" This file is for compatibility - actual config is in init.lua' > ~/.config/nvim/init.vim
+```
+
+### 性能优化建议
+
+#### 启动时间优化
+```bash
+# 分析启动时间
+nvim --startuptime startup.log +qa
+
+# 查看最耗时的操作
+cat startup.log | sort -k2 -n | tail -10
+```
+
+#### 插件管理优化
+- 使用延迟加载 (`event`, `cmd`, `ft`)
+- 定期清理不需要的插件 (`:Lazy clean`)
+- 更新插件到最新版本 (`:Lazy sync`)
+
 ## 📚 相关资源
 
 ### 学习指南
-- [[Neovim]] - Neovim 基础介绍
-- [[Vim完整指南]] - Vim 基础知识
-- [[开发环境配置指南]] - 开发环境设置
+- [Neovim 官方文档](https://neovim.io/doc/)
+- [Lua 语言学习](https://www.lua.org/manual/5.1/)
+- [LSP 配置指南](https://github.com/neovim/nvim-lspconfig)
 
 ### 相关配置
-- [[Vim配置]] - 传统 Vim 配置
-- [[FZF配置]] - FZF 搜索工具配置
-- [[Tmux配置]] - 终端复用器配置
+- [Lazy.nvim 插件管理器](https://github.com/folke/lazy.nvim)
+- [Mason.nvim LSP 管理](https://github.com/williamboman/mason.nvim)
+- [Telescope 搜索工具](https://github.com/nvim-telescope/telescope.nvim)
 
 ### 故障排除
-- [[系统管理与故障排除指南]] - 配置问题解决
+- 使用 `:checkhealth` 诊断问题
+- 查看 `:messages` 了解错误信息
+- 使用 `:Lazy health` 检查插件状态
 
 ---
-
-*⚙️ **提示**：Neovim 配置是一个渐进过程，建议从基础配置开始，逐步添加插件和功能，避免一次性配置过多导致问题难以排查。* 
 
 ## 📝 从 Vim 迁移建议
 
@@ -707,7 +826,7 @@ vim.g.loaded_netrwFileHandlers = 1
    - 最后是插件配置
 3. **使用现代替代品**：
    - vim-plug → Lazy.nvim
-   - NERDTree → nvim-tree
+   - NERDTree → yazi.nvim
    - fzf.vim → Telescope
    - coc.nvim → 内置 LSP
    - vimscript 插件 → Lua 插件

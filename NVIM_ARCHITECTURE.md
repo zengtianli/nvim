@@ -2,15 +2,16 @@
 
 ## 🎯 项目概览
 
-本 Neovim 配置采用**高度统一化的模块架构**，通过**功能聚合**和**扁平化设计**实现了高效的配置管理。经过重构优化，从原来的 80+ 个分散文件精简为 21 个核心文件，并通过精简插件生态系统，大幅提升了维护效率和加载性能。
+本 Neovim 配置采用**高度统一化的模块架构**，通过**功能聚合**和**扁平化设计**实现了高效的配置管理。经过重构优化和插件精简，从原来的 80+ 个分散文件精简为 21 个核心文件，并通过精选插件生态系统，大幅提升了维护效率和加载性能。
 
 ### 核心特性
 - **统一化设计**: 按功能聚合的集中配置管理
 - **扁平化架构**: 简化目录结构，消除过度嵌套
 - **高性能加载**: 减少文件 I/O，优化启动时间
-- **开发工具集成**: LSP、DAP、Git、AI 助手等完整工具链
-- **多语言支持**: Flutter、Go、Lua、Markdown 等语言支持
+- **开发工具集成**: LSP、Git、AI 助手等完整工具链
+- **多语言支持**: JavaScript/TypeScript, Python, Lua, Markdown, C/C++ 等语言支持
 - **智能导航**: 文件搜索、符号跳转、项目管理
+- **健康检查**: 完善的故障诊断和修复机制
 
 ## 🏗️ 核心架构
 
@@ -19,23 +20,25 @@ nvim/
 ├── init.lua                    # 主入口文件
 ├── lua/
 │   ├── config/                 # 配置模块 (21个核心文件)
-│   │   ├── defaults.lua       # 默认配置加载器
-│   │   ├── keymaps.lua        # 统一键位映射
-│   │   ├── plugins.lua        # 统一插件管理 (72个插件)
-│   │   ├── lsp.lua           # 统一LSP配置
-│   │   ├── autocomplete.lua   # 统一自动补全配置
-│   │   ├── telescope.lua      # 统一搜索配置
-│   │   ├── ftplugin.lua       # 统一文件类型配置
-│   │   ├── code_runner.lua    # 代码运行器
-│   │   ├── markdown_utils.lua # Markdown工具
-│   │   └── text_utils.lua     # 文本处理工具
-│   └── plugin/                # 自定义插件
-│       ├── compile_run.lua    # 编译运行工具
-│       ├── ctrlu.lua         # 控制工具
-│       ├── swap_ternary.lua  # 三元运算符交换
+│   │   ├── core/
+│   │   │   └── options.lua     # 核心选项配置（含 Python provider）
+│   │   ├── defaults.lua        # 默认配置加载器
+│   │   ├── keymaps.lua         # 统一键位映射
+│   │   ├── plugins.lua         # 统一插件管理 (45个插件)
+│   │   ├── lsp.lua             # 统一LSP配置
+│   │   ├── autocomplete.lua    # 统一自动补全配置
+│   │   ├── telescope.lua       # 统一搜索配置
+│   │   ├── ftplugin.lua        # 统一文件类型配置
+│   │   ├── code_runner.lua     # 代码运行器
+│   │   ├── markdown_utils.lua  # Markdown工具
+│   │   └── text_utils.lua      # 文本处理工具
+│   └── plugin/                 # 自定义插件
+│       ├── compile_run.lua     # 编译运行工具
+│       ├── ctrlu.lua           # 控制工具
+│       ├── swap_ternary.lua    # 三元运算符交换
 │       └── vertical_cursor_movement.lua # 垂直光标移动
-├── default_config/            # 默认配置模板
-└── cursor_for_qwerty.vim      # 光标配置
+├── default_config/             # 默认配置模板
+└── cursor_for_qwerty.vim       # 光标配置
 ```
 
 ### 架构优势
@@ -43,9 +46,10 @@ nvim/
 - **零功能损失**: 保持所有原有功能完全不变
 - **集中管理**: 相关功能统一配置，便于维护
 - **性能提升**: 减少文件加载次数，优化启动时间
+- **健康监控**: 完整的健康检查和故障排除机制
 
 ### 加载顺序
-1. **默认配置** → 2. **键位映射** → 3. **插件系统** → 4. **工具模块**
+1. **核心选项** → 2. **键位映射** → 3. **插件系统** → 4. **工具模块**
 
 ## 📁 文件结构详解
 
@@ -56,6 +60,15 @@ nvim/
 - **内容**: 简洁的模块加载逻辑，调用统一的配置加载器
 
 ### 统一配置模块 (`lua/config/`)
+
+#### `core/options.lua` ⭐
+- **功能**: 核心选项配置，包含重要的系统修复
+- **包含内容**:
+  - Python provider 配置 (修复健康检查错误)
+  - 基础 UI 设置 (行号、光标、滚动等)
+  - 搜索和缩进配置
+  - 文件处理和性能优化设置
+  - 现代化的 Vim 选项配置
 
 #### `defaults.lua`
 - **功能**: 统一配置加载器和协调中心
@@ -75,26 +88,28 @@ nvim/
   - Operator 模式映射
 
 #### `plugins.lua` ⭐
-- **功能**: 统一插件管理中心 (51 个插件)
+- **功能**: 统一插件管理中心 (45 个精选插件)
 - **架构**: 内联 lazy.nvim 配置 + 分类组织的插件列表
 - **插件分类**:
-  - **UI 界面** (13个): colorscheme, statusline, tabline, winbar, scrollbar, notify
-  - **编辑增强** (6个): comment, surround, multi-cursor, autopairs, move
-  - **开发工具** (22个): lspconfig, treesitter, git, copilot, mason
-  - **导航搜索** (4个): telescope, fzf, yazi, commander
-  - **语言支持** (3个): markdown, lua
-  - **实用工具** (6个): autocomplete, csv, wilder
-- **特性**: 延迟加载、条件加载、依赖管理
+  - **UI 界面** (9个): colorscheme, statusline, tabline, scrollbar, notify
+  - **编辑增强** (8个): comment, surround, multi-cursor, autopairs, move
+  - **开发工具** (10个): lspconfig, treesitter, git, copilot, mason
+  - **导航搜索** (5个): telescope, yazi, commander
+  - **语言支持** (4个): markdown, csv
+  - **自动补全** (5个): nvim-cmp, 补全源
+  - **工具依赖** (4个): lazy, plenary, wilder
+- **特性**: 延迟加载、条件加载、依赖管理、健康检查集成
 
 #### `lsp.lua` ⭐
 - **功能**: 统一 LSP 配置中心
-- **支持语言**: Lua, JavaScript/TypeScript, HTML, JSON, C/C++, Python 等
+- **支持语言**: Lua, JavaScript/TypeScript, HTML, JSON, C/C++, Python, Go, Rust 等
 - **包含功能**:
   - Mason 包管理器配置
-  - 各语言服务器配置 (lua_ls, ts_ls, clangd 等)
+  - 各语言服务器配置 (lua_ls, ts_ls, clangd, pyright 等)
   - 文档和签名帮助功能
   - 格式化保存配置 (多种文件类型)
   - LSP 键位映射和诊断配置
+  - 健康检查集成
 
 #### `autocomplete.lua` ⭐
 - **功能**: 统一自动补全配置
@@ -103,7 +118,7 @@ nvim/
   - 语言特定补全排序 (Python)
   - 补全源配置 (LSP, buffer, path, nvim_lua)
   - 智能补全键位映射
-  - 简化的补全项格式化
+  - 简化的补全项格式化 (移除 lspkind 依赖)
 
 #### `telescope.lua` ⭐
 - **功能**: 统一搜索和导航配置
@@ -130,10 +145,12 @@ nvim/
 - **功能**: 多语言代码运行和智能退出工具
 - **支持语言**: Python, JavaScript, C++, Java, Rust 等
 - **特性**: 智能编译检测、错误处理、后台运行
+- **更新**: 移除 VimTeX 依赖，改用 pdflatex 处理 LaTeX
 
 #### `markdown_utils.lua`
 - **功能**: Markdown 文档处理和增强工具
 - **特性**: 文档格式化、表格处理、TOC 生成
+- **集成**: 与 markdown-preview.nvim 协同工作
 
 #### `text_utils.lua`
 - **功能**: 文本处理和编辑增强工具
@@ -144,6 +161,7 @@ nvim/
 #### `compile_run.lua`
 - **功能**: 编译运行系统
 - **特性**: 智能语言检测、编译链管理
+- **更新**: LaTeX 支持改为使用 pdflatex
 
 #### `swap_ternary.lua`
 - **功能**: 三元运算符条件交换工具
@@ -252,7 +270,7 @@ nvim/
 | `<C-h>` | N | 最近文件 | 历史文件 |
 | `<C-q>` | N | 命令面板 | Commander |
 | `<leader>rs` | N | 恢复上次搜索 | Telescope resume |
-| `R` | N | 文件管理器 | Joshuto |
+| `R` | N | 文件管理器 | Yazi |
 
 ### LSP 和代码导航
 
@@ -287,8 +305,6 @@ nvim/
 | `<leader>gr` | N | 重置变更 | 重置 hunk |
 | `<leader>l` | N | 预览变更 | 预览 hunk |
 | `<leader>gi` | N | Git 状态 | Git status |
-
-
 
 ### AI 助手 (Copilot)
 
@@ -332,7 +348,6 @@ nvim/
 | 快捷键 | 模式 | 功能 | 描述 |
 |--------|------|------|------|
 | `<leader>v` | N | 代码大纲 | Vista |
-| `<leader>mt` | N | 表格模式 | Table mode |
 | `<leader>o` | N | 切换折叠 | 折叠控制 |
 | `<leader>pl` | N | 插件管理 | Lazy 界面 |
 | `<leader>st` | N | 交换三元运算符 | 代码重构 |
@@ -347,8 +362,6 @@ nvim/
 | `<C-N>` | T | 退出终端模式 | 回到普通模式 |
 | `<C-O>` | T | 临时退出终端 | 执行一个命令 |
 
-
-
 ### 其他快捷键
 
 | 快捷键 | 模式 | 功能 | 描述 |
@@ -361,54 +374,52 @@ nvim/
 ## 🔌 插件管理
 
 ### 插件管理架构: 统一化配置
-- **主配置文件**: `lua/config/plugins.lua` (51 个插件的统一管理)
+- **主配置文件**: `lua/config/plugins.lua` (45 个插件的统一管理)
 - **管理器**: 内联 lazy.nvim 配置，无需额外文件
 - **加载策略**: 延迟加载、条件加载、自动依赖管理
 - **界面**: `<leader>pl` 打开 Lazy 管理界面
 
 ### 插件分类体系
-配置按功能分类为 6 大类，在单个文件中集中管理：
+配置按功能分类为 7 大类，在单个文件中集中管理：
 
-#### 🎨 UI 界面插件 (15个)
-- **colorscheme**: 主题系统 (gruvbox, onedark 等)
+#### 🎨 UI 界面插件 (9个)
+- **colorscheme**: 主题系统 (nvim-deus 等)
 - **statusline**: lualine.nvim 状态栏
 - **tabline**: bufferline.nvim 标签栏  
-- **winbar**: 窗口标题栏
 - **scrollbar**: 智能滚动条
 - **notify**: nvim-notify 通知系统
 
-#### ✏️ 编辑增强插件 (7个)
-- **comment**: nvim-comment 智能注释
+#### ✏️ 编辑增强插件 (8个)
+- **comment**: Comment.nvim 智能注释 (替代 tcomment_vim)
 - **surround**: nvim-surround 环绕操作
 - **multi-cursor**: vim-visual-multi 多光标
 - **editor**: 多种编辑增强工具
 - **autopairs**: 自动配对插件
 - **move**: 代码块移动插件
 
-#### 🛠️ 开发工具插件 (22个)
+#### 🛠️ 开发工具插件 (10个)
 - **LSP**: nvim-lspconfig + mason.nvim LSP 管理
 - **treesitter**: nvim-treesitter 语法高亮和解析
-- **git**: gitsigns, lazygit 版本控制
-- **copilot**: github-copilot AI 代码助手
-- **autocomplete**: nvim-cmp 自动补全系统
+- **git**: gitsigns.nvim 版本控制
+- **copilot**: copilot.vim AI 代码助手
 - **mason**: LSP/Linter 包管理器
 
-#### 🧭 导航搜索插件 (4个)
+#### 🧭 导航搜索插件 (5个)
 - **telescope**: telescope.nvim 模糊搜索核心
-- **fzf**: fzf.vim 高性能搜索
-- **yazi**: yazi.nvim 文件管理器
+- **yazi**: yazi.nvim 文件管理器 (替代 nvim-tree)
 - **commander**: commander.nvim 命令面板
 
 #### 🌐 语言支持插件 (4个)
-- **markdown**: 增强的 Markdown 支持
-- **lua**: Lua 开发增强
-
-#### 🔧 实用工具插件 (8个)
+- **markdown**: markdown-preview.nvim 预览支持 (替代 vim-instant-markdown)
 - **csv**: CSV 文件处理
+
+#### 🔧 自动补全插件 (5个)
+- **nvim-cmp**: 补全引擎和补全源
+
+#### ⚙️ 工具依赖插件 (4个)
+- **lazy**: lazy.nvim 插件管理器
+- **plenary**: 工具库
 - **wilder**: wilder.nvim 命令行增强
-- **startuptime**: 启动时间分析
-- **indent**: 缩进可视化
-- **ft**: 文件类型检测增强
 
 ### 插件配置特性
 - **延迟加载**: 基于事件、命令、文件类型的智能加载
@@ -416,6 +427,7 @@ nvim/
 - **依赖管理**: 自动处理插件间依赖关系
 - **性能优化**: 最小化启动时间，按需加载功能
 - **集中配置**: 所有插件配置集中在单一文件中
+- **健康检查**: 集成的插件状态监控
 
 ### 添加新插件
 1. 在 `lua/config/plugins.lua` 中的对应分类部分添加插件配置
@@ -428,6 +440,44 @@ nvim/
 - `:Lazy clean`: 清理未使用的插件
 - `:Lazy health`: 检查插件健康状态
 
+## 🩺 健康检查和故障排除
+
+### 内置健康检查系统
+- **命令**: `:checkhealth` 全面检查
+- **组件检查**: `:checkhealth vim.lsp`, `:checkhealth mason`, `:checkhealth telescope`
+- **状态监控**: 实时插件和配置状态检查
+
+### 已修复的问题
+
+#### ✅ Python Provider 错误
+- **问题**: `ERROR Failed to run healthcheck for "vim.provider" plugin`
+- **修复**: 在 `lua/config/core/options.lua` 中配置正确的 Python 路径
+- **解决方案**: `vim.g.python3_host_prog = vim.fn.exepath('python3')`
+
+#### ✅ 缺少 init.vim 警告
+- **问题**: `WARNING Missing user config file: /Users/tianli/.config/nvim/init.vim`
+- **修复**: 创建兼容性 init.vim 文件
+- **解决方案**: 自动创建指向 init.lua 的兼容文件
+
+#### ✅ Mason 构建命令错误
+- **问题**: `Vim:E471: Argument required: MasonInstall`
+- **修复**: 更新 mason.nvim 构建命令为 `:MasonUpdate`
+
+#### ✅ 插件 Git 冲突
+- **问题**: 多个插件出现 Git 冲突和未跟踪文件
+- **修复**: 实现自动清理脚本和手动修复流程
+
+### 可以安全忽略的警告
+- **Lua 版本警告**: Neovim 使用内置 LuaJIT，功能完全正常
+- **Julia 缺失**: 除非进行 Julia 开发
+- **tree-sitter CLI**: 除非需要自定义语法解析器
+- **Perl provider**: 现代 Neovim 配置很少需要
+
+### 性能监控
+- **启动时间**: 通过 `nvim --startuptime` 监控
+- **插件加载**: Lazy.nvim 提供详细的加载时间分析
+- **内存使用**: 优化的插件配置和延迟加载策略
+
 ## 🛠️ 自定义功能
 
 ### 核心自定义工具
@@ -438,6 +488,7 @@ nvim/
   - **脚本语言**: Python, JavaScript, TypeScript, Lua
   - **编译语言**: C++, Java, Rust, C
   - **Web技术**: HTML, CSS
+  - **文档**: LaTeX (使用 pdflatex)
 - **特性**: 
   - 智能编译检测和链式执行
   - 错误处理和输出管理
@@ -462,7 +513,7 @@ nvim/
   - 表格处理和对齐
   - TOC (目录) 生成
   - 链接管理和验证
-- **集成**: 与 table-mode 和 markdown-preview 插件协同工作
+- **集成**: 与 markdown-preview.nvim 协同工作
 
 #### 文件类型配置 (`lua/config/ftplugin.lua`)
 - **功能**: 统一的文件类型特定配置 (替换传统 ftplugin 目录)
@@ -488,6 +539,7 @@ nvim/
   - 编译链管理 (预处理 → 编译 → 链接)
   - 错误捕获和诊断
   - 自定义运行参数
+- **更新**: LaTeX 支持改用 pdflatex
 
 #### 三元运算符交换 (`swap_ternary.lua`)
 - **功能**: 快速交换三元运算符的条件分支
@@ -512,17 +564,17 @@ nvim/
 
 ### LSP 集成配置 (`lua/config/lsp.lua`)
 - **Mason 集成**: 自动LSP服务器管理
-- **多语言支持**: Lua, JavaScript/TypeScript, HTML, JSON, C/C++, Python 等
+- **多语言支持**: Lua, JavaScript/TypeScript, HTML, JSON, C/C++, Python, Go, Rust 等
 - **增强功能**:
   - 悬停文档显示 (`<leader>h`)
   - 签名帮助自动触发
   - 格式化保存 (多种文件类型)
   - 实时诊断和错误提示
+- **健康检查**: 集成的 LSP 状态监控
 
 ### 搜索和导航系统 (`lua/config/telescope.lua`)
 - **Telescope 集成**: 统一搜索界面
 - **Commander 集成**: 命令面板和快速操作
-- **FZF 优化**: 高性能文件搜索
 - **特色功能**:
   - 项目文件搜索 (`<C-p>`)
   - 符号和引用查找
@@ -548,7 +600,8 @@ nvim/
 - **按需加载**: 基于文件类型和使用场景的智能加载
 - **启动优化**: 最小化启动时的插件加载数量
 - **内存管理**: 智能的插件卸载和资源管理
+- **健康监控**: 定期检查和优化配置性能
 
 ---
 
-本文档详细描述了重构后的 Neovim 配置架构。新架构通过**统一化设计**实现了 **75% 的文件减少**，同时**保持了所有功能的完整性**。配置更加**易于维护和扩展**，为用户提供了现代化、高效的编辑体验。 
+本文档详细描述了重构后的 Neovim 配置架构。新架构通过**统一化设计**实现了 **75% 的文件减少**，同时**保持了所有功能的完整性**。配置更加**易于维护和扩展**，为用户提供了现代化、高效的编辑体验，并包含完善的健康检查和故障排除机制。 
