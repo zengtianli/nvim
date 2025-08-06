@@ -74,14 +74,6 @@ M = {
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-nvim-lua",
-    "hrsh7th/cmp-calc",
-    {
-      "onsails/lspkind.nvim",
-      lazy = false,
-      config = function()
-        require("lspkind").init()
-      end
-    },
   },
   config = function()
     local M = require("config.autocomplete")
@@ -90,7 +82,6 @@ M = {
 }
 
 function M.setup()
-  local lspkind = require("lspkind")
   vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
   local cmp = require("cmp")
   setCompHL()
@@ -119,14 +110,9 @@ function M.setup()
       maxwidth = 60,
       maxheight = 10,
       format = function(entry, vim_item)
-        local kind = lspkind.cmp_format({
-          mode = "symbol_text",
-          symbol_map = { Codeium = "", },
-        })(entry, vim_item)
-        local strings = vim.split(kind.kind, "%s", { trimempty = true })
-        kind.kind = " " .. (strings[1] or "") .. " "
-        kind.menu = limitStr(entry:get_completion_item().detail or "")
-        return kind
+        vim_item.kind = " " .. vim_item.kind .. " "
+        vim_item.menu = limitStr(entry:get_completion_item().detail or "")
+        return vim_item
       end,
     },
     sources = cmp.config.sources({
@@ -135,7 +121,6 @@ function M.setup()
     }, {
       { name = "path" },
       { name = "nvim_lua" },
-      { name = "calc" },
     }),
     mapping = cmp.mapping.preset.insert({
       ['<C-l>'] = cmp.mapping.complete(),

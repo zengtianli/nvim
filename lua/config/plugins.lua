@@ -261,12 +261,7 @@ unmap ic
     end
   },
 
-  -- 折叠增强
-  {
-    "kevinhwang91/nvim-ufo",
-    dependencies = { "kevinhwang91/promise-async" },
-    config = function() require('ufo').setup() end
-  },
+
 
   -- 自动配对
   {
@@ -286,16 +281,14 @@ unmap ic
   require("config.lsp")[2],
 
   -- 语法高亮
-  {
-    "nvim-treesitter/playground"
-  },
+
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
     priority = 1000,
     build = ":TSUpdate",
     config = function()
-      -- 禁用内置的折叠，使用 ufo 插件代替
+      -- 禁用内置的折叠
       vim.opt.foldmethod = "manual"
       vim.opt.foldexpr = ""
       vim.opt.smartindent = false
