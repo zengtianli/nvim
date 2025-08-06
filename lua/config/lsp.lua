@@ -120,12 +120,7 @@ M = {
 
       "airblade/vim-rooter",
       "b0o/schemastore.nvim",
-      {
-        'laytan/tailwind-sorter.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-lua/plenary.nvim' },
-        build = 'cd formatter && npm ci && npm run build',
-        opts = { on_save_enabled = true }
-      },
+
     },
     config = function()
       local lsp = require('lsp-zero').preset({})
@@ -150,8 +145,7 @@ M = {
         lsp.default_keymaps({ buffer = bufnr })
         client.server_capabilities.semanticTokensProvider = nil
         
-        -- 配置自动补全
-        require("config.autocomplete").setup()
+        -- 配置 LSP 签名帮助
         require("lsp_signature").on_attach(F.signature_config, bufnr)
         
         vim.diagnostic.config({

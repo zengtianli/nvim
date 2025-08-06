@@ -89,17 +89,7 @@ M = {
       ts.load_extension('fzf')
     end
   },
-  {
-    "FeiyouG/commander.nvim",
-    config = function()
-      local commander = require("commander")
-      commander.setup({ telescope = { enable = true } })
-      vim.keymap.set('n', '<c-q>', require("commander").show, m)
-      commander.add({
-        { desc = "Git diff", cmd = "<CMD>Telescope git_status<CR>" }
-      })
-    end
-  }
+
 }
 
 return M 

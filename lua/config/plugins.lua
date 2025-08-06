@@ -167,18 +167,36 @@ hi! ScrollbarGitDeleteHandle guifg=#FF7B7B ]])
   -- ==========================================
   -- 注释增强
   {
-    "tomtom/tcomment_vim",
+    "numToStr/Comment.nvim",
     event = "BufRead",
     config = function()
-      vim.g.tcomment_maps = true
-      vim.g.tcomment_textobject_inlinecomment = ''
-      vim.cmd([[
-nmap <LEADER>cn g>c
-vmap <LEADER>cn g>
-nmap <LEADER>cu g<c
-vmap <LEADER>cu g<
-unmap ic
-      ]])
+      require('Comment').setup({
+        padding = true,
+        sticky = true,
+        ignore = nil,
+        toggler = {
+          line = 'gcc',
+          block = 'gbc',
+        },
+        opleader = {
+          line = 'gc',
+          block = 'gb',
+        },
+        extra = {
+          above = 'gcO',
+          below = 'gco',
+          eol = 'gcA',
+        },
+        mappings = {
+          basic = true,
+          extra = true,
+        },
+      })
+      -- 自定义键位映射保持兼容性
+      vim.keymap.set('n', '<LEADER>cn', 'gcc', { desc = "注释行", remap = true })
+      vim.keymap.set('v', '<LEADER>cn', 'gc', { desc = "注释选择", remap = true })
+      vim.keymap.set('n', '<LEADER>cu', 'gcc', { desc = "取消注释行", remap = true })
+      vim.keymap.set('v', '<LEADER>cu', 'gc', { desc = "取消注释选择", remap = true })
     end
   },
 
@@ -210,7 +228,7 @@ unmap ic
   },
 
 
-  { 'theniceboy/antovim', lazy = false },
+
 
 
   -- 移动增强
@@ -325,11 +343,36 @@ unmap ic
 
 
   -- 语言特定插件
+  -- Markdown 预览
   {
-    "instant-markdown/vim-instant-markdown",
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
-    build = "yarn install",
-    config = function() vim.g.instant_markdown_autostart = 0 end
+    build = function() vim.fn["mkdp#util#install"]() end,
+    config = function()
+      vim.g.mkdp_auto_start = 0
+      vim.g.mkdp_auto_close = 1
+      vim.g.mkdp_refresh_slow = 0
+      vim.g.mkdp_command_for_global = 0
+      vim.g.mkdp_open_to_the_world = 0
+      vim.g.mkdp_open_ip = ''
+      vim.g.mkdp_browser = ''
+      vim.g.mkdp_echo_preview_url = 0
+      vim.g.mkdp_browserfunc = ''
+      vim.g.mkdp_preview_options = {
+        mkit = {},
+        katex = {},
+        uml = {},
+        maid = {},
+        disable_sync_scroll = 0,
+        sync_scroll_type = 'middle',
+        hide_yaml_meta = 1
+      }
+      vim.g.mkdp_markdown_css = ''
+      vim.g.mkdp_highlight_css = ''
+      vim.g.mkdp_port = ''
+      vim.g.mkdp_page_title = '「${name}」'
+    end
   },
   -- Markdown 目录生成
   {
@@ -498,18 +541,7 @@ unmap ic
 
 
 
-  -- 项目管理
-  {
-    "airblade/vim-rooter",
-    init = function()
-      vim.g.rooter_patterns = { '__vim_project_root', '.git/' }
-      vim.g.rooter_silent_chdir = true
-      vim.api.nvim_create_autocmd("VimEnter", {
-        pattern = "*",
-        callback = function() vim.cmd([[silent! source .vim.lua]]) end
-      })
-    end
-  },
+
 
   -- 文件管理
   {
@@ -543,33 +575,9 @@ unmap ic
     cmd = { 'RainbowDelim', 'RainbowDelimSimple', 'RainbowDelimQuoted', 'RainbowMultiDelim' }
   },
 
-  -- 命令行增强
-  {
-    'gelguy/wilder.nvim',
 
-    config = function()
-      local wilder = require('wilder')
-      wilder.setup { modes = { ':' }, next_key = '<Tab>', previous_key = '<S-Tab>' }
-      wilder.set_option('renderer', wilder.popupmenu_renderer(
-        wilder.popupmenu_palette_theme({
-          highlights = { border = 'Normal' },
-          left = { ' ' },
-          right = { ' ', wilder.popupmenu_scrollbar() },
-          border = 'rounded', max_height = '75%', min_height = 0,
-          prompt_position = 'top', reverse = 0
-        })
-      ))
-      wilder.set_option('pipeline', {
-        wilder.branch(
-          wilder.cmdline_pipeline({ language = 'vim', fuzzy = 1 }),
-          wilder.search_pipeline()
-        )
-      })
-    end
-  },
 
-  -- 性能分析工具
-  { "dstein64/vim-startuptime" },
+
 
   -- 其他辅助工具
   {
