@@ -1,16 +1,8 @@
-LukasPietzschmann/telescope-tabs  -- 标签页管理
-stevearc/dressing.nvim            -- 输入框美化
-dimaportenko/telescope-simulators.nvim -- 模拟器集成
-pechorin/any-jump.vim             -- 快速跳转
-MagicDuck/grug-far.nvim           -- 全局搜索替换
-
-根据你的启动时间报告，我来分析这些插件：
-
+```
 ## 1. 🔄 **重复/功能冲突的插件**
 
 ### 命令行增强 (选其一)
 ```lua
-wilder.nvim (29.73ms)        -- ❌ 命令行补全增强  
 commander.nvim (6.1ms)       -- ❌ 命令调色板
 -- 建议：telescope 已经能覆盖大部分功能
 ```
@@ -48,7 +40,6 @@ move.nvim (4.77ms)           -- ⚠️  移动行/块，neovim内置已改善
 -- 当前使用 -> 建议替代
 vim-instant-markdown         -> iamcco/markdown-preview.nvim
 tcomment_vim                 -> numToStr/Comment.nvim (更现代)
-wilder.nvim                  -> telescope已足够 + noice.nvim (UI)
 commander.nvim               -> telescope + which-key.nvim
 ```
 
@@ -66,7 +57,6 @@ stevearc/dressing.nvim -- 美化输入界面
 "vim-startuptime",      -- 调试工具
 "vim-instant-markdown", -- 过时预览
 "vim-rooter",          -- 内置已足够
-"wilder.nvim",         -- telescope已覆盖
 "commander.nvim",      -- telescope已覆盖
 "antovim",            -- 未知用途
 ```
@@ -98,14 +88,5 @@ stevearc/dressing.nvim -- 美化输入界面
 },
 ```
 
-## 💡 **性能提升预期**
-
-删除建议的插件后：
-- **减少启动时间**: ~50-80ms
-- **减少内存占用**: 显著
-- **功能不丢失**: telescope + 现代替代插件覆盖所有功能
-- **维护更简单**: 更少的插件依赖
-
-最大的性能杀手是 `lsp-zero.nvim (320.25ms)`，但这个很重要且很难替代。其他高耗时的如 `telescope.nvim`, `nvim-cmp` 都是核心插件，建议保留。
-
-
+```
+按照这个意见修改

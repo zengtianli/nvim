@@ -76,88 +76,94 @@ M = {
     "hrsh7th/cmp-nvim-lua",
   },
   config = function()
-    vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
-    local cmp = require("cmp")
-    setCompHL()
-    
-    cmp.setup({
-      preselect = cmp.PreselectMode.None,
-      window = {
-        completion = {
-          col_offset = -3,
-          side_padding = 0,
-        },
-        documentation = cmp.config.window.bordered(),
-      },
-      sorting = {
-        comparators = {
-          pythonUnderscoreSecond,
-          cmp.config.compare.offset,
-          cmp.config.compare.exact,
-          cmp.config.compare.score,
-          cmp.config.compare.recently_used,
-          cmp.config.compare.kind,
-        },
-      },
-      formatting = {
-        fields = { "kind", "abbr", "menu" },
-        maxwidth = 60,
-        maxheight = 10,
-        format = function(entry, vim_item)
-          vim_item.kind = " " .. vim_item.kind .. " "
-          vim_item.menu = limitStr(entry:get_completion_item().detail or "")
-          return vim_item
-        end,
-      },
-      sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "buffer" },
-      }, {
-        { name = "path" },
-        { name = "nvim_lua" },
-      }),
-      mapping = cmp.mapping.preset.insert({
-        ['<C-l>'] = cmp.mapping.complete(),
-        ['<c-f>'] = cmp.mapping({
-          i = function(fallback)
-            cmp.close()
-            fallback()
-          end
-        }),
-        ['<CR>'] = cmp.mapping({
-          i = function(fallback)
-            if cmp.visible() and cmp.get_active_entry() then
-              cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-            else
-              fallback()
-            end
-          end
-        }),
-                 ["<Tab>"] = cmp.mapping({
-           i = function(fallback)
-             if cmp.visible() then
-               cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-             elseif has_words_before() then
-               cmp.complete()
-             else
-               fallback()
-             end
-           end,
-         }),
-         ["<S-Tab>"] = cmp.mapping({
-           i = function(fallback)
-             if cmp.visible() then
-               cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-             else
-               fallback()
-             end
-           end,
-         }),
-      }),
-    })
+    local M = require("config.autocomplete")
+    M.setup()
   end
 }
 
-
+function M.setup()
+  vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
+  local cmp = require("cmp")
+  setCompHL()
+  
+  cmp.setup({
+    preselect = cmp.PreselectMode.None,
+    window = {
+      completion = {
+        col_offset = -3,
+        side_padding = 0,
+      },
+      documentation = cmp.config.window.bordered(),
+    },
+    sorting = {
+      comparators = {
+        pythonUnderscoreSecond,
+        cmp.config.compare.offset,
+        cmp.config.compare.exact,
+        cmp.config.compare.score,
+        cmp.config.compare.recently_used,
+        cmp.config.compare.kind,
+      },
+    },
+    formatting = {
+      fields = { "kind", "abbr", "menu" },
+      maxwidth = 60,
+      maxheight = 10,
+      format = function(entry, vim_item)
+        vim_item.kind = " " .. vim_item.kind .. " "
+        vim_item.menu = limitStr(entry:get_completion_item().detail or "")
+        return vim_item
+      end,
+    },
+    sources = cmp.config.sources({
+      { name = "nvim_lsp" },
+      { name = "buffer" },
+    }, {
+      { name = "path" },
+      { name = "nvim_lua" },
+    }),
+    mapping = cmp.mapping.preset.insert({
+      ['<C-l>'] = cmp.mapping.complete(),
+      ['<c-f>'] = cmp.mapping({
+        i = function(fallback)
+          cmp.close()
+          fallback()
+        end
+      }),
+      ['<CR>'] = cmp.mapping({
+        i = function(fallback)
+          if cmp.visible() and cmp.get_active_entry() then
+            cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+          else
+            fallback()
+          end
+        end
+      }),
+      ["<Tab>"] = cmp.mapping({
+        i = function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+            moveCursorBeforeComma()
+          elseif has_words_before() then
+            cmp.complete()
+            moveCursorBeforeComma()
+          else
+            fallback()
+          end
+        end,
+      }),
+      ["<S-Tab>"] = cmp.mapping({
+        i = function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+            moveCursorBeforeComma()
+          else
+            fallback()
+          end
+        end,
+      }),
+    }),
+  })
+end
 
 return M 

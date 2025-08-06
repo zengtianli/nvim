@@ -129,9 +129,6 @@ local text_processing_mappings = {
 	-- Marp 幻灯片预览
 	{ from = "<leader>mp", to = ":MarpToggle<CR>", desc = "切换 Marp 幻灯片预览" },
 	{ from = "<leader>ms", to = ":MarpStatus<CR>", desc = "查看 Marp 服务器状态" },
-	
-	-- 命令搜索（替代 commander）
-	{ from = "<C-q>", to = ":Telescope commands<CR>", desc = "命令搜索" },
 }
 
 -- ==========================================

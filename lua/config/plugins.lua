@@ -173,30 +173,25 @@ hi! ScrollbarGitDeleteHandle guifg=#FF7B7B ]])
       require('Comment').setup({
         padding = true,
         sticky = true,
-        ignore = nil,
+        ignore = '^$',
         toggler = {
           line = 'gcc',
-          block = 'gbc',
+          block = 'gbc'
         },
         opleader = {
           line = 'gc',
-          block = 'gb',
-        },
-        extra = {
-          above = 'gcO',
-          below = 'gco',
-          eol = 'gcA',
+          block = 'gb'
         },
         mappings = {
           basic = true,
-          extra = true,
-        },
+          extra = true
+        }
       })
-      -- 自定义键位映射保持兼容性
-      vim.keymap.set('n', '<LEADER>cn', 'gcc', { desc = "注释行", remap = true })
-      vim.keymap.set('v', '<LEADER>cn', 'gc', { desc = "注释选择", remap = true })
-      vim.keymap.set('n', '<LEADER>cu', 'gcc', { desc = "取消注释行", remap = true })
-      vim.keymap.set('v', '<LEADER>cu', 'gc', { desc = "取消注释选择", remap = true })
+      -- 保持原有快捷键
+      vim.keymap.set('n', '<leader>cn', 'gcc', { remap = true })
+      vim.keymap.set('v', '<leader>cn', 'gc', { remap = true })
+      vim.keymap.set('n', '<leader>cu', 'gcc', { remap = true })
+      vim.keymap.set('v', '<leader>cu', 'gc', { remap = true })
     end
   },
 
@@ -343,12 +338,11 @@ hi! ScrollbarGitDeleteHandle guifg=#FF7B7B ]])
 
 
   -- 语言特定插件
-  -- Markdown 预览
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
-    build = function() vim.fn["mkdp#util#install"]() end,
+    build = "cd app && npm install",
     config = function()
       vim.g.mkdp_auto_start = 0
       vim.g.mkdp_auto_close = 1
@@ -366,7 +360,9 @@ hi! ScrollbarGitDeleteHandle guifg=#FF7B7B ]])
         maid = {},
         disable_sync_scroll = 0,
         sync_scroll_type = 'middle',
-        hide_yaml_meta = 1
+        hide_yaml_meta = 1,
+        sequence_diagrams = {},
+        flowchart_diagrams = {}
       }
       vim.g.mkdp_markdown_css = ''
       vim.g.mkdp_highlight_css = ''
@@ -541,7 +537,7 @@ hi! ScrollbarGitDeleteHandle guifg=#FF7B7B ]])
 
 
 
-
+  -- 项目管理（已移除 vim-rooter，使用内置功能）
 
   -- 文件管理
   {
@@ -575,7 +571,30 @@ hi! ScrollbarGitDeleteHandle guifg=#FF7B7B ]])
     cmd = { 'RainbowDelim', 'RainbowDelimSimple', 'RainbowDelimQuoted', 'RainbowMultiDelim' }
   },
 
+  -- 命令行增强
+  {
+    'gelguy/wilder.nvim',
 
+    config = function()
+      local wilder = require('wilder')
+      wilder.setup { modes = { ':' }, next_key = '<Tab>', previous_key = '<S-Tab>' }
+      wilder.set_option('renderer', wilder.popupmenu_renderer(
+        wilder.popupmenu_palette_theme({
+          highlights = { border = 'Normal' },
+          left = { ' ' },
+          right = { ' ', wilder.popupmenu_scrollbar() },
+          border = 'rounded', max_height = '75%', min_height = 0,
+          prompt_position = 'top', reverse = 0
+        })
+      ))
+      wilder.set_option('pipeline', {
+        wilder.branch(
+          wilder.cmdline_pipeline({ language = 'vim', fuzzy = 1 }),
+          wilder.search_pipeline()
+        )
+      })
+    end
+  },
 
 
 

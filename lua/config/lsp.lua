@@ -110,7 +110,7 @@ M = {
       { 'neovim/nvim-lspconfig' },
       {
         'williamboman/mason.nvim',
-        build = function() vim.cmd([[MasonInstall]]) end,
+        build = ":MasonUpdate",
       },
       { 'williamboman/mason-lspconfig.nvim' },
       { 'hrsh7th/cmp-nvim-lsp' },
@@ -118,8 +118,7 @@ M = {
       "folke/neodev.nvim",
       "ray-x/lsp_signature.nvim",
 
-      "airblade/vim-rooter",
-      "b0o/schemastore.nvim",
+
 
     },
     config = function()
@@ -145,7 +144,8 @@ M = {
         lsp.default_keymaps({ buffer = bufnr })
         client.server_capabilities.semanticTokensProvider = nil
         
-        -- 配置 LSP 签名帮助
+        -- 配置自动补全
+        require("config.autocomplete").setup()
         require("lsp_signature").on_attach(F.signature_config, bufnr)
         
         vim.diagnostic.config({
@@ -218,7 +218,7 @@ M = {
         settings = {
           redhat = { telemetry = { enabled = false } },
           yaml = {
-            schemaStore = { enable = false, url = "" },
+            schemaStore = { enable = false },
             validate = false,
             customTags = {
               "!fn", "!And", "!If", "!Not", "!Equals", "!Or", "!FindInMap sequence",
