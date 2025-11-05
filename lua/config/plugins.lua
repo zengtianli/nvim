@@ -411,6 +411,25 @@ hi! ScrollbarGitDeleteHandle guifg=#FF7B7B ]])
       })
     end
   },
+  -- Markdown 表格模式
+  {
+    "dhruvasagar/vim-table-mode",
+    ft = { "markdown" },
+    config = function()
+      -- 表格模式配置
+      vim.g.table_mode_corner = '|'          -- 表格角落字符
+      vim.g.table_mode_corner_corner = '+'   -- 表格角落交叉字符
+      vim.g.table_mode_header_fillchar = '=' -- 表头分隔符
+      vim.g.table_mode_align_char = ':'      -- 对齐字符
+      vim.g.table_mode_delimiter = '|'       -- 表格分隔符
+      vim.g.table_mode_fillchar = '-'        -- 填充字符
+      
+      -- 设置表格模式快捷键 (避免与 TOC 冲突)
+      vim.keymap.set("n", "<leader>tm", ":TableModeToggle<CR>", { noremap = true, silent = true, desc = "切换表格模式" })
+      vim.keymap.set("n", "<leader>tr", ":TableModeRealign<CR>", { noremap = true, silent = true, desc = "重新对齐表格" })
+      vim.keymap.set("n", "<leader>tt", ":Tableize<CR>", { noremap = true, silent = true, desc = "将选中内容转换为表格" })
+    end
+  },
 
 
 

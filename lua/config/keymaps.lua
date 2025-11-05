@@ -123,8 +123,8 @@ local text_processing_mappings = {
 	{ from = "<leader>pr", to = ":profile start profile.log<CR>:profile func *<CR>:profile file *<CR>", desc = "开始性能分析" },
 	{ from = "<leader>rd", to = ":%s/\\\\[[^\\\\]]*\\\\]//g<CR>", mode = "n", desc = "删除文件中所有中括号引用" },
 
-	-- 表格模式
-	{ from = "<leader>mt", to = ":TableModeToggle<CR>", desc = "切换表格模式" },
+	-- 表格模式 (使用新的快捷键避免与 TOC 冲突)
+	{ from = "<leader>tm", to = ":TableModeToggle<CR>", desc = "切换表格模式" },
 	
 	-- Marp 幻灯片预览
 	{ from = "<leader>mp", to = ":MarpToggle<CR>", desc = "切换 Marp 幻灯片预览" },

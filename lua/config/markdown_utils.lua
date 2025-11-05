@@ -59,48 +59,30 @@ local function number_h3_headings()
 	end
 end
 -- 取消标题编号
-local function unnumber_headings()
+local function unnumber_headings(opts)
 	-- 获取选择范围
 	local start_line, end_line
-	local mode = vim.fn.mode()
 	
-	-- 检查是否在可视模式或刚从可视模式退出
-	if mode == 'v' or mode == 'V' or mode == '' or vim.fn.visualmode() ~= '' then
-		-- 获取可视选择的开始和结束行
-		start_line = vim.fn.line("'<")
-		end_line = vim.fn.line("'>")
+	-- 使用命令提供的范围参数
+	if opts and opts.range > 0 then
+		start_line = opts.line1
+		end_line = opts.line2
 	else
-		-- 如果没有选择，则处理整个文件
+		-- 如果没有范围，则处理整个文件
 		start_line = 1
 		end_line = vim.fn.line('$')
 	end
 	
 	for i = start_line, end_line, 1 do
 		local line = vim.fn.getline(i)
-		local new_line = nil
-		
-		-- 一级标题：# 数字 或 # 数字空格
-		if line:match("^# %d+%s") then
-			new_line = line:gsub("^# %d+%s*", "# ")
-		-- 二级标题：## 数字.数字 或 ## 数字.数字空格
-		elseif line:match("^## %d+%.%d+") then
-			new_line = line:gsub("^## %d+%.%d+%s*", "## ")
-		-- 三级标题：### 数字.数字.数字 或 ### 数字.数字.数字空格
-		elseif line:match("^### %d+%.%d+%.%d+") then
-			new_line = line:gsub("^### %d+%.%d+%.%d+%s*", "### ")
-		-- 四级标题：#### 数字.数字.数字.数字 或 #### 数字.数字.数字.数字空格
-		elseif line:match("^#### %d+%.%d+%.%d+%.%d+") then
-			new_line = line:gsub("^#### %d+%.%d+%.%d+%.%d+%s*", "#### ")
-		-- 五级标题：##### 数字.数字.数字.数字.数字 或 ##### 数字.数字.数字.数字.数字空格
-		elseif line:match("^##### %d+%.%d+%.%d+%.%d+%.%d+") then
-			new_line = line:gsub("^##### %d+%.%d+%.%d+%.%d+%.%d+%s*", "##### ")
-		-- 六级标题：###### 数字.数字.数字.数字.数字.数字 或 ###### 数字.数字.数字.数字.数字.数字空格
-		elseif line:match("^###### %d+%.%d+%.%d+%.%d+%.%d+%.%d+") then
-			new_line = line:gsub("^###### %d+%.%d+%.%d+%.%d+%.%d+%.%d+%s*", "###### ")
-		end
-		
-		if new_line then
-			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+		-- 匹配任何级别的标题（# 到 ######），并移除后面的数字编号
+		if line:match("^#+%s") then
+			-- 改进的正则表达式：匹配 "# " 后面跟着的数字编号模式（如 "1 ", "1. ", "1.1 ", "1.1. "）
+			-- 但保留标题文本内容
+			local new_line = line:gsub("^(#+%s)%d+[%.%d]*%.?%s+", "%1")
+			if new_line and new_line ~= line then
+				vim.api.nvim_buf_set_lines(0, i - 1, i, false, { new_line })
+			end
 		end
 	end
 end
@@ -371,7 +353,14 @@ function M.setup()
 	}
 	
 	for _, cmd in ipairs(commands) do
-		vim.api.nvim_create_user_command(cmd.name, cmd.func, { range = true })
+		-- UnnumberHeadings 需要接收范围参数
+		if cmd.name == 'UnnumberHeadings' then
+			vim.api.nvim_create_user_command(cmd.name, function(opts)
+				cmd.func(opts)
+			end, { range = true, desc = cmd.desc })
+		else
+			vim.api.nvim_create_user_command(cmd.name, cmd.func, { range = true, desc = cmd.desc })
+		end
 	end
 end
 
