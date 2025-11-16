@@ -41,7 +41,7 @@ function M.run_code()
 	elseif filetype == 'html' then
 		vim.cmd('silent! !' .. vim.g.mkdp_browser .. ' % &')
 	elseif filetype == 'markdown' then
-		vim.cmd('InstantMarkdownPreview')
+		vim.cmd('MarkdownPreview')
 	elseif filetype == 'tex' then
 		  -- LaTeX compilation can be handled by other means if needed
 	
