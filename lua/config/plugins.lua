@@ -342,8 +342,11 @@ hi! ScrollbarGitDeleteHandle guifg=#FF7B7B ]])
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
-    build = "cd app && npm install",
+    build = "cd app && npx --yes yarn install && npx --yes yarn add msgpack-lite",
     config = function()
+      -- 修复 Node.js v25 的 localStorage 问题
+      vim.fn.setenv('NODE_OPTIONS', '--no-experimental-webstorage')
+      
       vim.g.mkdp_auto_start = 0
       vim.g.mkdp_auto_close = 1
       vim.g.mkdp_refresh_slow = 0
