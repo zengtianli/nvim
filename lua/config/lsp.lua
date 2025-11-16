@@ -169,12 +169,14 @@ M = {
 
 			lsp.format_on_save({ format_opts = {} })
 
-			local lspconfig = require('lspconfig')
+			-- 配置 Neodev
+			require("neodev").setup({ lspconfig = false, override = function() end })
 
 			-- Lua LSP配置
-			require("neodev").setup({ lspconfig = true, override = function() end })
-			lspconfig.lua_ls.setup({
-				on_attach = function() end,
+			vim.lsp.config.lua_ls = {
+				cmd = { 'lua-language-server' },
+				filetypes = { 'lua' },
+				root_markers = { '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' },
 				settings = {
 					Lua = {
 						diagnostics = { globals = { 'vim', 'require' } },
@@ -182,43 +184,111 @@ M = {
 						completion = { callSnippet = "Replace" }
 					}
 				}
-			})
+			}
 
 			-- JSON LSP配置
-			lspconfig.jsonls.setup({ on_attach = function() end })
+			vim.lsp.config.jsonls = {
+				cmd = { 'vscode-json-language-server', '--stdio' },
+				filetypes = { 'json', 'jsonc' },
+				root_markers = { '.git' }
+			}
 
+			-- HTML LSP配置
+			vim.lsp.config.html = {
+				cmd = { 'vscode-html-language-server', '--stdio' },
+				filetypes = { 'html' },
+				root_markers = { '.git' }
+			}
 
+			-- Python LSP配置
+			vim.lsp.config.pyright = {
+				cmd = { 'pyright-langserver', '--stdio' },
+				filetypes = { 'python' },
+				root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' }
+			}
 
-			-- 其他LSP服务器配置
-			require 'lspconfig'.html.setup {}
-			require 'lspconfig'.pyright.setup {}
-			require 'lspconfig'.tailwindcss.setup {}
-			require 'lspconfig'.ts_ls.setup {}
-			require 'lspconfig'.biome.setup {}
-			require 'lspconfig'.cssls.setup {}
-			require 'lspconfig'.taplo.setup {}
-			require 'lspconfig'.ansiblels.setup {}
-			require 'lspconfig'.terraformls.setup {}
-			require 'lspconfig'.prismals.setup {}
+			-- TailwindCSS LSP配置
+			vim.lsp.config.tailwindcss = {
+				cmd = { 'tailwindcss-language-server', '--stdio' },
+				filetypes = { 'html', 'css', 'scss', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+				root_markers = { 'tailwind.config.js', 'tailwind.config.ts', '.git' }
+			}
 
-			-- TeX配置
-			require 'lspconfig'.texlab.setup {
-				texlab = {
-					bibtexFormatter = "texlab",
-					build = {
-						args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "%f" },
-						executable = "latexmk", forwardSearchAfter = false, onSave = true
-					},
-					chktex = { onEdit = false, onOpenAndSave = false },
-					diagnosticsDelay = 300, formatterLineLength = 80,
-					forwardSearch = { args = {} },
-					latexFormatter = "latexindent",
-					latexindent = { modifyLineBreaks = false }
+			-- TypeScript LSP配置
+			vim.lsp.config.ts_ls = {
+				cmd = { 'typescript-language-server', '--stdio' },
+				filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+				root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' }
+			}
+
+			-- Biome LSP配置
+			vim.lsp.config.biome = {
+				cmd = { 'biome', 'lsp-proxy' },
+				filetypes = { 'javascript', 'javascriptreact', 'json', 'jsonc', 'typescript', 'typescriptreact' },
+				root_markers = { 'biome.json', '.git' }
+			}
+
+			-- CSS LSP配置
+			vim.lsp.config.cssls = {
+				cmd = { 'vscode-css-language-server', '--stdio' },
+				filetypes = { 'css', 'scss', 'less' },
+				root_markers = { '.git' }
+			}
+
+			-- TOML LSP配置
+			vim.lsp.config.taplo = {
+				cmd = { 'taplo', 'lsp', 'stdio' },
+				filetypes = { 'toml' },
+				root_markers = { '.git' }
+			}
+
+			-- Ansible LSP配置
+			vim.lsp.config.ansiblels = {
+				cmd = { 'ansible-language-server', '--stdio' },
+				filetypes = { 'yaml.ansible' },
+				root_markers = { 'ansible.cfg', '.git' }
+			}
+
+			-- Terraform LSP配置
+			vim.lsp.config.terraformls = {
+				cmd = { 'terraform-ls', 'serve' },
+				filetypes = { 'terraform', 'tf' },
+				root_markers = { '.terraform', '.git' }
+			}
+
+			-- Prisma LSP配置
+			vim.lsp.config.prismals = {
+				cmd = { 'prisma-language-server', '--stdio' },
+				filetypes = { 'prisma' },
+				root_markers = { 'schema.prisma', '.git' }
+			}
+
+			-- TeX LSP配置
+			vim.lsp.config.texlab = {
+				cmd = { 'texlab' },
+				filetypes = { 'tex', 'bib' },
+				root_markers = { '.latexmkrc', '.git' },
+				settings = {
+					texlab = {
+						bibtexFormatter = "texlab",
+						build = {
+							args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "%f" },
+							executable = "latexmk", forwardSearchAfter = false, onSave = true
+						},
+						chktex = { onEdit = false, onOpenAndSave = false },
+						diagnosticsDelay = 300, formatterLineLength = 80,
+						forwardSearch = { args = {} },
+						latexFormatter = "latexindent",
+						latexindent = { modifyLineBreaks = false }
+					}
 				}
 			}
 
-			-- YAML配置
-			require 'lspconfig'.yamlls.setup({
+			-- YAML LSP配置
+			vim.lsp.config.yamlls = {
+				cmd = { 'yaml-language-server', '--stdio' },
+				filetypes = { 'yaml', 'yaml.docker-compose' },
+				root_markers = { '.git' },
 				settings = {
 					redhat = { telemetry = { enabled = false } },
 					yaml = {
@@ -231,9 +301,18 @@ M = {
 						}
 					}
 				}
-			})
+			}
 
-			require 'lspconfig'.gopls.setup {}
+			-- Go LSP配置
+			vim.lsp.config.gopls = {
+				cmd = { 'gopls' },
+				filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+				root_markers = { 'go.work', 'go.mod', '.git' }
+			}
+
+			-- 启用所有配置的 LSP 服务器
+			vim.lsp.enable({ 'lua_ls', 'jsonls', 'html', 'pyright', 'tailwindcss', 'ts_ls', 'biome', 'cssls', 'taplo', 'ansiblels', 'terraformls', 'prismals', 'texlab', 'yamlls', 'gopls' })
+
 			lsp.setup()
 
 			-- 自动格式化配置
@@ -257,17 +336,19 @@ M = {
 			capabilities.textDocument.foldingRange = {
 				dynamicRegistration = false, lineFoldingOnly = true
 			}
-			local language_servers = require("lspconfig").util.available_servers()
-			for _, ls in ipairs(language_servers) do
-				require('lspconfig')[ls].setup({ capabilities = capabilities })
+			-- 将折叠能力添加到所有 LSP 配置中
+			for _, server in ipairs({ 'lua_ls', 'jsonls', 'html', 'pyright', 'tailwindcss', 'ts_ls', 'biome', 'cssls', 'taplo', 'ansiblels', 'terraformls', 'prismals', 'texlab', 'yamlls', 'gopls' }) do
+				if vim.lsp.config[server] then
+					vim.lsp.config[server].capabilities = vim.tbl_deep_extend(
+						'force',
+						vim.lsp.config[server].capabilities or {},
+						capabilities,
+						require('cmp_nvim_lsp').default_capabilities()
+					)
+				end
 			end
 
 			require("fidget").setup({})
-			local lsp_defaults = lspconfig.util.default_config
-			lsp_defaults.capabilities = vim.tbl_deep_extend(
-				'force', lsp_defaults.capabilities,
-				require('cmp_nvim_lsp').default_capabilities()
-			)
 
 
 			F.configureDocAndSignature()
